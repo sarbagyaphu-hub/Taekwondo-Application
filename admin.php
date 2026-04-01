@@ -10,7 +10,7 @@ session_start();
 $dbHost = '127.0.0.1'; 
 $dbPort = '3306';
 $dbUser = 'root';
-$dbPass = '';
+$dbPass = ''; 
 $dbName = 'taekwondo_system';
 
 const DEFAULT_ADMIN_EMAIL = 'taekwondoadmin@nta.com';
