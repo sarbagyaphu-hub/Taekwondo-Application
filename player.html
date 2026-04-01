@@ -53,9 +53,9 @@
       display:none;
       position:sticky;
       top:0;
-      z-index:10;
+      z-index:30;
       padding:12px;
-      background:rgba(0,0,0,.6);
+      background:rgba(0,0,0,.65);
       backdrop-filter:blur(8px);
       border-bottom:1px solid var(--border);
     }
@@ -75,18 +75,29 @@
       position:relative;
       z-index:2;
       display:grid;
-      grid-template-columns:280px 1fr;
+      grid-template-columns:290px 1fr;
       min-height:100vh;
     }
 
     .sidebar{
       background:rgba(0,0,0,.45);
       border-right:1px solid var(--border);
-      padding:22px 16px;
       backdrop-filter:blur(10px);
       position:sticky;
       top:0;
       height:100vh;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+
+    .sidebar-inner{
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+      height:100%;
+      padding:22px 16px;
+      gap:16px;
     }
 
     .brand{
@@ -95,7 +106,7 @@
       border-radius:18px;
       padding:16px;
       box-shadow:var(--shadow);
-      margin-bottom:18px;
+      flex:0 0 auto;
     }
 
     .brand h2{
@@ -112,6 +123,19 @@
     .nav{
       display:grid;
       gap:10px;
+      overflow-y:auto;
+      padding-right:4px;
+      flex:1 1 auto;
+      min-height:0;
+    }
+
+    .nav::-webkit-scrollbar{
+      width:8px;
+    }
+
+    .nav::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.12);
+      border-radius:999px;
     }
 
     .nav button, .nav a{
@@ -126,11 +150,18 @@
       font-weight:bold;
       cursor:pointer;
       transition:.25s ease;
+      display:block;
     }
 
     .nav button:hover, .nav button.active, .nav a:hover{
       background:linear-gradient(135deg,rgba(217,4,41,.15),rgba(21,101,255,.15));
       transform:translateX(3px);
+    }
+
+    .nav-footer{
+      flex:0 0 auto;
+      padding-top:4px;
+      border-top:1px solid rgba(255,255,255,.08);
     }
 
     .main{
@@ -166,7 +197,7 @@
 
     .stats{
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-columns:repeat(5,minmax(0,1fr));
       gap:16px;
       margin-bottom:20px;
     }
@@ -423,7 +454,7 @@
 
     .id-wrap{
       display:grid;
-      grid-template-columns:1fr 360px;
+      grid-template-columns:1fr 380px;
       gap:18px;
       align-items:start;
     }
@@ -431,81 +462,133 @@
     .athlete-card{
       position:relative;
       overflow:hidden;
-      border-radius:24px;
+      border-radius:18px;
       border:1px solid rgba(255,255,255,.18);
       background:
         radial-gradient(circle at top right, rgba(21,101,255,.22), transparent 30%),
         radial-gradient(circle at bottom left, rgba(217,4,41,.22), transparent 30%),
         linear-gradient(145deg,#0b0f18,#101827,#0d0d0d);
       box-shadow:0 18px 45px rgba(0,0,0,.35);
-      padding:22px;
-      min-height:250px;
+      padding:16px;
+      width:85.6mm;
+      height:54mm;
+      max-width:100%;
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
     }
 
     .card-top{
       display:flex;
       justify-content:space-between;
-      gap:12px;
-      margin-bottom:18px;
+      gap:10px;
       align-items:flex-start;
     }
 
     .card-title{
-      font-size:1.2rem;
+      font-size:.95rem;
       font-weight:bold;
-      letter-spacing:.5px;
+      letter-spacing:.4px;
     }
 
     .card-sub{
       color:var(--soft);
-      font-size:.9rem;
-      margin-top:4px;
+      font-size:.68rem;
+      margin-top:3px;
     }
 
     .flag-chip{
-      padding:8px 12px;
+      padding:6px 9px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.06);
-      font-size:.85rem;
+      font-size:.72rem;
       font-weight:bold;
+      white-space:nowrap;
     }
 
     .glow-line{
       width:100%;
-      height:4px;
+      height:3px;
       border-radius:999px;
       background:linear-gradient(to right,var(--red),#ffffff,var(--blue));
-      margin:18px 0;
+      margin:10px 0;
+    }
+
+    .id-layout{
+      display:grid;
+      grid-template-columns:1fr 90px;
+      gap:10px;
+      align-items:stretch;
+      flex:1;
+      min-height:0;
     }
 
     .card-grid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
+      gap:8px;
+      align-content:start;
     }
 
     .card-info{
       background:rgba(255,255,255,.05);
       border:1px solid rgba(255,255,255,.08);
-      border-radius:16px;
-      padding:12px;
+      border-radius:12px;
+      padding:8px;
+      min-width:0;
     }
 
     .card-info span{
       display:block;
-      font-size:.8rem;
+      font-size:.62rem;
       color:var(--soft);
-      margin-bottom:6px;
+      margin-bottom:4px;
     }
 
     .card-info strong{
-      font-size:.95rem;
-      line-height:1.4;
+      font-size:.74rem;
+      line-height:1.25;
+      word-break:break-word;
+      display:block;
+    }
+
+    .qr-panel{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      padding:8px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+
+    .qr-panel img{
+      width:72px;
+      height:72px;
+      border-radius:6px;
+      background:#fff;
+      padding:4px;
+    }
+
+    .qr-label{
+      font-size:.62rem;
+      color:var(--soft);
+      text-align:center;
+      line-height:1.2;
+    }
+
+    .print-note{
+      font-size:.88rem;
+      color:var(--soft);
+      margin-top:10px;
     }
 
     @media (max-width:1200px){
-      .stats{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .stats{grid-template-columns:repeat(3,minmax(0,1fr));}
       .prep-grid,.id-wrap{grid-template-columns:1fr;}
     }
 
@@ -513,6 +596,7 @@
       .form-grid,.btn-row,.medal-grid{
         grid-template-columns:1fr;
       }
+      .stats{grid-template-columns:repeat(2,minmax(0,1fr));}
     }
 
     @media (max-width:900px){
@@ -523,6 +607,7 @@
         top:61px;
         left:0;
         width:280px;
+        height:calc(100vh - 61px);
         transform:translateX(-100%);
         transition:.3s ease;
         z-index:20;
@@ -537,6 +622,64 @@
       .topbar h1{font-size:1.6rem;}
       .section,.card,.athlete-card{border-radius:18px;}
       .card-grid{grid-template-columns:1fr;}
+      .athlete-card{
+        width:100%;
+        height:auto;
+        min-height:54mm;
+      }
+      .id-layout{
+        grid-template-columns:1fr;
+      }
+      .qr-panel img{
+        width:96px;
+        height:96px;
+      }
+    }
+
+    @media print{
+      body{
+        background:#fff !important;
+        color:#000 !important;
+      }
+
+      .mobile-menu,
+      .sidebar,
+      .topbar,
+      .stats,
+      .section:not(#idSection),
+      #idSection .card,
+      .orb{
+        display:none !important;
+      }
+
+      .app,
+      .main,
+      #idSection,
+      .id-wrap{
+        display:block !important;
+        padding:0 !important;
+        margin:0 !important;
+        width:auto !important;
+        min-height:auto !important;
+        background:#fff !important;
+        border:none !important;
+        box-shadow:none !important;
+      }
+
+      .athlete-card{
+        width:85.6mm !important;
+        height:54mm !important;
+        margin:0 auto !important;
+        border:1px solid #999 !important;
+        box-shadow:none !important;
+        break-inside:avoid;
+        page-break-inside:avoid;
+      }
+
+      @page{
+        size:90mm 60mm;
+        margin:2mm;
+      }
     }
   </style>
 </head>
@@ -550,21 +693,26 @@
 
   <div class="app">
     <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <h2>Player Panel</h2>
-        <p>Welcome player. Track grading, medals, weight, transfer requests, leave applications, and athlete ID in one place.</p>
-      </div>
+      <div class="sidebar-inner">
+        <div class="brand">
+          <h2>Player Panel</h2>
+          <p>Welcome player. Track grading, medals, games, weight, transfer requests, leave applications, and athlete ID in one place.</p>
+        </div>
 
-      <div class="nav">
-        <button class="nav-btn active" data-section="overviewSection">📊 Overview</button>
-        <button class="nav-btn" data-section="gradingSection">🎓 Grading Guide</button>
-        <button class="nav-btn" data-section="leaveSection">📝 Leave Application</button>
-        <button class="nav-btn" data-section="medalSection">🏅 Medal Record</button>
-        <button class="nav-btn" data-section="transferSection">🔄 Transfer Request</button>
-        <button class="nav-btn" data-section="weightSection">⚖ Monthly Weight</button>
-        <button class="nav-btn" data-section="idSection">🪪 Athlete ID</button>
-        <button class="nav-btn" data-section="notificationSection">🔔 Notifications</button>
-        <a href="login.html">↩ Back to Login</a>
+        <div class="nav">
+          <button class="nav-btn active" data-section="overviewSection">📊 Overview</button>
+          <button class="nav-btn" data-section="gradingSection">🎓 Grading Guide</button>
+          <button class="nav-btn" data-section="leaveSection">📝 Leave Application</button>
+          <button class="nav-btn" data-section="medalSection">🏅 Medal Record</button>
+          <button class="nav-btn" data-section="transferSection">🔄 Transfer Request</button>
+          <button class="nav-btn" data-section="weightSection">⚖ Monthly Weight</button>
+          <button class="nav-btn" data-section="idSection">🪪 Athlete ID</button>
+          <button class="nav-btn" data-section="notificationSection">🔔 Notifications</button>
+        </div>
+
+        <div class="nav-footer">
+          <a href="login.html">↩ Back to Login</a>
+        </div>
       </div>
     </aside>
 
@@ -572,7 +720,7 @@
       <div class="topbar">
         <div>
           <h1>Welcome, Player</h1>
-          <p>Stay updated with your grading countdown, training preparation, medals, leave requests, and athlete profile.</p>
+          <p>Stay updated with your grading countdown, training preparation, medals, match participation, leave requests, and athlete profile.</p>
         </div>
         <div class="badge" id="playerBadge">Player: Aarav Shrestha</div>
       </div>
@@ -597,6 +745,11 @@
           <h3>Total Medals</h3>
           <div class="big" id="totalMedalsText">10</div>
           <div class="soft">Gold + Silver + Bronze combined.</div>
+        </div>
+        <div class="card">
+          <h3>Participated Games</h3>
+          <div class="big" id="gamesPlayedText">18</div>
+          <div class="soft">Total official games participated.</div>
         </div>
       </div>
 
@@ -756,20 +909,21 @@
       <section class="section" id="idSection">
         <h2>Printable International Athlete ID</h2>
         <p class="section-desc">
-          Preview and print your athlete ID card.
+          Preview and print your athlete ID card. Print is optimized for card size only.
         </p>
 
         <div class="id-wrap">
           <div class="card">
             <div class="btn-row">
               <button class="btn btn-primary" onclick="renderPlayerId()">Generate ID</button>
-              <button class="btn btn-secondary" onclick="window.print()">Print ID</button>
+              <button class="btn btn-secondary" onclick="window.print()">Print ID Card</button>
             </div>
 
             <div class="result-box" id="idResultBox">Athlete ID ready for preview.</div>
+            <div class="print-note">The print button prints only the ID card in card size, not the full page.</div>
           </div>
 
-          <div class="athlete-card">
+          <div class="athlete-card" id="printCard">
             <div class="card-top">
               <div>
                 <div class="card-title">INTERNATIONAL ATHLETE ID</div>
@@ -780,30 +934,37 @@
 
             <div class="glow-line"></div>
 
-            <div class="card-grid">
-              <div class="card-info">
-                <span>Full Name</span>
-                <strong id="idName">Aarav Shrestha</strong>
+            <div class="id-layout">
+              <div class="card-grid">
+                <div class="card-info">
+                  <span>Full Name</span>
+                  <strong id="idName">Aarav Shrestha</strong>
+                </div>
+                <div class="card-info">
+                  <span>Date of Birth</span>
+                  <strong id="idDob">2010-03-15</strong>
+                </div>
+                <div class="card-info">
+                  <span>Country</span>
+                  <strong id="idCountry">Nepal</strong>
+                </div>
+                <div class="card-info">
+                  <span>Belt Rank</span>
+                  <strong id="idBelt">Blue</strong>
+                </div>
+                <div class="card-info">
+                  <span>Contact Number</span>
+                  <strong id="idContact">+977-9800000000</strong>
+                </div>
+                <div class="card-info">
+                  <span>Player ID</span>
+                  <strong id="idPlayerId">PID0001</strong>
+                </div>
               </div>
-              <div class="card-info">
-                <span>Date of Birth</span>
-                <strong id="idDob">2010-03-15</strong>
-              </div>
-              <div class="card-info">
-                <span>Country</span>
-                <strong id="idCountry">Nepal</strong>
-              </div>
-              <div class="card-info">
-                <span>Belt Rank</span>
-                <strong id="idBelt">Blue</strong>
-              </div>
-              <div class="card-info">
-                <span>Contact Number</span>
-                <strong id="idContact">+977-9800000000</strong>
-              </div>
-              <div class="card-info">
-                <span>Player ID</span>
-                <strong id="idPlayerId">PID0001</strong>
+
+              <div class="qr-panel">
+                <img id="qrImage" alt="Athlete QR Code">
+                <div class="qr-label">Scan to view athlete details</div>
               </div>
             </div>
           </div>
@@ -832,6 +993,7 @@
       belt: "Blue",
       weight: 48,
       gradingCountdown: 100,
+      gamesPlayed: 18,
       medals: { gold: 4, silver: 3, bronze: 3 },
       notifications: [
         "Coach Notice: Training session starts at 6:00 AM tomorrow.",
@@ -943,6 +1105,7 @@
       document.getElementById("gradingCountdown").textContent = playerProfile.gradingCountdown;
       document.getElementById("currentBeltText").textContent = playerProfile.belt;
       document.getElementById("currentWeightText").textContent = playerProfile.weight + " kg";
+      document.getElementById("gamesPlayedText").textContent = playerProfile.gamesPlayed;
       document.getElementById("totalMedalsText").textContent =
         playerProfile.medals.gold + playerProfile.medals.silver + playerProfile.medals.bronze;
 
@@ -972,6 +1135,7 @@ Recommended Poomsae:
 Required Maki / Preparation:
 - ${guide.maki.join("\n- ")}
 
+Participated Games: ${playerProfile.gamesPlayed}
 Countdown to grading: ${playerProfile.gradingCountdown} days`;
     }
 
@@ -1114,6 +1278,22 @@ Updated Weight: ${weight} kg`;
       renderNotifications();
     }
 
+    function buildQrData(){
+      return [
+        `Player ID: ${playerProfile.id}`,
+        `Full Name: ${playerProfile.name}`,
+        `Date of Birth: ${playerProfile.dob}`,
+        `Country: ${playerProfile.country}`,
+        `Belt Rank: ${playerProfile.belt}`,
+        `Contact: ${playerProfile.contact}`,
+        `Weight: ${playerProfile.weight} kg`,
+        `Participated Games: ${playerProfile.gamesPlayed}`,
+        `Gold: ${playerProfile.medals.gold}`,
+        `Silver: ${playerProfile.medals.silver}`,
+        `Bronze: ${playerProfile.medals.bronze}`
+      ].join("\n");
+    }
+
     function renderPlayerId(){
       document.getElementById("idCountryFlag").textContent = playerProfile.country;
       document.getElementById("idName").textContent = playerProfile.name;
@@ -1123,12 +1303,17 @@ Updated Weight: ${weight} kg`;
       document.getElementById("idContact").textContent = playerProfile.contact;
       document.getElementById("idPlayerId").textContent = playerProfile.id;
 
+      const qrData = buildQrData();
+      document.getElementById("qrImage").src =
+        "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" + encodeURIComponent(qrData);
+
       document.getElementById("idResultBox").textContent =
         `Athlete ID generated
 
 Name: ${playerProfile.name}
 Country: ${playerProfile.country}
-Belt: ${playerProfile.belt}`;
+Belt: ${playerProfile.belt}
+QR Code: Ready`;
     }
 
     function renderNotifications(){
