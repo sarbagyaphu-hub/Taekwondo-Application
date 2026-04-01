@@ -1,519 +1,545 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
-<head>          
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard - Taekwondo Management</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
     }
 
-    :root {
-      --bg: #050505;
-      --panel: rgba(255, 255, 255, 0.06);
-      --panel-2: rgba(255, 255, 255, 0.08);
-      --border: rgba(255, 255, 255, 0.12);
-      --white: #ffffff;
-      --soft: #cfcfcf;
-      --red: #d90429;
-      --blue: #1565ff;
-      --green: #22c55e;
-      --orange: #f59e0b;
-      --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    :root{
+      --bg:#050505;
+      --panel:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+      --white:#ffffff;
+      --soft:#cfcfcf;
+      --red:#d90429;
+      --blue:#1565ff;
+      --green:#22c55e;
+      --orange:#f59e0b;
+      --shadow:0 18px 45px rgba(0,0,0,0.35);
     }
 
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #020202, #09111f, #170407);
-      color: var(--white);
-      overflow-x: hidden;
+    body{
+      min-height:100vh;
+      background:linear-gradient(135deg,#020202,#09111f,#170407);
+      color:var(--white);
+      overflow-x:hidden;
     }
 
-    .bg-orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(25px);
-      opacity: 0.22;
-      z-index: 0;
-      pointer-events: none;
-      animation: float 10s ease-in-out infinite;
+    .bg-orb{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(25px);
+      opacity:.22;
+      z-index:0;
+      pointer-events:none;
+      animation:float 10s ease-in-out infinite;
     }
 
-    .orb1 {
-      width: 260px;
-      height: 260px;
-      background: var(--red);
-      top: 5%;
-      left: 5%;
+    .orb1{
+      width:260px;
+      height:260px;
+      background:var(--red);
+      top:5%;
+      left:5%;
     }
 
-    .orb2 {
-      width: 320px;
-      height: 320px;
-      background: var(--blue);
-      bottom: 5%;
-      right: 5%;
-      animation-delay: 2s;
+    .orb2{
+      width:320px;
+      height:320px;
+      background:var(--blue);
+      bottom:5%;
+      right:5%;
+      animation-delay:2s;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0) translateX(0); }
-      50% { transform: translateY(-18px) translateX(15px); }
+    @keyframes float{
+      0%,100%{transform:translateY(0) translateX(0);}
+      50%{transform:translateY(-18px) translateX(15px);}
     }
 
-    .app {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: 100vh;
+    .mobile-top{
+      display:none;
+      padding:14px;
+      position:sticky;
+      top:0;
+      z-index:30;
+      background:rgba(0,0,0,0.65);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--border);
     }
 
-    .sidebar {
-      background: rgba(0, 0, 0, 0.45);
-      border-right: 1px solid var(--border);
-      padding: 24px 18px;
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      height: 100vh;
+    .mobile-top button{
+      width:100%;
+      min-height:46px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.06);
+      color:var(--white);
+      border-radius:12px;
+      font-weight:bold;
+      cursor:pointer;
     }
 
-    .brand {
-      margin-bottom: 24px;
-      padding: 16px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-    }
- 
-    .brand h2 {
-      font-size: 1.3rem;
-      margin-bottom: 8px;
+    .app{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:290px 1fr;
+      min-height:100vh;
     }
 
-    .brand p {
-      color: var(--soft);
-      line-height: 1.5;
-      font-size: 0.92rem;
+    .sidebar{
+      background:rgba(0,0,0,0.45);
+      border-right:1px solid var(--border);
+      backdrop-filter:blur(12px);
+      position:sticky;
+      top:0;
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
     }
 
-    .nav {
-      display: grid;
-      gap: 10px;
+    .sidebar-inner{
+      display:flex;
+      flex-direction:column;
+      height:100%;
+      min-height:0;
+      padding:24px 18px;
+      gap:18px;
     }
 
-    .nav button {
-      width: 100%;
-      text-align: left;
-      padding: 14px 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      color: var(--white);
-      border-radius: 14px;
-      cursor: pointer;
-      transition: 0.25s ease;
-      font-weight: bold;
+    .brand{
+      padding:16px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+
+    .brand h2{
+      font-size:1.3rem;
+      margin-bottom:8px;
+    }
+
+    .brand p{
+      color:var(--soft);
+      line-height:1.5;
+      font-size:.92rem;
+    }
+
+    .nav{
+      display:grid;
+      gap:10px;
+      overflow-y:auto;
+      flex:1 1 auto;
+      min-height:0;
+      padding-right:4px;
+    }
+
+    .nav::-webkit-scrollbar{
+      width:8px;
+    }
+
+    .nav::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.12);
+      border-radius:999px;
+    }
+
+    .nav button,
+    .nav a{
+      width:100%;
+      text-align:left;
+      padding:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--white);
+      border-radius:14px;
+      cursor:pointer;
+      transition:.25s ease;
+      font-weight:bold;
+      text-decoration:none;
+      display:block;
     }
 
     .nav button:hover,
-    .nav button.active {
-      background: linear-gradient(135deg, rgba(217,4,41,0.15), rgba(21,101,255,0.15));
-      border-color: rgba(255,255,255,0.2);
-      transform: translateX(3px);
+    .nav button.active,
+    .nav a:hover{
+      background:linear-gradient(135deg,rgba(217,4,41,.15),rgba(21,101,255,.15));
+      border-color:rgba(255,255,255,.2);
+      transform:translateX(3px);
     }
 
-    .main {
-      padding: 24px;
+    .nav-footer{
+      flex:0 0 auto;
+      padding-top:6px;
+      border-top:1px solid rgba(255,255,255,.08);
     }
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
+    .main{
+      padding:24px;
     }
 
-    .topbar .title h1 {
-      font-size: 2rem;
-      margin-bottom: 6px;
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:24px;
     }
 
-    .topbar .title p {
-      color: var(--soft);
-      line-height: 1.6;
+    .title h1{
+      font-size:2rem;
+      margin-bottom:6px;
     }
 
-    .topbar .admin-badge {
-      padding: 12px 16px;
-      border-radius: 999px;
-      background: linear-gradient(to right, rgba(217,4,41,0.16), rgba(21,101,255,0.16));
-      border: 1px solid var(--border);
-      font-weight: bold;
+    .title p{
+      color:var(--soft);
+      line-height:1.6;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+    .admin-badge{
+      padding:12px 16px;
+      border-radius:999px;
+      background:linear-gradient(to right,rgba(217,4,41,.16),rgba(21,101,255,.16));
+      border:1px solid var(--border);
+      font-weight:bold;
     }
 
-    .stat-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 20px;
-      box-shadow: var(--shadow);
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
+      margin-bottom:24px;
     }
 
-    .stat-card h3 {
-      font-size: 2rem;
-      margin-bottom: 8px;
+    .stat-card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:var(--shadow);
     }
 
-    .stat-card p {
-      color: var(--soft);
-      line-height: 1.5;
+    .stat-card h3{
+      font-size:2rem;
+      margin-bottom:8px;
     }
 
-    .section {
-      display: none;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: var(--shadow);
-      margin-bottom: 20px;
+    .stat-card p{
+      color:var(--soft);
+      line-height:1.5;
     }
 
-    .section.active {
-      display: block;
+    .section{
+      display:none;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:22px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
     }
 
-    .section h2 {
-      margin-bottom: 10px;
-      font-size: 1.5rem;
+    .section.active{
+      display:block;
     }
 
-    .section-desc {
-      color: var(--soft);
-      line-height: 1.6;
-      margin-bottom: 18px;
+    .section h2{
+      margin-bottom:10px;
+      font-size:1.5rem;
+    }
+
+    .section-desc{
+      color:var(--soft);
+      line-height:1.6;
+      margin-bottom:18px;
     }
 
     .filters,
     .form-grid,
-    .button-row {
-      display: grid;
-      gap: 14px;
+    .button-row{
+      display:grid;
+      gap:14px;
     }
 
-    .filters {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      margin-bottom: 18px;
+    .filters{
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      margin-bottom:18px;
     }
 
-    .form-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      margin-bottom: 18px;
+    .form-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      margin-bottom:18px;
     }
 
-    .form-group {
-      display: grid;
-      gap: 8px;
+    .form-group{
+      display:grid;
+      gap:8px;
     }
 
-    .form-group.full {
-      grid-column: 1 / -1;
+    .form-group.full{
+      grid-column:1 / -1;
     }
 
-    label {
-      font-weight: bold;
-      font-size: 0.95rem;
+    label{
+      font-weight:bold;
+      font-size:.95rem;
     }
 
-    input, select, textarea {
-      width: 100%;
-      min-height: 48px;
-      padding: 13px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.05);
-      color: var(--white);
-      outline: none;
-      font-size: 0.95rem;
+    input, select, textarea{
+      width:100%;
+      min-height:48px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--white);
+      outline:none;
+      font-size:.95rem;
     }
 
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-      padding-top: 12px;
+    textarea{
+      min-height:120px;
+      resize:vertical;
+      padding-top:12px;
     }
 
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(21,101,255,0.16);
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(21,101,255,.16);
     }
 
-    .button-row {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      margin-top: 8px;
+    .button-row{
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      margin-top:8px;
     }
 
-    .btn {
-      min-height: 48px;
-      padding: 12px 16px;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.25s ease;
-      color: var(--white);
+    .btn{
+      min-height:48px;
+      padding:12px 16px;
+      border:none;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:bold;
+      transition:.25s ease;
+      color:var(--white);
     }
 
-    .btn-primary {
-      background: linear-gradient(to right, var(--red), var(--blue));
+    .btn-primary{
+      background:linear-gradient(to right,var(--red),var(--blue));
     }
 
-    .btn-secondary {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid var(--border);
+    .btn-secondary{
+      background:rgba(255,255,255,.07);
+      border:1px solid var(--border);
     }
 
-    .btn-success {
-      background: rgba(34,197,94,0.18);
-      border: 1px solid rgba(34,197,94,0.3);
-      color: #d8ffe4;
+    .btn-success{
+      background:rgba(34,197,94,.18);
+      border:1px solid rgba(34,197,94,.3);
+      color:#d8ffe4;
     }
 
-    .btn-danger {
-      background: rgba(217,4,41,0.18);
-      border: 1px solid rgba(217,4,41,0.3);
-      color: #ffdada;
+    .btn-danger{
+      background:rgba(217,4,41,.18);
+      border:1px solid rgba(217,4,41,.3);
+      color:#ffdada;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
+    .btn:hover{
+      transform:translateY(-2px);
     }
 
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
+    .card-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
     }
 
-    .mini-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
+    .mini-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
     }
 
-    .mini-card h3 {
-      margin-bottom: 8px;
+    .mini-card h3{
+      margin-bottom:8px;
     }
 
-    .mini-card p {
-      color: var(--soft);
-      line-height: 1.5;
-      margin-bottom: 14px;
+    .mini-card p{
+      color:var(--soft);
+      line-height:1.5;
+      margin-bottom:14px;
     }
 
-    .table-wrap {
-      overflow-x: auto;
-      border-radius: 18px;
-      border: 1px solid var(--border);
+    .table-wrap{
+      overflow-x:auto;
+      border-radius:18px;
+      border:1px solid var(--border);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 760px;
-      background: rgba(255,255,255,0.04);
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:760px;
+      background:rgba(255,255,255,.04);
     }
 
-    th, td {
-      padding: 14px 12px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      vertical-align: top;
+    th, td{
+      padding:14px 12px;
+      text-align:left;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      vertical-align:top;
     }
 
-    th {
-      background: rgba(255,255,255,0.06);
-      font-size: 0.95rem;
+    th{
+      background:rgba(255,255,255,.06);
+      font-size:.95rem;
     }
 
-    td {
-      font-size: 0.94rem;
-      line-height: 1.5;
+    td{
+      font-size:.94rem;
+      line-height:1.5;
     }
 
-    .rank-badge {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(245,158,11,0.18);
-      border: 1px solid rgba(245,158,11,0.3);
-      color: #ffe7b0;
-      font-weight: bold;
-      font-size: 0.82rem;
+    .rank-badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(245,158,11,.18);
+      border:1px solid rgba(245,158,11,.3);
+      color:#ffe7b0;
+      font-weight:bold;
+      font-size:.82rem;
     }
 
-    .status-chip {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: bold;
+    .status-chip{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.82rem;
+      font-weight:bold;
     }
 
-    .status-pending {
-      background: rgba(245,158,11,0.18);
-      border: 1px solid rgba(245,158,11,0.3);
-      color: #ffe7b0;
+    .status-pending{
+      background:rgba(245,158,11,.18);
+      border:1px solid rgba(245,158,11,.3);
+      color:#ffe7b0;
     }
 
-    .status-verified {
-      background: rgba(34,197,94,0.18);
-      border: 1px solid rgba(34,197,94,0.3);
-      color: #d8ffe4;
+    .status-verified{
+      background:rgba(34,197,94,.18);
+      border:1px solid rgba(34,197,94,.3);
+      color:#d8ffe4;
     }
 
-    .status-rejected {
-      background: rgba(217,4,41,0.18);
-      border: 1px solid rgba(217,4,41,0.3);
-      color: #ffdada;
+    .status-rejected{
+      background:rgba(217,4,41,.18);
+      border:1px solid rgba(217,4,41,.3);
+      color:#ffdada;
     }
 
-    .notice-list {
-      display: grid;
-      gap: 14px;
-      margin-top: 18px;
+    .notice-list{
+      display:grid;
+      gap:14px;
+      margin-top:18px;
     }
 
-    .notice-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
+    .notice-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
     }
 
-    .notice-card h4 {
-      margin-bottom: 8px;
+    .notice-card h4{
+      margin-bottom:8px;
     }
 
-    .notice-card p {
-      color: var(--soft);
-      line-height: 1.6;
+    .notice-card p{
+      color:var(--soft);
+      line-height:1.6;
     }
 
-    .helper-text {
-      color: var(--soft);
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-top: 8px;
+    .result-box{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      line-height:1.6;
+      color:var(--soft);
+      white-space:pre-wrap;
     }
 
-    .result-box {
-      margin-top: 16px;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      line-height: 1.6;
-      color: var(--soft);
-      white-space: pre-wrap;
-    }
-
-    .mobile-top {
-      display: none;
-      padding: 14px;
-      position: sticky;
-      top: 0;
-      z-index: 9;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .mobile-top button {
-      width: 100%;
-      min-height: 46px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.06);
-      color: var(--white);
-      border-radius: 12px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .sidebar.open {
-      transform: translateX(0);
-    }
-
-    @media (max-width: 1100px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    @media (max-width:1100px){
+      .stats-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
       }
 
       .filters,
       .form-grid,
       .button-row,
-      .card-grid {
-        grid-template-columns: 1fr;
+      .card-grid{
+        grid-template-columns:1fr;
       }
     }
 
-    @media (max-width: 900px) {
-      .app {
-        grid-template-columns: 1fr;
+    @media (max-width:900px){
+      .app{
+        grid-template-columns:1fr;
       }
 
-      .mobile-top {
-        display: block;
+      .mobile-top{
+        display:block;
       }
 
-      .sidebar {
-        position: fixed;
-        left: 0;
-        top: 61px;
-        width: 280px;
-        height: calc(100vh - 61px);
-        transform: translateX(-100%);
-        transition: 0.3s ease;
-        z-index: 20;
+      .sidebar{
+        position:fixed;
+        left:0;
+        top:61px;
+        width:290px;
+        height:calc(100vh - 61px);
+        transform:translateX(-100%);
+        transition:.3s ease;
+        z-index:20;
       }
 
-      .main {
-        padding: 16px;
+      .sidebar.open{
+        transform:translateX(0);
+      }
+
+      .main{
+        padding:16px;
       }
     }
 
-    @media (max-width: 640px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
+    @media (max-width:640px){
+      .stats-grid{
+        grid-template-columns:1fr;
       }
 
-      .topbar .title h1 {
-        font-size: 1.6rem;
+      .title h1{
+        font-size:1.6rem;
       }
 
-      .section {
-        padding: 16px;
-        border-radius: 18px;
+      .section{
+        padding:16px;
+        border-radius:18px;
       }
 
-      .stat-card {
-        border-radius: 18px;
+      .stat-card{
+        border-radius:18px;
       }
     }
   </style>
@@ -528,19 +554,24 @@
 
   <div class="app">
     <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <h2>Admin Panel</h2>
-        <p>Taekwondo Player Management and Poomsae Referee Administration</p>
-      </div>
+      <div class="sidebar-inner">
+        <div class="brand">
+          <h2>Admin Panel</h2>
+          <p>Taekwondo Player Management and Poomsae Referee Administration</p>
+        </div>
 
-      <div class="nav">
-        <button class="nav-btn active" data-section="dashboardSection">📊 Dashboard</button>
-        <button class="nav-btn" data-section="playerSection">🥋 Player Data</button>
-        <button class="nav-btn" data-section="refereeSection">🏅 Referee IDs</button>
-        <button class="nav-btn" data-section="coachSection">📋 Coach Applications</button>
-        <button class="nav-btn" data-section="noticeSection">📢 Publish Notice</button>
-        <button class="nav-btn" onclick="goLogin()">↩ Back to Login</button>
-        <button class="nav-btn" data-section="tournamentSection">🏆 Tournament Management</button>
+        <div class="nav">
+          <button class="nav-btn active" data-section="dashboardSection">📊 Dashboard</button>
+          <button class="nav-btn" data-section="playerSection">🥋 Player Data</button>
+          <button class="nav-btn" data-section="refereeSection">🏅 Referee IDs</button>
+          <button class="nav-btn" data-section="coachSection">📋 Coach Applications</button>
+          <button class="nav-btn" data-section="tournamentSection">🏆 Tournament Management</button>
+          <button class="nav-btn" data-section="noticeSection">📢 Publish Notice</button>
+        </div>
+
+        <div class="nav-footer">
+          <a class="nav-btn" href="login.html" style="text-decoration:none;">↩ Back to Login</a>
+        </div>
       </div>
     </aside>
 
@@ -548,7 +579,7 @@
       <div class="topbar">
         <div class="title">
           <h1>Admin Dashboard</h1>
-          <p>Manage players, coaches, clubs, referees, notices, and registration review from one central panel.</p>
+          <p>Manage players, coaches, clubs, referees, notices, and tournaments from one central panel.</p>
         </div>
         <div class="admin-badge">Logged in as Admin</div>
       </div>
@@ -575,7 +606,7 @@
       <section class="section active" id="dashboardSection">
         <h2>Overview</h2>
         <p class="section-desc">
-          This admin page is structured for future backend connection. All functions are placed in a way that can later be linked with PHP, MySQL, and Laragon.
+          This admin page is structured for future backend connection. All functions are placed so they can later connect with PHP, MySQL, and Laragon cleanly.
         </p>
 
         <div class="card-grid">
@@ -598,9 +629,9 @@
           </div>
 
           <div class="mini-card">
-            <h3>Publish Notices</h3>
-            <p>Send a published notice to all users through the notice management section.</p>
-            <button class="btn btn-primary" onclick="openSection('noticeSection')">Open Publish Notice</button>
+            <h3>Tournament Management</h3>
+            <p>Approve host applications, verify applicants, assign referees, and create tiesheets.</p>
+            <button class="btn btn-primary" onclick="openSection('tournamentSection')">Open Tournament Management</button>
           </div>
         </div>
       </section>
@@ -765,6 +796,128 @@ sita@example.com"></textarea>
         </div>
       </section>
 
+      <section class="section" id="tournamentSection">
+        <h2>Tournament Management</h2>
+        <p class="section-desc">
+          Manage tournament host applications, verify applicants, assign referees to arenas, and create tiesheets for Kyorugi and Poomsae.
+        </p>
+
+        <div class="mini-card" style="margin-bottom:18px;">
+          <h3 style="margin-bottom:10px;">Tournament Host Applications</h3>
+          <p class="section-desc">
+            Review coach or club applications to host a tournament. Admin can verify or reject with remarks.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tournament Name</th>
+                  <th>Host Club / School</th>
+                  <th>Host Coach</th>
+                  <th>No. of Arenas</th>
+                  <th>Status</th>
+                  <th>Remarks</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tournamentHostTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mini-card" style="margin-bottom:18px;">
+          <h3 style="margin-bottom:10px;">Approved Tournament Applicant Verification</h3>
+          <p class="section-desc">
+            For approved tournaments, admin can verify and register applicants according to weight and age category.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="approvedTournamentSelect">Select Approved Tournament</label>
+              <select id="approvedTournamentSelect" onchange="renderTournamentApplicants()">
+                <option value="">Select Tournament</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player Name</th>
+                  <th>Event Type</th>
+                  <th>Weight Category</th>
+                  <th>Age Category</th>
+                  <th>Club</th>
+                  <th>Status</th>
+                  <th>Remarks</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tournamentApplicantTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mini-card" style="margin-bottom:18px;">
+          <h3 style="margin-bottom:10px;">Assign Referees to Arenas</h3>
+          <p class="section-desc">
+            Select a tournament and assign referees. The system randomly places 8 referees per arena.
+            Arenas are named Arena A, Arena B, Arena C, and so on.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="refTournamentSelect">Select Tournament</label>
+              <select id="refTournamentSelect"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="refereePoolSelect">Choose Referees</label>
+              <select id="refereePoolSelect" multiple style="min-height:180px;"></select>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="btn btn-primary" onclick="assignRefereesToArena()">Assign Referees Randomly</button>
+          </div>
+
+          <div class="result-box" id="arenaAssignmentResult">No referee assignment created yet.</div>
+        </div>
+
+        <div class="mini-card">
+          <h3 style="margin-bottom:10px;">Tiesheet Creation</h3>
+          <p class="section-desc">
+            Create grouped tiesheets for Kyorugi and Poomsae events.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="tiesheetTournamentSelect">Select Tournament</label>
+              <select id="tiesheetTournamentSelect"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="tiesheetEventType">Select Event Type</label>
+              <select id="tiesheetEventType">
+                <option value="">Select Event Type</option>
+                <option value="Kyorugi">Kyorugi</option>
+                <option value="Poomsae Individual">Poomsae Individual</option>
+                <option value="Poomsae Pair">Poomsae Pair</option>
+                <option value="Poomsae Group">Poomsae Group</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="btn btn-primary" onclick="createTiesheet()">Create Tiesheet</button>
+          </div>
+
+          <div class="result-box" id="tiesheetResult">No tiesheet generated yet.</div>
+        </div>
+      </section>
+
       <section class="section" id="noticeSection">
         <h2>Publish Notice to All</h2>
         <p class="section-desc">
@@ -789,132 +942,6 @@ sita@example.com"></textarea>
 
         <div class="notice-list" id="noticeList"></div>
       </section>
-      <section class="section" id="tournamentSection">
-  <h2>Tournament Management</h2>
-  <p class="section-desc">
-    Manage tournament host applications, verify applicants, assign referees to arenas,
-    and create tiesheets for Kyorugi and Poomsae.
-  </p>
-
-  <!-- Tournament Host Applications -->
-  <div class="mini-card" style="margin-bottom: 18px;">
-    <h3 style="margin-bottom:10px;">Tournament Host Applications</h3>
-    <p class="section-desc">
-      Review coach or club applications to host a tournament. Admin can verify or reject with remarks.
-    </p>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Tournament Name</th>
-            <th>Host Club / School</th>
-            <th>Host Coach</th>
-            <th>No. of Arenas</th>
-            <th>Status</th>
-            <th>Remarks</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="tournamentHostTable"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Approved Tournament Handling -->
-  <div class="mini-card" style="margin-bottom: 18px;">
-    <h3 style="margin-bottom:10px;">Approved Tournament Applicant Verification</h3>
-    <p class="section-desc">
-      For approved tournaments, admin can verify and register applicants according to weight and age category.
-    </p>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="approvedTournamentSelect">Select Approved Tournament</label>
-        <select id="approvedTournamentSelect" onchange="renderTournamentApplicants()">
-          <option value="">Select Tournament</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Player Name</th>
-            <th>Event Type</th>
-            <th>Weight Category</th>
-            <th>Age Category</th>
-            <th>Club</th>
-            <th>Status</th>
-            <th>Remarks</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="tournamentApplicantTable"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Referee Assignment -->
-  <div class="mini-card" style="margin-bottom: 18px;">
-    <h3 style="margin-bottom:10px;">Assign Referees to Arenas</h3>
-    <p class="section-desc">
-      Select a tournament and assign referees. The system randomly places 8 referees per arena.
-      Arenas are named Arena A, Arena B, Arena C, and so on.
-    </p>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="refTournamentSelect">Select Tournament</label>
-        <select id="refTournamentSelect"></select>
-      </div>
-
-      <div class="form-group">
-        <label for="refereePoolSelect">Choose Referees</label>
-        <select id="refereePoolSelect" multiple style="min-height:180px;"></select>
-      </div>
-    </div>
-
-    <div class="button-row">
-      <button class="btn btn-primary" onclick="assignRefereesToArena()">Assign Referees Randomly</button>
-    </div>
-
-    <div class="result-box" id="arenaAssignmentResult">No referee assignment created yet.</div>
-  </div>
-
-  <!-- Tiesheet Creation -->
-  <div class="mini-card">
-    <h3 style="margin-bottom:10px;">Tiesheet Creation</h3>
-    <p class="section-desc">
-      Create grouped tiesheets for Kyorugi and Poomsae events.
-    </p>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="tiesheetTournamentSelect">Select Tournament</label>
-        <select id="tiesheetTournamentSelect"></select>
-      </div>
-
-      <div class="form-group">
-        <label for="tiesheetEventType">Select Event Type</label>
-        <select id="tiesheetEventType">
-          <option value="">Select Event Type</option>
-          <option value="Kyorugi">Kyorugi</option>
-          <option value="Poomsae Individual">Poomsae Individual</option>
-          <option value="Poomsae Pair">Poomsae Pair</option>
-          <option value="Poomsae Group">Poomsae Group</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="button-row">
-      <button class="btn btn-primary" onclick="createTiesheet()">Create Tiesheet</button>
-    </div>
-
-    <div class="result-box" id="tiesheetResult">No tiesheet generated yet.</div>
-  </div>
-</section>
     </main>
   </div>
 
@@ -923,339 +950,6 @@ sita@example.com"></textarea>
     const sections = document.querySelectorAll(".section");
     const sidebar = document.getElementById("sidebar");
     const menuToggle = document.getElementById("menuToggle");
-    const tournamentHostApplications = [
-  {
-    id: 1,
-    tournamentName: "Kathmandu Open Championship",
-    host: "Tiger Dojang",
-    coach: "Ram Bahadur",
-    arenas: 2,
-    status: "Pending",
-    remarks: ""
-  },
-  {
-    id: 2,
-    tournamentName: "National Poomsae Cup",
-    host: "Everest TKD Club",
-    coach: "Sita Karki",
-    arenas: 3,
-    status: "Pending",
-    remarks: ""
-  }
-];
-
-const referees = [
-  { name: "Referee 1", id: "REF001", level: "National", email: "ref1@mail.com" },
-  { name: "Referee 2", id: "REF002", level: "National", email: "ref2@mail.com" },
-  { name: "Referee 3", id: "REF003", level: "District", email: "ref3@mail.com" },
-  { name: "Referee 4", id: "REF004", level: "Provincial", email: "ref4@mail.com" },
-  { name: "Referee 5", id: "REF005", level: "National", email: "ref5@mail.com" },
-  { name: "Referee 6", id: "REF006", level: "International", email: "ref6@mail.com" },
-  { name: "Referee 7", id: "REF007", level: "District", email: "ref7@mail.com" },
-  { name: "Referee 8", id: "REF008", level: "Provincial", email: "ref8@mail.com" },
-  { name: "Referee 9", id: "REF009", level: "National", email: "ref9@mail.com" },
-  { name: "Referee 10", id: "REF010", level: "National", email: "ref10@mail.com" },
-  { name: "Referee 11", id: "REF011", level: "District", email: "ref11@mail.com" },
-  { name: "Referee 12", id: "REF012", level: "International", email: "ref12@mail.com" },
-  { name: "Referee 13", id: "REF013", level: "Provincial", email: "ref13@mail.com" },
-  { name: "Referee 14", id: "REF014", level: "National", email: "ref14@mail.com" },
-  { name: "Referee 15", id: "REF015", level: "District", email: "ref15@mail.com" },
-  { name: "Referee 16", id: "REF016", level: "International", email: "ref16@mail.com" }
-];
-
-const tournamentApplicants = {
-  "Kathmandu Open Championship": [
-    { id: 1, name: "Aarav Shrestha", eventType: "Kyorugi", weight: "Male -58kg", age: "Juniors", club: "Tiger Dojang", status: "Pending", remarks: "" },
-    { id: 2, name: "Sujal Karki", eventType: "Kyorugi", weight: "Male -58kg", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
-    { id: 3, name: "Anish Rai", eventType: "Kyorugi", weight: "Male -68kg", age: "Adults", club: "Dragon Taekwondo", status: "Pending", remarks: "" },
-    { id: 4, name: "Sanjana Gurung", eventType: "Poomsae Individual", weight: "-", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
-    { id: 5, name: "Riya Tamang / Kripa Shah", eventType: "Poomsae Pair", weight: "-", age: "Adults", club: "Kathmandu Warriors", status: "Pending", remarks: "" },
-    { id: 6, name: "Young Tigers Team A", eventType: "Poomsae Group", weight: "-", age: "Cadets", club: "Young Tigers", status: "Pending", remarks: "" }
-  ],
-  "National Poomsae Cup": [
-    { id: 7, name: "Nima Sherpa", eventType: "Poomsae Individual", weight: "-", age: "Veterans", club: "Mountain Poomsae", status: "Pending", remarks: "" },
-    { id: 8, name: "Pair Everest A", eventType: "Poomsae Pair", weight: "-", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
-    { id: 9, name: "Group Tiger Elite", eventType: "Poomsae Group", weight: "-", age: "Adults", club: "Tiger Dojang", status: "Pending", remarks: "" }
-  ]
-};
-
-function renderTournamentHostApplications() {
-  const tbody = document.getElementById("tournamentHostTable");
-
-  tbody.innerHTML = tournamentHostApplications.map(app => `
-    <tr>
-      <td>${app.tournamentName}</td>
-      <td>${app.host}</td>
-      <td>${app.coach}</td>
-      <td>${app.arenas}</td>
-      <td>
-        <span class="status-chip ${
-          app.status === "Pending" ? "status-pending" :
-          app.status === "Verified" ? "status-verified" : "status-rejected"
-        }">${app.status}</span>
-      </td>
-      <td>
-        <textarea id="tournament-remark-${app.id}" placeholder="Write remarks">${app.remarks}</textarea>
-      </td>
-      <td>
-        <div style="display:grid; gap:10px;">
-          <button class="btn btn-success" onclick="verifyTournament(${app.id})">Verify</button>
-          <button class="btn btn-danger" onclick="rejectTournament(${app.id})">Reject</button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
-
-  renderApprovedTournamentOptions();
-}
-
-function verifyTournament(id) {
-  const app = tournamentHostApplications.find(item => item.id === id);
-  if (!app) return;
-
-  const remark = document.getElementById(`tournament-remark-${id}`).value.trim();
-  app.status = "Verified";
-  app.remarks = remark || "Tournament host application verified by admin.";
-
-  renderTournamentHostApplications();
-}
-
-function rejectTournament(id) {
-  const app = tournamentHostApplications.find(item => item.id === id);
-  if (!app) return;
-
-  const remark = document.getElementById(`tournament-remark-${id}`).value.trim();
-  app.status = "Rejected";
-  app.remarks = remark || "Tournament host application rejected by admin.";
-
-  renderTournamentHostApplications();
-}
-
-function renderApprovedTournamentOptions() {
-  const approved = tournamentHostApplications.filter(item => item.status === "Verified");
-
-  const approvedSelect = document.getElementById("approvedTournamentSelect");
-  const refereeSelect = document.getElementById("refTournamentSelect");
-  const tiesheetSelect = document.getElementById("tiesheetTournamentSelect");
-
-  const options = ['<option value="">Select Tournament</option>']
-    .concat(approved.map(item => `<option value="${item.tournamentName}">${item.tournamentName}</option>`))
-    .join("");
-
-  approvedSelect.innerHTML = options;
-  refereeSelect.innerHTML = options;
-  tiesheetSelect.innerHTML = options;
-}
-
-function renderTournamentApplicants() {
-  const selectedTournament = document.getElementById("approvedTournamentSelect").value;
-  const tbody = document.getElementById("tournamentApplicantTable");
-
-  if (!selectedTournament || !tournamentApplicants[selectedTournament]) {
-    tbody.innerHTML = `<tr><td colspan="8">No tournament selected.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = tournamentApplicants[selectedTournament].map(app => `
-    <tr>
-      <td>${app.name}</td>
-      <td>${app.eventType}</td>
-      <td>${app.weight}</td>
-      <td>${app.age}</td>
-      <td>${app.club}</td>
-      <td>
-        <span class="status-chip ${
-          app.status === "Pending" ? "status-pending" :
-          app.status === "Verified" ? "status-verified" : "status-rejected"
-        }">${app.status}</span>
-      </td>
-      <td>
-        <textarea id="applicant-remark-${selectedTournament}-${app.id}" placeholder="Write remarks">${app.remarks}</textarea>
-      </td>
-      <td>
-        <div style="display:grid; gap:10px;">
-          <button class="btn btn-success" onclick="verifyApplicant('${selectedTournament}', ${app.id})">Verify</button>
-          <button class="btn btn-danger" onclick="rejectApplicant('${selectedTournament}', ${app.id})">Reject</button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
-}
-
-function verifyApplicant(tournamentName, applicantId) {
-  const app = tournamentApplicants[tournamentName].find(item => item.id === applicantId);
-  if (!app) return;
-
-  const remark = document.getElementById(`applicant-remark-${tournamentName}-${applicantId}`).value.trim();
-  app.status = "Verified";
-  app.remarks = remark || "Applicant verified by admin.";
-
-  renderTournamentApplicants();
-}
-
-function rejectApplicant(tournamentName, applicantId) {
-  const app = tournamentApplicants[tournamentName].find(item => item.id === applicantId);
-  if (!app) return;
-
-  const remark = document.getElementById(`applicant-remark-${tournamentName}-${applicantId}`).value.trim();
-  app.status = "Rejected";
-  app.remarks = remark || "Applicant rejected by admin.";
-
-  renderTournamentApplicants();
-}
-
-function renderRefereePool() {
-  const select = document.getElementById("refereePoolSelect");
-
-  select.innerHTML = referees.map(ref => `
-    <option value="${ref.id}">
-      ${ref.name} - ${ref.id} - ${ref.level}
-    </option>
-  `).join("");
-}
-
-function shuffleArray(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-function assignRefereesToArena() {
-  const tournamentName = document.getElementById("refTournamentSelect").value;
-  const selectedIds = Array.from(document.getElementById("refereePoolSelect").selectedOptions).map(opt => opt.value);
-  const result = document.getElementById("arenaAssignmentResult");
-
-  if (!tournamentName) {
-    result.textContent = "Please select a verified tournament first.";
-    return;
-  }
-
-  const tournament = tournamentHostApplications.find(item => item.tournamentName === tournamentName);
-  if (!tournament) {
-    result.textContent = "Tournament not found.";
-    return;
-  }
-
-  const requiredReferees = tournament.arenas * 8;
-
-  if (selectedIds.length < requiredReferees) {
-    result.textContent = `Not enough referees selected. ${tournament.arenas} arenas need ${requiredReferees} referees in total.`;
-    return;
-  }
-
-  const selectedRefs = referees.filter(ref => selectedIds.includes(ref.id));
-  const shuffledRefs = shuffleArray(selectedRefs);
-
-  let output = `Tournament: ${tournamentName}\nArenas: ${tournament.arenas}\n\n`;
-
-  for (let i = 0; i < tournament.arenas; i++) {
-    const arenaName = `Arena ${String.fromCharCode(65 + i)}`;
-    const arenaRefs = shuffledRefs.slice(i * 8, (i + 1) * 8);
-
-    output += `${arenaName}\n`;
-    arenaRefs.forEach((ref, index) => {
-      output += `${index + 1}. ${ref.name} | ${ref.id} | ${ref.level}\n`;
-    });
-    output += `\n`;
-  }
-
-  result.textContent = output;
-}
-
-function createTiesheet() {
-  const tournamentName = document.getElementById("tiesheetTournamentSelect").value;
-  const eventType = document.getElementById("tiesheetEventType").value;
-  const result = document.getElementById("tiesheetResult");
-
-  if (!tournamentName || !eventType) {
-    result.textContent = "Please select both tournament and event type.";
-    return;
-  }
-
-  const applicants = (tournamentApplicants[tournamentName] || []).filter(
-    item => item.status === "Verified" && item.eventType === eventType
-  );
-
-  if (applicants.length === 0) {
-    result.textContent = "No verified applicants found for the selected event type.";
-    return;
-  }
-
-  let output = `Tiesheet for ${tournamentName}\nEvent: ${eventType}\n\n`;
-
-  if (eventType === "Kyorugi") {
-    const grouped = {};
-    applicants.forEach(player => {
-      const key = `${player.age} | ${player.weight}`;
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(player);
-    });
-
-    Object.keys(grouped).forEach((groupName, groupIndex) => {
-      output += `Group ${groupIndex + 1}: ${groupName}\n`;
-      grouped[groupName].forEach((player, i) => {
-        output += `${i + 1}. ${player.name} - ${player.club}\n`;
-      });
-      output += `\n`;
-    });
-  }
-
-  if (eventType === "Poomsae Individual") {
-    const grouped = {};
-    applicants.forEach(player => {
-      const key = player.age;
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(player);
-    });
-
-    Object.keys(grouped).forEach((pool, poolIndex) => {
-      output += `Pool ${poolIndex + 1}: ${pool}\n`;
-      grouped[pool].forEach((player, i) => {
-        output += `${i + 1}. ${player.name} - ${player.club}\n`;
-      });
-      output += `\n`;
-    });
-  }
-
-  if (eventType === "Poomsae Pair") {
-    const grouped = {};
-    applicants.forEach(pair => {
-      const key = pair.age;
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(pair);
-    });
-
-    Object.keys(grouped).forEach((pool, poolIndex) => {
-      output += `Pair Pool ${poolIndex + 1}: ${pool}\n`;
-      grouped[pool].forEach((pair, i) => {
-        output += `${i + 1}. ${pair.name} - ${pair.club}\n`;
-      });
-      output += `\n`;
-    });
-  }
-
-  if (eventType === "Poomsae Group") {
-    const grouped = {};
-    applicants.forEach(group => {
-      const key = group.age;
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(group);
-    });
-
-    Object.keys(grouped).forEach((pool, poolIndex) => {
-      output += `Group Pool ${poolIndex + 1}: ${pool}\n`;
-      grouped[pool].forEach((group, i) => {
-        output += `${i + 1}. ${group.name} - ${group.club}\n`;
-      });
-      output += `\n`;
-    });
-  }
-
-  result.textContent = output;
-}
 
     const playerData = [
       { name: "Aarav Shrestha", weight: "Male -58kg", age: "Juniors", club: "Tiger Dojang", gold: 4 },
@@ -1278,29 +972,81 @@ function createTiesheet() {
       { id: 3, name: "Hari Gautam", type: "Club", institution: "Everest TKD Club", email: "hari@demo.com", status: "Pending", remarks: "" }
     ];
 
+    const tournamentHostApplications = [
+      {
+        id: 1,
+        tournamentName: "Kathmandu Open Championship",
+        host: "Tiger Dojang",
+        coach: "Ram Bahadur",
+        arenas: 2,
+        status: "Pending",
+        remarks: ""
+      },
+      {
+        id: 2,
+        tournamentName: "National Poomsae Cup",
+        host: "Everest TKD Club",
+        coach: "Sita Karki",
+        arenas: 3,
+        status: "Pending",
+        remarks: ""
+      }
+    ];
+
+    const referees = [
+      { name: "Referee 1", id: "REF001", level: "National", email: "ref1@mail.com" },
+      { name: "Referee 2", id: "REF002", level: "National", email: "ref2@mail.com" },
+      { name: "Referee 3", id: "REF003", level: "District", email: "ref3@mail.com" },
+      { name: "Referee 4", id: "REF004", level: "Provincial", email: "ref4@mail.com" },
+      { name: "Referee 5", id: "REF005", level: "National", email: "ref5@mail.com" },
+      { name: "Referee 6", id: "REF006", level: "International", email: "ref6@mail.com" },
+      { name: "Referee 7", id: "REF007", level: "District", email: "ref7@mail.com" },
+      { name: "Referee 8", id: "REF008", level: "Provincial", email: "ref8@mail.com" },
+      { name: "Referee 9", id: "REF009", level: "National", email: "ref9@mail.com" },
+      { name: "Referee 10", id: "REF010", level: "National", email: "ref10@mail.com" },
+      { name: "Referee 11", id: "REF011", level: "District", email: "ref11@mail.com" },
+      { name: "Referee 12", id: "REF012", level: "International", email: "ref12@mail.com" },
+      { name: "Referee 13", id: "REF013", level: "Provincial", email: "ref13@mail.com" },
+      { name: "Referee 14", id: "REF014", level: "National", email: "ref14@mail.com" },
+      { name: "Referee 15", id: "REF015", level: "District", email: "ref15@mail.com" },
+      { name: "Referee 16", id: "REF016", level: "International", email: "ref16@mail.com" }
+    ];
+
+    const tournamentApplicants = {
+      "Kathmandu Open Championship": [
+        { id: 1, name: "Aarav Shrestha", eventType: "Kyorugi", weight: "Male -58kg", age: "Juniors", club: "Tiger Dojang", status: "Pending", remarks: "" },
+        { id: 2, name: "Sujal Karki", eventType: "Kyorugi", weight: "Male -58kg", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
+        { id: 3, name: "Anish Rai", eventType: "Kyorugi", weight: "Male -68kg", age: "Adults", club: "Dragon Taekwondo", status: "Pending", remarks: "" },
+        { id: 4, name: "Sanjana Gurung", eventType: "Poomsae Individual", weight: "-", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
+        { id: 5, name: "Riya Tamang / Kripa Shah", eventType: "Poomsae Pair", weight: "-", age: "Adults", club: "Kathmandu Warriors", status: "Pending", remarks: "" },
+        { id: 6, name: "Young Tigers Team A", eventType: "Poomsae Group", weight: "-", age: "Cadets", club: "Young Tigers", status: "Pending", remarks: "" }
+      ],
+      "National Poomsae Cup": [
+        { id: 7, name: "Nima Sherpa", eventType: "Poomsae Individual", weight: "-", age: "Veterans", club: "Mountain Poomsae", status: "Pending", remarks: "" },
+        { id: 8, name: "Pair Everest A", eventType: "Poomsae Pair", weight: "-", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
+        { id: 9, name: "Group Tiger Elite", eventType: "Poomsae Group", weight: "-", age: "Adults", club: "Tiger Dojang", status: "Pending", remarks: "" }
+      ]
+    };
+
     const notices = [];
 
-    function goLogin() {
-      window.location.href = "login.html";
-    }
-
-    function openSection(sectionId) {
+    function openSection(sectionId){
       sections.forEach(section => section.classList.remove("active"));
       document.getElementById(sectionId).classList.add("active");
 
       navButtons.forEach(btn => btn.classList.remove("active"));
       const activeBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
-      if (activeBtn) activeBtn.classList.add("active");
+      if(activeBtn) activeBtn.classList.add("active");
 
-      if (window.innerWidth <= 900) {
+      if(window.innerWidth <= 900){
         sidebar.classList.remove("open");
       }
     }
 
     navButtons.forEach(btn => {
-      btn.addEventListener("click", function () {
+      btn.addEventListener("click", function(){
         const sectionId = this.getAttribute("data-section");
-        if (sectionId) openSection(sectionId);
+        if(sectionId) openSection(sectionId);
       });
     });
 
@@ -1308,7 +1054,7 @@ function createTiesheet() {
       sidebar.classList.toggle("open");
     });
 
-    function renderInitialPlayers() {
+    function renderInitialPlayers(){
       const tbody = document.getElementById("playerTableBody");
       const sorted = [...playerData].sort((a, b) => b.gold - a.gold);
 
@@ -1324,24 +1070,24 @@ function createTiesheet() {
       `).join("");
     }
 
-    function filterPlayers() {
+    function filterPlayers(){
       const weightCategory = document.getElementById("weightCategory").value;
       const ageCategory = document.getElementById("ageCategory").value;
       const tbody = document.getElementById("playerTableBody");
 
       let filtered = [...playerData];
 
-      if (weightCategory) {
+      if(weightCategory){
         filtered = filtered.filter(player => player.weight === weightCategory);
       }
 
-      if (ageCategory) {
+      if(ageCategory){
         filtered = filtered.filter(player => player.age === ageCategory);
       }
 
       filtered.sort((a, b) => b.gold - a.gold);
 
-      if (filtered.length === 0) {
+      if(filtered.length === 0){
         tbody.innerHTML = `
           <tr>
             <td colspan="6">No player found for selected Olympic weight category and age category.</td>
@@ -1362,7 +1108,7 @@ function createTiesheet() {
       `).join("");
     }
 
-    function renderCoachApplications() {
+    function renderCoachApplications(){
       const tbody = document.getElementById("coachApplicationTable");
 
       tbody.innerHTML = coachApplications.map(app => `
@@ -1392,25 +1138,25 @@ function createTiesheet() {
       updateCounts();
     }
 
-    function verifyCoach(id) {
+    function verifyCoach(id){
       const app = coachApplications.find(item => item.id === id);
-      if (!app) return;
+      if(!app) return;
       const remarkValue = document.getElementById(`remark-${id}`).value.trim();
       app.status = "Verified";
       app.remarks = remarkValue || "Application verified by admin.";
       renderCoachApplications();
     }
 
-    function rejectCoach(id) {
+    function rejectCoach(id){
       const app = coachApplications.find(item => item.id === id);
-      if (!app) return;
+      if(!app) return;
       const remarkValue = document.getElementById(`remark-${id}`).value.trim();
       app.status = "Rejected";
       app.remarks = remarkValue || "Application rejected by admin.";
       renderCoachApplications();
     }
 
-    function updateCounts() {
+    function updateCounts(){
       document.getElementById("totalPlayers").textContent = playerData.length;
       document.getElementById("totalCoaches").textContent = 5;
       document.getElementById("totalClubs").textContent = 4;
@@ -1418,7 +1164,7 @@ function createTiesheet() {
         coachApplications.filter(app => app.status === "Pending").length;
     }
 
-    function createSingleReferee() {
+    function createSingleReferee(){
       const firstName = document.getElementById("refFirstName").value.trim();
       const lastName = document.getElementById("refLastName").value.trim();
       const refereeId = document.getElementById("refId").value.trim();
@@ -1426,7 +1172,7 @@ function createTiesheet() {
       const email = document.getElementById("refEmail").value.trim();
       const result = document.getElementById("singleRefereeResult");
 
-      if (!firstName || !lastName || !refereeId || !refereeLevel || !email) {
+      if(!firstName || !lastName || !refereeId || !refereeLevel || !email){
         result.textContent = "Please fill all referee fields before creating the ID.";
         return;
       }
@@ -1448,25 +1194,25 @@ Default Password: Referee@123`;
       document.getElementById("refEmail").value = "";
     }
 
-    function createBulkReferees() {
+    function createBulkReferees(){
       const input = document.getElementById("bulkRefereeInput").value.trim();
       const result = document.getElementById("bulkRefereeResult");
 
-      if (!input) {
+      if(!input){
         result.textContent = "Please paste OCR text first.";
         return;
       }
 
       const lines = input.split("\n").map(line => line.trim()).filter(line => line !== "");
-      if (lines.length < 5) {
+      if(lines.length < 5){
         result.textContent = "Invalid OCR text. Each referee needs 5 rows.";
         return;
       }
 
       const groups = [];
-      for (let i = 0; i < lines.length; i += 5) {
+      for(let i = 0; i < lines.length; i += 5){
         const block = lines.slice(i, i + 5);
-        if (block.length === 5) {
+        if(block.length === 5){
           groups.push({
             firstName: block[0],
             lastName: block[1],
@@ -1477,7 +1223,7 @@ Default Password: Referee@123`;
         }
       }
 
-      if (groups.length === 0) {
+      if(groups.length === 0){
         result.textContent = "No valid referee block found.";
         return;
       }
@@ -1490,12 +1236,12 @@ Default Password: Referee@123`;
       result.textContent = output;
     }
 
-    function publishNotice() {
+    function publishNotice(){
       const title = document.getElementById("noticeTitle").value.trim();
       const message = document.getElementById("noticeMessage").value.trim();
       const noticeList = document.getElementById("noticeList");
 
-      if (!title || !message) {
+      if(!title || !message){
         alert("Please enter notice title and message.");
         return;
       }
@@ -1512,7 +1258,7 @@ Default Password: Referee@123`;
         <div class="notice-card">
           <h4>${item.title}</h4>
           <p>${item.message}</p>
-          <p style="margin-top:10px; font-size:0.88rem;">Published: ${item.date}</p>
+          <p style="margin-top:10px; font-size:.88rem;">Published: ${item.date}</p>
         </div>
       `).join("");
 
@@ -1520,12 +1266,290 @@ Default Password: Referee@123`;
       document.getElementById("noticeMessage").value = "";
     }
 
-renderInitialPlayers();
-renderCoachApplications();
-updateCounts();
-renderTournamentHostApplications();
-renderRefereePool();
-renderApprovedTournamentOptions();
+    function renderTournamentHostApplications(){
+      const tbody = document.getElementById("tournamentHostTable");
+
+      tbody.innerHTML = tournamentHostApplications.map(app => `
+        <tr>
+          <td>${app.tournamentName}</td>
+          <td>${app.host}</td>
+          <td>${app.coach}</td>
+          <td>${app.arenas}</td>
+          <td>
+            <span class="status-chip ${
+              app.status === "Pending" ? "status-pending" :
+              app.status === "Verified" ? "status-verified" : "status-rejected"
+            }">${app.status}</span>
+          </td>
+          <td>
+            <textarea id="tournament-remark-${app.id}" placeholder="Write remarks">${app.remarks}</textarea>
+          </td>
+          <td>
+            <div style="display:grid; gap:10px;">
+              <button class="btn btn-success" onclick="verifyTournament(${app.id})">Verify</button>
+              <button class="btn btn-danger" onclick="rejectTournament(${app.id})">Reject</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+
+      renderApprovedTournamentOptions();
+    }
+
+    function verifyTournament(id){
+      const app = tournamentHostApplications.find(item => item.id === id);
+      if(!app) return;
+
+      const remark = document.getElementById(`tournament-remark-${id}`).value.trim();
+      app.status = "Verified";
+      app.remarks = remark || "Tournament host application verified by admin.";
+
+      renderTournamentHostApplications();
+    }
+
+    function rejectTournament(id){
+      const app = tournamentHostApplications.find(item => item.id === id);
+      if(!app) return;
+
+      const remark = document.getElementById(`tournament-remark-${id}`).value.trim();
+      app.status = "Rejected";
+      app.remarks = remark || "Tournament host application rejected by admin.";
+
+      renderTournamentHostApplications();
+    }
+
+    function renderApprovedTournamentOptions(){
+      const approved = tournamentHostApplications.filter(item => item.status === "Verified");
+
+      const approvedSelect = document.getElementById("approvedTournamentSelect");
+      const refereeSelect = document.getElementById("refTournamentSelect");
+      const tiesheetSelect = document.getElementById("tiesheetTournamentSelect");
+
+      const options = ['<option value="">Select Tournament</option>']
+        .concat(approved.map(item => `<option value="${item.tournamentName}">${item.tournamentName}</option>`))
+        .join("");
+
+      approvedSelect.innerHTML = options;
+      refereeSelect.innerHTML = options;
+      tiesheetSelect.innerHTML = options;
+    }
+
+    function renderTournamentApplicants(){
+      const selectedTournament = document.getElementById("approvedTournamentSelect").value;
+      const tbody = document.getElementById("tournamentApplicantTable");
+
+      if(!selectedTournament || !tournamentApplicants[selectedTournament]){
+        tbody.innerHTML = `<tr><td colspan="8">No tournament selected.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = tournamentApplicants[selectedTournament].map(app => `
+        <tr>
+          <td>${app.name}</td>
+          <td>${app.eventType}</td>
+          <td>${app.weight}</td>
+          <td>${app.age}</td>
+          <td>${app.club}</td>
+          <td>
+            <span class="status-chip ${
+              app.status === "Pending" ? "status-pending" :
+              app.status === "Verified" ? "status-verified" : "status-rejected"
+            }">${app.status}</span>
+          </td>
+          <td>
+            <textarea id="applicant-remark-${selectedTournament}-${app.id}" placeholder="Write remarks">${app.remarks}</textarea>
+          </td>
+          <td>
+            <div style="display:grid; gap:10px;">
+              <button class="btn btn-success" onclick="verifyApplicant('${selectedTournament}', ${app.id})">Verify</button>
+              <button class="btn btn-danger" onclick="rejectApplicant('${selectedTournament}', ${app.id})">Reject</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function verifyApplicant(tournamentName, applicantId){
+      const app = tournamentApplicants[tournamentName].find(item => item.id === applicantId);
+      if(!app) return;
+
+      const remark = document.getElementById(`applicant-remark-${tournamentName}-${applicantId}`).value.trim();
+      app.status = "Verified";
+      app.remarks = remark || "Applicant verified by admin.";
+
+      renderTournamentApplicants();
+    }
+
+    function rejectApplicant(tournamentName, applicantId){
+      const app = tournamentApplicants[tournamentName].find(item => item.id === applicantId);
+      if(!app) return;
+
+      const remark = document.getElementById(`applicant-remark-${tournamentName}-${applicantId}`).value.trim();
+      app.status = "Rejected";
+      app.remarks = remark || "Applicant rejected by admin.";
+
+      renderTournamentApplicants();
+    }
+
+    function renderRefereePool(){
+      const select = document.getElementById("refereePoolSelect");
+
+      select.innerHTML = referees.map(ref => `
+        <option value="${ref.id}">
+          ${ref.name} - ${ref.id} - ${ref.level}
+        </option>
+      `).join("");
+    }
+
+    function shuffleArray(array){
+      const arr = [...array];
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function assignRefereesToArena(){
+      const tournamentName = document.getElementById("refTournamentSelect").value;
+      const selectedIds = Array.from(document.getElementById("refereePoolSelect").selectedOptions).map(opt => opt.value);
+      const result = document.getElementById("arenaAssignmentResult");
+
+      if(!tournamentName){
+        result.textContent = "Please select a verified tournament first.";
+        return;
+      }
+
+      const tournament = tournamentHostApplications.find(item => item.tournamentName === tournamentName);
+      if(!tournament){
+        result.textContent = "Tournament not found.";
+        return;
+      }
+
+      const requiredReferees = tournament.arenas * 8;
+
+      if(selectedIds.length < requiredReferees){
+        result.textContent = `Not enough referees selected. ${tournament.arenas} arenas need ${requiredReferees} referees in total.`;
+        return;
+      }
+
+      const selectedRefs = referees.filter(ref => selectedIds.includes(ref.id));
+      const shuffledRefs = shuffleArray(selectedRefs);
+
+      let output = `Tournament: ${tournamentName}\nArenas: ${tournament.arenas}\n\n`;
+
+      for(let i = 0; i < tournament.arenas; i++){
+        const arenaName = `Arena ${String.fromCharCode(65 + i)}`;
+        const arenaRefs = shuffledRefs.slice(i * 8, (i + 1) * 8);
+
+        output += `${arenaName}\n`;
+        arenaRefs.forEach((ref, index) => {
+          output += `${index + 1}. ${ref.name} | ${ref.id} | ${ref.level}\n`;
+        });
+        output += `\n`;
+      }
+
+      result.textContent = output;
+    }
+
+    function createTiesheet(){
+      const tournamentName = document.getElementById("tiesheetTournamentSelect").value;
+      const eventType = document.getElementById("tiesheetEventType").value;
+      const result = document.getElementById("tiesheetResult");
+
+      if(!tournamentName || !eventType){
+        result.textContent = "Please select both tournament and event type.";
+        return;
+      }
+
+      const applicants = (tournamentApplicants[tournamentName] || []).filter(
+        item => item.status === "Verified" && item.eventType === eventType
+      );
+
+      if(applicants.length === 0){
+        result.textContent = "No verified applicants found for the selected event type.";
+        return;
+      }
+
+      let output = `Tiesheet for ${tournamentName}\nEvent: ${eventType}\n\n`;
+
+      if(eventType === "Kyorugi"){
+        const grouped = {};
+        applicants.forEach(player => {
+          const key = `${player.age} | ${player.weight}`;
+          if(!grouped[key]) grouped[key] = [];
+          grouped[key].push(player);
+        });
+
+        Object.keys(grouped).forEach((groupName, groupIndex) => {
+          output += `Group ${groupIndex + 1}: ${groupName}\n`;
+          grouped[groupName].forEach((player, i) => {
+            output += `${i + 1}. ${player.name} - ${player.club}\n`;
+          });
+          output += `\n`;
+        });
+      }
+
+      if(eventType === "Poomsae Individual"){
+        const grouped = {};
+        applicants.forEach(player => {
+          const key = player.age;
+          if(!grouped[key]) grouped[key] = [];
+          grouped[key].push(player);
+        });
+
+        Object.keys(grouped).forEach((pool, poolIndex) => {
+          output += `Pool ${poolIndex + 1}: ${pool}\n`;
+          grouped[pool].forEach((player, i) => {
+            output += `${i + 1}. ${player.name} - ${player.club}\n`;
+          });
+          output += `\n`;
+        });
+      }
+
+      if(eventType === "Poomsae Pair"){
+        const grouped = {};
+        applicants.forEach(pair => {
+          const key = pair.age;
+          if(!grouped[key]) grouped[key] = [];
+          grouped[key].push(pair);
+        });
+
+        Object.keys(grouped).forEach((pool, poolIndex) => {
+          output += `Pair Pool ${poolIndex + 1}: ${pool}\n`;
+          grouped[pool].forEach((pair, i) => {
+            output += `${i + 1}. ${pair.name} - ${pair.club}\n`;
+          });
+          output += `\n`;
+        });
+      }
+
+      if(eventType === "Poomsae Group"){
+        const grouped = {};
+        applicants.forEach(group => {
+          const key = group.age;
+          if(!grouped[key]) grouped[key] = [];
+          grouped[key].push(group);
+        });
+
+        Object.keys(grouped).forEach((pool, poolIndex) => {
+          output += `Group Pool ${poolIndex + 1}: ${pool}\n`;
+          grouped[pool].forEach((group, i) => {
+            output += `${i + 1}. ${group.name} - ${group.club}\n`;
+          });
+          output += `\n`;
+        });
+      }
+
+      result.textContent = output;
+    }
+
+    renderInitialPlayers();
+    renderCoachApplications();
+    updateCounts();
+    renderTournamentHostApplications();
+    renderRefereePool();
+    renderApprovedTournamentOptions();
   </script>
 </body>
 </html>
