@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Player Dashboard</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --panel:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+      --white:#ffffff;
+      --soft:#cfcfcf;
+      --red:#d90429;
+      --blue:#1565ff;
+      --gold:#e7c35a;
+      --green:#22c55e;
+      --yellow:#f59e0b;
+      --shadow:0 18px 45px rgba(0,0,0,0.35);
+    }
+
+    body{
+      min-height:100vh;
+      background:linear-gradient(135deg,#020202,#09111f,#170407);
+      color:var(--white);
+      overflow-x:hidden;
+    }
+
+    .orb{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(24px);
+      opacity:.2;
+      z-index:0;
+      pointer-events:none;
+      animation:float 10s ease-in-out infinite;
+    }
+    .orb1{width:260px;height:260px;background:var(--red);top:5%;left:4%;}
+    .orb2{width:300px;height:300px;background:var(--blue);bottom:5%;right:4%;animation-delay:2s;}
+
+    @keyframes float{
+      0%,100%{transform:translateY(0) translateX(0);}
+      50%{transform:translateY(-16px) translateX(10px);}
+    }
+
+    .mobile-menu{
+      display:none;
+      position:sticky;
+      top:0;
+      z-index:10;
+      padding:12px;
+      background:rgba(0,0,0,.6);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--border);
+    }
+
+    .mobile-menu button{
+      width:100%;
+      min-height:46px;
+      border:none;
+      border-radius:12px;
+      background:rgba(255,255,255,.08);
+      color:var(--white);
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .app{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:280px 1fr;
+      min-height:100vh;
+    }
+
+    .sidebar{
+      background:rgba(0,0,0,.45);
+      border-right:1px solid var(--border);
+      padding:22px 16px;
+      backdrop-filter:blur(10px);
+      position:sticky;
+      top:0;
+      height:100vh;
+    }
+
+    .brand{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .brand h2{
+      margin-bottom:8px;
+      font-size:1.25rem;
+    }
+
+    .brand p{
+      color:var(--soft);
+      line-height:1.5;
+      font-size:.92rem;
+    }
+
+    .nav{
+      display:grid;
+      gap:10px;
+    }
+
+    .nav button, .nav a{
+      width:100%;
+      text-align:left;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--white);
+      text-decoration:none;
+      font-weight:bold;
+      cursor:pointer;
+      transition:.25s ease;
+    }
+
+    .nav button:hover, .nav button.active, .nav a:hover{
+      background:linear-gradient(135deg,rgba(217,4,41,.15),rgba(21,101,255,.15));
+      transform:translateX(3px);
+    }
+
+    .main{
+      padding:22px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      margin-bottom:20px;
+    }
+
+    .topbar h1{
+      font-size:2rem;
+      margin-bottom:8px;
+    }
+
+    .topbar p{
+      color:var(--soft);
+      line-height:1.6;
+    }
+
+    .badge{
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:linear-gradient(to right,rgba(217,4,41,.16),rgba(21,101,255,.16));
+      font-weight:bold;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .card, .section{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+    }
+
+    .card{ padding:18px; }
+
+    .card h3{
+      margin-bottom:8px;
+      font-size:1rem;
+    }
+
+    .big{
+      font-size:2rem;
+      font-weight:bold;
+      margin-bottom:6px;
+      line-height:1.1;
+    }
+
+    .soft{
+      color:var(--soft);
+      line-height:1.5;
+    }
+
+    .section{
+      display:none;
+      padding:20px;
+      margin-bottom:18px;
+    }
+
+    .section.active{ display:block; }
+
+    .section h2{
+      margin-bottom:8px;
+      font-size:1.45rem;
+    }
+
+    .section-desc{
+      color:var(--soft);
+      line-height:1.6;
+      margin-bottom:18px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .form-group{
+      display:grid;
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .full{ grid-column:1 / -1; }
+
+    label{
+      font-weight:bold;
+      font-size:.95rem;
+    }
+
+    input, select, textarea{
+      width:100%;
+      min-height:48px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--white);
+      outline:none;
+      font-size:.95rem;
+    }
+
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(21,101,255,.16);
+    }
+
+    .btn-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin-top:8px;
+    }
+
+    .btn{
+      min-height:48px;
+      border:none;
+      border-radius:14px;
+      color:var(--white);
+      font-weight:bold;
+      cursor:pointer;
+      padding:12px 14px;
+      transition:.25s ease;
+    }
+
+    .btn:hover{ transform:translateY(-2px); }
+    .btn-primary{ background:linear-gradient(to right,var(--red),var(--blue)); }
+    .btn-secondary{ background:rgba(255,255,255,.08); border:1px solid var(--border); }
+    .btn-success{ background:rgba(34,197,94,.18); border:1px solid rgba(34,197,94,.3); }
+
+    .result-box{
+      margin-top:16px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--soft);
+      line-height:1.6;
+      white-space:pre-wrap;
+    }
+
+    .notice-list{
+      display:grid;
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .notice-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .notice-card h4{
+      margin-bottom:8px;
+    }
+
+    .notice-card p{
+      color:var(--soft);
+      line-height:1.6;
+    }
+
+    .belt-panel{
+      display:grid;
+      gap:14px;
+    }
+
+    .belt-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .belt-rank{
+      font-size:1.15rem;
+      font-weight:bold;
+    }
+
+    .belt-bar{
+      width:100%;
+      height:22px;
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .belt-fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      transition:width .3s ease;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      padding-right:10px;
+      font-weight:bold;
+      font-size:.82rem;
+      color:#111;
+    }
+
+    .belt-fill.black{
+      color:var(--gold);
+      background:linear-gradient(90deg,#0d0d0d,#2c2c2c,#000);
+      text-shadow:0 0 6px rgba(231,195,90,.35);
+    }
+
+    .prep-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .prep-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .prep-card h3{
+      margin-bottom:10px;
+    }
+
+    .prep-card ul{
+      padding-left:18px;
+      color:var(--soft);
+      line-height:1.8;
+    }
+
+    .medal-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+      margin-bottom:16px;
+    }
+
+    .medal-card{
+      border-radius:18px;
+      padding:16px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+    }
+
+    .medal-card h3{ margin-bottom:8px; }
+    .medal-card .big{ margin-bottom:0; }
+
+    .gold{ box-shadow:inset 0 0 0 1px rgba(231,195,90,.28); }
+    .silver{ box-shadow:inset 0 0 0 1px rgba(210,210,210,.22); }
+    .bronze{ box-shadow:inset 0 0 0 1px rgba(181,101,29,.28); }
+
+    .chart-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .chart-card canvas{
+      width:100%;
+      height:300px;
+      display:block;
+      background:rgba(255,255,255,.03);
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .id-wrap{
+      display:grid;
+      grid-template-columns:1fr 360px;
+      gap:18px;
+      align-items:start;
+    }
+
+    .athlete-card{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.18);
+      background:
+        radial-gradient(circle at top right, rgba(21,101,255,.22), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(217,4,41,.22), transparent 30%),
+        linear-gradient(145deg,#0b0f18,#101827,#0d0d0d);
+      box-shadow:0 18px 45px rgba(0,0,0,.35);
+      padding:22px;
+      min-height:250px;
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+      align-items:flex-start;
+    }
+
+    .card-title{
+      font-size:1.2rem;
+      font-weight:bold;
+      letter-spacing:.5px;
+    }
+
+    .card-sub{
+      color:var(--soft);
+      font-size:.9rem;
+      margin-top:4px;
+    }
+
+    .flag-chip{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      font-size:.85rem;
+      font-weight:bold;
+    }
+
+    .glow-line{
+      width:100%;
+      height:4px;
+      border-radius:999px;
+      background:linear-gradient(to right,var(--red),#ffffff,var(--blue));
+      margin:18px 0;
+    }
+
+    .card-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .card-info{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:12px;
+    }
+
+    .card-info span{
+      display:block;
+      font-size:.8rem;
+      color:var(--soft);
+      margin-bottom:6px;
+    }
+
+    .card-info strong{
+      font-size:.95rem;
+      line-height:1.4;
+    }
+
+    @media (max-width:1200px){
+      .stats{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .prep-grid,.id-wrap{grid-template-columns:1fr;}
+    }
+
+    @media (max-width:1000px){
+      .form-grid,.btn-row,.medal-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:900px){
+      .app{grid-template-columns:1fr;}
+      .mobile-menu{display:block;}
+      .sidebar{
+        position:fixed;
+        top:61px;
+        left:0;
+        width:280px;
+        transform:translateX(-100%);
+        transition:.3s ease;
+        z-index:20;
+      }
+      .sidebar.open{transform:translateX(0);}
+      .main{padding:16px;}
+    }
+
+    @media (max-width:640px){
+      .stats{grid-template-columns:1fr;}
+      .form-grid,.prep-grid{grid-template-columns:1fr;}
+      .topbar h1{font-size:1.6rem;}
+      .section,.card,.athlete-card{border-radius:18px;}
+      .card-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="mobile-menu">
+    <button id="menuToggle">☰ Open Player Menu</button>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <h2>Player Panel</h2>
+        <p>Welcome player. Track grading, medals, weight, transfer requests, leave applications, and athlete ID in one place.</p>
+      </div>
+
+      <div class="nav">
+        <button class="nav-btn active" data-section="overviewSection">📊 Overview</button>
+        <button class="nav-btn" data-section="gradingSection">🎓 Grading Guide</button>
+        <button class="nav-btn" data-section="leaveSection">📝 Leave Application</button>
+        <button class="nav-btn" data-section="medalSection">🏅 Medal Record</button>
+        <button class="nav-btn" data-section="transferSection">🔄 Transfer Request</button>
+        <button class="nav-btn" data-section="weightSection">⚖ Monthly Weight</button>
+        <button class="nav-btn" data-section="idSection">🪪 Athlete ID</button>
+        <button class="nav-btn" data-section="notificationSection">🔔 Notifications</button>
+        <a href="login.html">↩ Back to Login</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Welcome, Player</h1>
+          <p>Stay updated with your grading countdown, training preparation, medals, leave requests, and athlete profile.</p>
+        </div>
+        <div class="badge" id="playerBadge">Player: Aarav Shrestha</div>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <h3>Days to Grading</h3>
+          <div class="big" id="gradingCountdown">100</div>
+          <div class="soft">Countdown until next grading opportunity.</div>
+        </div>
+        <div class="card">
+          <h3>Current Belt Rank</h3>
+          <div class="big" id="currentBeltText">Blue</div>
+          <div class="soft">Current official registered belt rank.</div>
+        </div>
+        <div class="card">
+          <h3>Current Weight</h3>
+          <div class="big" id="currentWeightText">48 kg</div>
+          <div class="soft">Keep your monthly weight updated.</div>
+        </div>
+        <div class="card">
+          <h3>Total Medals</h3>
+          <div class="big" id="totalMedalsText">10</div>
+          <div class="soft">Gold + Silver + Bronze combined.</div>
+        </div>
+      </div>
+
+      <section class="section active" id="overviewSection">
+        <h2>Player Overview</h2>
+        <p class="section-desc">
+          Track your grading preparation, belt progress, and upcoming growth path.
+        </p>
+
+        <div class="belt-panel">
+          <div class="belt-row">
+            <div class="belt-rank" id="beltRankLabel">Blue Belt</div>
+            <div class="soft" id="beltRankHint">WT-aligned preparation guidance based on current rank.</div>
+          </div>
+
+          <div class="belt-bar">
+            <div class="belt-fill" id="beltFill"></div>
+          </div>
+        </div>
+
+        <div class="prep-grid" style="margin-top:18px;">
+          <div class="prep-card">
+            <h3>Required Poomsae</h3>
+            <ul id="poomsaeList"></ul>
+          </div>
+
+          <div class="prep-card">
+            <h3>Required Maki / Preparation</h3>
+            <ul id="makiList"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="gradingSection">
+        <h2>Grading Preparation Information</h2>
+        <p class="section-desc">
+          Your grading preparation updates automatically according to your current belt information.
+        </p>
+
+        <div class="result-box" id="gradingGuideBox"></div>
+      </section>
+
+      <section class="section" id="leaveSection">
+        <h2>Leave Application</h2>
+        <p class="section-desc">
+          Submit leave request to your coach. The coach will review and grant the leave, and notification will be sent back to you.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group full">
+            <label for="leaveTopic">Application Topic</label>
+            <input type="text" id="leaveTopic" placeholder="Enter application topic">
+          </div>
+
+          <div class="form-group full">
+            <label for="leaveDescription">Description</label>
+            <textarea id="leaveDescription" placeholder="Write your leave application"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="leaveDate">Leave Date</label>
+            <input type="date" id="leaveDate">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="submitLeaveApplication()">Submit Leave Application</button>
+          <button class="btn btn-secondary" onclick="resetLeaveForm()">Reset</button>
+        </div>
+
+        <div class="result-box" id="leaveResultBox">No leave application submitted yet.</div>
+      </section>
+
+      <section class="section" id="medalSection">
+        <h2>Medal Record and Performance Graph</h2>
+        <p class="section-desc">
+          View medal counts and competition performance summary.
+        </p>
+
+        <div class="medal-grid">
+          <div class="medal-card gold">
+            <h3>Gold</h3>
+            <div class="big" id="goldCount">4</div>
+          </div>
+          <div class="medal-card silver">
+            <h3>Silver</h3>
+            <div class="big" id="silverCount">3</div>
+          </div>
+          <div class="medal-card bronze">
+            <h3>Bronze</h3>
+            <div class="big" id="bronzeCount">3</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h3 style="margin-bottom:12px;">Medal Performance Graph</h3>
+          <canvas id="medalChart" width="900" height="300"></canvas>
+        </div>
+      </section>
+
+      <section class="section" id="transferSection">
+        <h2>Transfer Request</h2>
+        <p class="section-desc">
+          Request club transfer by entering new club details and reason.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="transferClubName">New Club Name</label>
+            <input type="text" id="transferClubName" placeholder="Enter new club name">
+          </div>
+
+          <div class="form-group">
+            <label for="transferClubContact">New Club Contact Number</label>
+            <input type="text" id="transferClubContact" placeholder="Enter club contact number">
+          </div>
+
+          <div class="form-group full">
+            <label for="transferReason">Reason for Transfer</label>
+            <textarea id="transferReason" placeholder="Write transfer reason"></textarea>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="submitTransferRequest()">Submit Transfer Request</button>
+          <button class="btn btn-secondary" onclick="resetTransferForm()">Reset</button>
+        </div>
+
+        <div class="result-box" id="transferResultBox">No transfer request submitted yet.</div>
+      </section>
+
+      <section class="section" id="weightSection">
+        <h2>Monthly Weight Update</h2>
+        <p class="section-desc">
+          Keep your profile up to date by updating your weight every month.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="monthlyWeight">Updated Weight (kg)</label>
+            <input type="number" id="monthlyWeight" placeholder="Enter updated weight">
+          </div>
+
+          <div class="form-group">
+            <label for="weightMonth">Month</label>
+            <input type="month" id="weightMonth">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="updateMonthlyWeight()">Save Weight Update</button>
+        </div>
+
+        <div class="result-box" id="weightResultBox">No monthly weight update saved yet.</div>
+      </section>
+
+      <section class="section" id="idSection">
+        <h2>Printable International Athlete ID</h2>
+        <p class="section-desc">
+          Preview and print your athlete ID card.
+        </p>
+
+        <div class="id-wrap">
+          <div class="card">
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="renderPlayerId()">Generate ID</button>
+              <button class="btn btn-secondary" onclick="window.print()">Print ID</button>
+            </div>
+
+            <div class="result-box" id="idResultBox">Athlete ID ready for preview.</div>
+          </div>
+
+          <div class="athlete-card">
+            <div class="card-top">
+              <div>
+                <div class="card-title">INTERNATIONAL ATHLETE ID</div>
+                <div class="card-sub">Taekwondo Player Identity Card</div>
+              </div>
+              <div class="flag-chip" id="idCountryFlag">Nepal</div>
+            </div>
+
+            <div class="glow-line"></div>
+
+            <div class="card-grid">
+              <div class="card-info">
+                <span>Full Name</span>
+                <strong id="idName">Aarav Shrestha</strong>
+              </div>
+              <div class="card-info">
+                <span>Date of Birth</span>
+                <strong id="idDob">2010-03-15</strong>
+              </div>
+              <div class="card-info">
+                <span>Country</span>
+                <strong id="idCountry">Nepal</strong>
+              </div>
+              <div class="card-info">
+                <span>Belt Rank</span>
+                <strong id="idBelt">Blue</strong>
+              </div>
+              <div class="card-info">
+                <span>Contact Number</span>
+                <strong id="idContact">+977-9800000000</strong>
+              </div>
+              <div class="card-info">
+                <span>Player ID</span>
+                <strong id="idPlayerId">PID0001</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="notificationSection">
+        <h2>Notifications</h2>
+        <p class="section-desc">
+          View messages from coach, grading system, and requests.
+        </p>
+
+        <div class="notice-list" id="notificationList"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const playerProfile = {
+      id: "PID0001",
+      name: "Aarav Shrestha",
+      dob: "2010-03-15",
+      age: 15,
+      country: "Nepal",
+      contact: "+977-9800000000",
+      belt: "Blue",
+      weight: 48,
+      gradingCountdown: 100,
+      medals: { gold: 4, silver: 3, bronze: 3 },
+      notifications: [
+        "Coach Notice: Training session starts at 6:00 AM tomorrow.",
+        "Grading Update: Stay ready for your next belt preparation.",
+        "Admin Notice: Tournament application window is open."
+      ]
+    };
+
+    const beltGuide = {
+      "White": {
+        poomsae: ["Taegeuk 1 Jang preparation", "Basic ready stance", "Basic movement balance"],
+        maki: ["Arae Makki", "Momtong Makki", "Basic guarding posture"]
+      },
+      "Yellow": {
+        poomsae: ["Taegeuk 1 Jang", "Step control", "Turn timing"],
+        maki: ["Arae Makki", "Momtong Makki", "Olgul Makki basic form"]
+      },
+      "Half Green": {
+        poomsae: ["Taegeuk 2 Jang preparation", "Front stance control", "Kick-return balance"],
+        maki: ["Momtong An Makki", "Olgul Makki", "Low-middle transition"]
+      },
+      "Green": {
+        poomsae: ["Taegeuk 2 Jang", "Accurate chambering", "Rhythm and focus"],
+        maki: ["Arae Makki", "Momtong Makki", "Olgul Makki"]
+      },
+      "Half Blue": {
+        poomsae: ["Taegeuk 3 Jang preparation", "Power generation", "Side direction timing"],
+        maki: ["Inside block control", "Outside block control", "Body defense transition"]
+      },
+      "Blue": {
+        poomsae: ["Taegeuk 3 Jang", "Stronger stances", "Clear kihap timing"],
+        maki: ["Momtong Bakat Makki", "Olgul Makki", "Combination blocking"]
+      },
+      "Half Red": {
+        poomsae: ["Taegeuk 4 Jang preparation", "Speed and precision", "Line accuracy"],
+        maki: ["Advanced middle block", "Face protection timing", "Transition defense"]
+      },
+      "Red": {
+        poomsae: ["Taegeuk 4 Jang", "Presentation quality", "Power and expression"],
+        maki: ["Multiple defense combinations", "Strong chamber and finish", "Guard recovery"]
+      },
+      "Half Black": {
+        poomsae: ["Higher poomsae preparation", "Black belt grading rhythm", "Advanced stance control"],
+        maki: ["Advanced defense application", "Self-defense readiness", "One-step sparring blocks"]
+      },
+      "Black": {
+        poomsae: ["Koryo preparation", "Advanced presentation", "Competition poomsae quality"],
+        maki: ["Black belt level defense", "Applied blocking concept", "Counter-defense reaction"]
+      }
+    };
+
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const sections = document.querySelectorAll(".section");
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menuToggle");
+
+    function openSection(sectionId){
+      sections.forEach(section => section.classList.remove("active"));
+      document.getElementById(sectionId).classList.add("active");
+
+      navButtons.forEach(btn => btn.classList.remove("active"));
+      const activeBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
+      if(activeBtn) activeBtn.classList.add("active");
+
+      if(window.innerWidth <= 900){
+        sidebar.classList.remove("open");
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener("click", function(){
+        const sectionId = this.getAttribute("data-section");
+        if(sectionId) openSection(sectionId);
+      });
+    });
+
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+
+    function getBeltColorAndWidth(belt){
+      const colorMap = {
+        "White": { bg: "linear-gradient(90deg,#f7f7f7,#dcdcdc)", width: 10, label: "WHITE" },
+        "Yellow": { bg: "linear-gradient(90deg,#ffe14a,#f6c500)", width: 20, label: "YELLOW" },
+        "Half Green": { bg: "linear-gradient(90deg,#b7ff5d,#53c44f)", width: 30, label: "HALF GREEN" },
+        "Green": { bg: "linear-gradient(90deg,#64e86a,#18a64c)", width: 40, label: "GREEN" },
+        "Half Blue": { bg: "linear-gradient(90deg,#74c9ff,#278cff)", width: 50, label: "HALF BLUE" },
+        "Blue": { bg: "linear-gradient(90deg,#3aa0ff,#155dff)", width: 60, label: "BLUE" },
+        "Half Red": { bg: "linear-gradient(90deg,#ff7b7b,#ff4c4c)", width: 70, label: "HALF RED" },
+        "Red": { bg: "linear-gradient(90deg,#ff5d5d,#d90429)", width: 80, label: "RED" },
+        "Half Black": { bg: "linear-gradient(90deg,#111,#333,#000)", width: 90, label: "HALF BLACK", black: true },
+        "Black": { bg: "linear-gradient(90deg,#111,#333,#000)", width: 100, label: "BLACK", black: true }
+      };
+
+      if (belt.includes("Poom") || belt.includes("Dan")) {
+        return {
+          bg: "linear-gradient(90deg,#111,#2f2f2f,#000)",
+          width: 100,
+          label: belt.toUpperCase(),
+          black: true
+        };
+      }
+
+      return colorMap[belt] || colorMap["White"];
+    }
+
+    function renderOverview(){
+      document.getElementById("playerBadge").textContent = "Player: " + playerProfile.name;
+      document.getElementById("gradingCountdown").textContent = playerProfile.gradingCountdown;
+      document.getElementById("currentBeltText").textContent = playerProfile.belt;
+      document.getElementById("currentWeightText").textContent = playerProfile.weight + " kg";
+      document.getElementById("totalMedalsText").textContent =
+        playerProfile.medals.gold + playerProfile.medals.silver + playerProfile.medals.bronze;
+
+      const beltFill = document.getElementById("beltFill");
+      const beltLabel = document.getElementById("beltRankLabel");
+      const beltHint = document.getElementById("beltRankHint");
+
+      const beltConfig = getBeltColorAndWidth(playerProfile.belt);
+      beltFill.style.width = beltConfig.width + "%";
+      beltFill.style.background = beltConfig.bg;
+      beltFill.textContent = beltConfig.label;
+      beltFill.classList.toggle("black", !!beltConfig.black);
+
+      beltLabel.textContent = playerProfile.belt + " Rank";
+      beltHint.textContent = "Preparation guidance updates according to your current belt rank.";
+
+      const guide = beltGuide[playerProfile.belt] || beltGuide["Black"];
+      document.getElementById("poomsaeList").innerHTML = guide.poomsae.map(item => `<li>${item}</li>`).join("");
+      document.getElementById("makiList").innerHTML = guide.maki.map(item => `<li>${item}</li>`).join("");
+
+      document.getElementById("gradingGuideBox").textContent =
+        `Current Belt: ${playerProfile.belt}
+
+Recommended Poomsae:
+- ${guide.poomsae.join("\n- ")}
+
+Required Maki / Preparation:
+- ${guide.maki.join("\n- ")}
+
+Countdown to grading: ${playerProfile.gradingCountdown} days`;
+    }
+
+    function submitLeaveApplication(){
+      const topic = document.getElementById("leaveTopic").value.trim();
+      const desc = document.getElementById("leaveDescription").value.trim();
+      const date = document.getElementById("leaveDate").value;
+      const box = document.getElementById("leaveResultBox");
+
+      if(!topic || !desc || !date){
+        box.textContent = "Please fill all leave application fields.";
+        return;
+      }
+
+      playerProfile.notifications.unshift(`Leave Application Submitted: ${topic} for ${date}. Waiting for coach review.`);
+
+      box.textContent =
+        `Leave application submitted
+
+Topic: ${topic}
+Date: ${date}
+
+Your coach will review this leave request and notify you.`;
+
+      resetLeaveForm();
+      renderNotifications();
+    }
+
+    function resetLeaveForm(){
+      document.getElementById("leaveTopic").value = "";
+      document.getElementById("leaveDescription").value = "";
+      document.getElementById("leaveDate").value = "";
+    }
+
+    function drawMedalChart(){
+      const canvas = document.getElementById("medalChart");
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+      const padding = 60;
+
+      const medals = [
+        { label: "Gold", value: playerProfile.medals.gold },
+        { label: "Silver", value: playerProfile.medals.silver },
+        { label: "Bronze", value: playerProfile.medals.bronze }
+      ];
+
+      const maxVal = Math.max(...medals.map(m => m.value), 5);
+
+      ctx.clearRect(0,0,w,h);
+
+      ctx.strokeStyle = "rgba(255,255,255,0.14)";
+      ctx.lineWidth = 1;
+
+      for(let i = 0; i <= 5; i++){
+        const y = padding + ((h - padding * 2) / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(w - padding, y);
+        ctx.stroke();
+      }
+
+      const barWidth = 120;
+      const gap = 90;
+      const startX = 130;
+
+      medals.forEach((medal, index) => {
+        const x = startX + index * (barWidth + gap);
+        const barHeight = ((h - padding * 2) * medal.value / maxVal);
+        const y = h - padding - barHeight;
+
+        let fill;
+        if(medal.label === "Gold") fill = "#e7c35a";
+        if(medal.label === "Silver") fill = "#cfd2d8";
+        if(medal.label === "Bronze") fill = "#b56a2d";
+
+        ctx.fillStyle = fill;
+        ctx.fillRect(x, y, barWidth, barHeight);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "16px Arial";
+        ctx.fillText(medal.label, x + 20, h - 20);
+        ctx.fillText(String(medal.value), x + 50, y - 10);
+      });
+    }
+
+    function submitTransferRequest(){
+      const club = document.getElementById("transferClubName").value.trim();
+      const contact = document.getElementById("transferClubContact").value.trim();
+      const reason = document.getElementById("transferReason").value.trim();
+      const box = document.getElementById("transferResultBox");
+
+      if(!club || !contact || !reason){
+        box.textContent = "Please fill all transfer request fields.";
+        return;
+      }
+
+      playerProfile.notifications.unshift(`Transfer Request Sent: ${club}. Reason: ${reason}`);
+
+      box.textContent =
+        `Transfer request submitted
+
+New Club: ${club}
+Contact: ${contact}
+
+Your transfer request has been sent for review.`;
+
+      resetTransferForm();
+      renderNotifications();
+    }
+
+    function resetTransferForm(){
+      document.getElementById("transferClubName").value = "";
+      document.getElementById("transferClubContact").value = "";
+      document.getElementById("transferReason").value = "";
+    }
+
+    function updateMonthlyWeight(){
+      const weight = Number(document.getElementById("monthlyWeight").value);
+      const month = document.getElementById("weightMonth").value;
+      const box = document.getElementById("weightResultBox");
+
+      if(!weight || !month){
+        box.textContent = "Please enter updated weight and month.";
+        return;
+      }
+
+      playerProfile.weight = weight;
+      document.getElementById("currentWeightText").textContent = weight + " kg";
+      playerProfile.notifications.unshift(`Monthly weight updated: ${weight} kg for ${month}.`);
+
+      box.textContent =
+        `Weight updated successfully
+
+Month: ${month}
+Updated Weight: ${weight} kg`;
+
+      document.getElementById("monthlyWeight").value = "";
+      document.getElementById("weightMonth").value = "";
+      renderNotifications();
+    }
+
+    function renderPlayerId(){
+      document.getElementById("idCountryFlag").textContent = playerProfile.country;
+      document.getElementById("idName").textContent = playerProfile.name;
+      document.getElementById("idDob").textContent = playerProfile.dob;
+      document.getElementById("idCountry").textContent = playerProfile.country;
+      document.getElementById("idBelt").textContent = playerProfile.belt;
+      document.getElementById("idContact").textContent = playerProfile.contact;
+      document.getElementById("idPlayerId").textContent = playerProfile.id;
+
+      document.getElementById("idResultBox").textContent =
+        `Athlete ID generated
+
+Name: ${playerProfile.name}
+Country: ${playerProfile.country}
+Belt: ${playerProfile.belt}`;
+    }
+
+    function renderNotifications(){
+      const list = document.getElementById("notificationList");
+      if(playerProfile.notifications.length === 0){
+        list.innerHTML = `
+          <div class="notice-card">
+            <h4>No notifications</h4>
+            <p>You do not have any notifications right now.</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = playerProfile.notifications.map(item => `
+        <div class="notice-card">
+          <h4>Notification</h4>
+          <p>${item}</p>
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("goldCount").textContent = playerProfile.medals.gold;
+    document.getElementById("silverCount").textContent = playerProfile.medals.silver;
+    document.getElementById("bronzeCount").textContent = playerProfile.medals.bronze;
+
+    renderOverview();
+    drawMedalChart();
+    renderPlayerId();
+    renderNotifications();
+  </script>
+</body>
+</html>

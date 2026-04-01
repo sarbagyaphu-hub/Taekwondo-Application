@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coach Register</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+:root{
+  --red:#d90429;
+  --blue:#1565ff;
+  --white:#ffffff;
+  --soft:#cccccc;
+  --glass:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.12);
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#000000,#0b1020,#190505);
+  color:var(--white);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:950px;
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:25px;
+}
+
+h2{
+  margin-bottom:15px;
+}
+
+p{
+  color:var(--soft);
+  line-height:1.6;
+  margin-bottom:15px;
+}
+
+.box{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:12px;
+}
+
+.box h3{
+  margin-bottom:8px;
+}
+
+.box ul{
+  padding-left:18px;
+  color:var(--soft);
+  line-height:1.7;
+}
+
+.form{
+  display:none;
+  margin-top:10px;
+}
+
+.group{
+  margin-bottom:15px;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  font-weight:bold;
+}
+
+input, select{
+  width:100%;
+  padding:12px 14px;
+  border:none;
+  border-radius:10px;
+  background:rgba(255,255,255,0.1);
+  color:rgb(7, 7, 7);
+  outline:none;
+}
+
+input::placeholder{
+  color:#f3eded;
+}
+
+.button-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+button{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:linear-gradient(to right,var(--red),var(--blue));
+  color:white;
+  font-weight:bold;
+}
+
+.secondary-btn{
+  background:rgba(255,255,255,0.1);
+}
+
+.error{
+  color:#ff6b6b;
+  font-size:0.9rem;
+  margin-top:8px;
+}
+
+.success{
+  color:#7dff9a;
+  font-size:0.95rem;
+  margin-top:12px;
+}
+
+.password-wrap{
+  position:relative;
+}
+
+.password-wrap input{
+  padding-right:50px;
+}
+
+.eye-btn{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:auto;
+  padding:6px 10px;
+  background:transparent;
+  border:none;
+  color:white;
+  cursor:pointer;
+  font-size:16px;
+}
+
+@media(max-width:700px){
+  .container{
+    padding:18px;
+  }
+
+  .button-row{
+    flex-direction:column;
+  }
+
+  button{
+    width:100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- STEP 1 -->
+  <div id="docsSection">
+    <h2>Required Documents</h2>
+    <p>Please review the required documents before continuing to the coach registration form.</p>
+
+    <div class="box">
+      <h3>Club Registration</h3>
+      <ul>
+        <li>Rule book of the club</li>
+        <li>Dan certificate number</li>
+        <li>Photo ID issued by the government</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h3>School Registration</h3>
+      <ul>
+        <li>Referral letter of school</li>
+        <li>Dan certificate number</li>
+        <li>Photo ID issued by the government</li>
+      </ul>
+    </div>
+
+    <div class="button-row">
+      <button type="button" onclick="showForm()">OK Continue</button>
+      <button type="button" class="secondary-btn" onclick="goLogin()">Back to Login</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="form" id="formSection">
+    <h2>Coach Registration</h2>
+    <p>Fill in all details carefully. Same email and same club/school name cannot be used twice.</p>
+
+    <div class="group">
+      <label for="type">Registering As</label>
+      <select id="type">
+        <option value="">Select Type</option>
+        <option value="Club">Club</option>
+        <option value="School">School</option>
+      </select>
+    </div>
+
+    <div class="group">
+      <label for="club">Club / School Name</label>
+      <input id="club" type="text" placeholder="Enter club or school name">
+    </div>
+
+    <div class="group">
+      <label for="name">Coach Name</label>
+      <input id="name" type="text" placeholder="Enter full name">
+    </div>
+
+    <div class="group">
+      <label for="dob">Date of Birth</label>
+      <input id="dob" type="date">
+    </div>
+
+    <div class="group">
+      <label for="dan">Dan Certificate Number</label>
+      <input id="dan" type="text" placeholder="Enter dan certificate number">
+    </div>
+
+    <div class="group">
+      <label for="assoc">Association Registered Number</label>
+      <input id="assoc" type="text" placeholder="Enter association registered number">
+    </div>
+
+    <div class="group">
+      <label for="email">Email Address</label>
+      <input id="email" type="email" placeholder="Enter email address">
+    </div>
+
+    <div class="group">
+      <label for="password">Password</label>
+      <div class="password-wrap">
+        <input id="password" type="password" placeholder="Create password">
+        <button type="button" class="eye-btn" onclick="togglePassword()">👁️</button>
+      </div>
+      <div class="error" id="passError"></div>
+    </div>
+
+    <div class="button-row">
+      <button type="button" onclick="registerUser()">Register</button>
+      <button type="button" class="secondary-btn" onclick="goLogin()">Go to Login</button>
+    </div>
+
+    <div class="error" id="error"></div>
+    <div class="success" id="success"></div>
+  </div>
+
+</div>
+
+<script>
+let fakeEmails = ["test@gmail.com"];
+let fakeClubs = ["ABC Club"];
+
+function showForm() {
+  document.getElementById("docsSection").style.display = "none";
+  document.getElementById("formSection").style.display = "block";
+}
+
+function goLogin() {
+  window.location.href = "login.html";
+}
+
+function togglePassword() {
+  const passwordInput = document.getElementById("password");
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+  } else {
+    passwordInput.type = "password";
+  }
+}
+
+function validatePassword(pass) {
+  return pass.length >= 8 &&
+         /[A-Za-z]/.test(pass) &&
+         /[0-9]/.test(pass) &&
+         /[^A-Za-z0-9]/.test(pass);
+}
+
+function registerUser() {
+  let type = document.getElementById("type").value;
+  let club = document.getElementById("club").value.trim();
+  let name = document.getElementById("name").value.trim();
+  let dob = document.getElementById("dob").value;
+  let dan = document.getElementById("dan").value.trim();
+  let assoc = document.getElementById("assoc").value.trim();
+  let email = document.getElementById("email").value.trim();
+  let pass = document.getElementById("password").value;
+
+  let error = document.getElementById("error");
+  let success = document.getElementById("success");
+  let passError = document.getElementById("passError");
+
+  error.innerText = "";
+  success.innerText = "";
+  passError.innerText = "";
+
+  if (!type || !club || !name || !dob || !dan || !assoc || !email || !pass) {
+    error.innerText = "Please fill all fields.";
+    return;
+  }
+
+  if (fakeEmails.includes(email)) {
+    error.innerText = "This email is already used.";
+    return;
+  }
+
+  if (fakeClubs.includes(club)) {
+    error.innerText = "This club or school name is already used.";
+    return;
+  }
+
+  if (!validatePassword(pass)) {
+    passError.innerText = "Password must be at least 8 characters and include letter, number, and special symbol.";
+    return;
+  }
+
+  success.innerText = "Registration successful. Frontend only for now.";
+}
+</script>
+
+</body>
+</html>

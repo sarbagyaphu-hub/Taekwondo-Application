@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Taekwondo Management</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --bg: #050505;
+      --panel: rgba(255, 255, 255, 0.06);
+      --panel-2: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.12);
+      --white: #ffffff;
+      --soft: #cfcfcf;
+      --red: #d90429;
+      --blue: #1565ff;
+      --green: #22c55e;
+      --orange: #f59e0b;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #020202, #09111f, #170407);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(25px);
+      opacity: 0.22;
+      z-index: 0;
+      pointer-events: none;
+      animation: float 10s ease-in-out infinite;
+    }
+
+    .orb1 {
+      width: 260px;
+      height: 260px;
+      background: var(--red);
+      top: 5%;
+      left: 5%;
+    }
+
+    .orb2 {
+      width: 320px;
+      height: 320px;
+      background: var(--blue);
+      bottom: 5%;
+      right: 5%;
+      animation-delay: 2s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-18px) translateX(15px); }
+    }
+
+    .app {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: rgba(0, 0, 0, 0.45);
+      border-right: 1px solid var(--border);
+      padding: 24px 18px;
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .brand p {
+      color: var(--soft);
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .nav {
+      display: grid;
+      gap: 10px;
+    }
+
+    .nav button {
+      width: 100%;
+      text-align: left;
+      padding: 14px 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--white);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: 0.25s ease;
+      font-weight: bold;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: linear-gradient(135deg, rgba(217,4,41,0.15), rgba(21,101,255,0.15));
+      border-color: rgba(255,255,255,0.2);
+      transform: translateX(3px);
+    }
+
+    .main {
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .topbar .title h1 {
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+
+    .topbar .title p {
+      color: var(--soft);
+      line-height: 1.6;
+    }
+
+    .topbar .admin-badge {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: linear-gradient(to right, rgba(217,4,41,0.16), rgba(21,101,255,0.16));
+      border: 1px solid var(--border);
+      font-weight: bold;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card h3 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-card p {
+      color: var(--soft);
+      line-height: 1.5;
+    }
+
+    .section {
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section h2 {
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+    }
+
+    .section-desc {
+      color: var(--soft);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .filters,
+    .form-grid,
+    .button-row {
+      display: grid;
+      gap: 14px;
+    }
+
+    .filters {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: var(--white);
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      padding-top: 12px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(21,101,255,0.16);
+    }
+
+    .button-row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 8px;
+    }
+
+    .btn {
+      min-height: 48px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.25s ease;
+      color: var(--white);
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, var(--red), var(--blue));
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+    }
+
+    .btn-success {
+      background: rgba(34,197,94,0.18);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: #d8ffe4;
+    }
+
+    .btn-danger {
+      background: rgba(217,4,41,0.18);
+      border: 1px solid rgba(217,4,41,0.3);
+      color: #ffdada;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .mini-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .mini-card h3 {
+      margin-bottom: 8px;
+    }
+
+    .mini-card p {
+      color: var(--soft);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    th, td {
+      padding: 14px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    th {
+      background: rgba(255,255,255,0.06);
+      font-size: 0.95rem;
+    }
+
+    td {
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    .rank-badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(245,158,11,0.18);
+      border: 1px solid rgba(245,158,11,0.3);
+      color: #ffe7b0;
+      font-weight: bold;
+      font-size: 0.82rem;
+    }
+
+    .status-chip {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: bold;
+    }
+
+    .status-pending {
+      background: rgba(245,158,11,0.18);
+      border: 1px solid rgba(245,158,11,0.3);
+      color: #ffe7b0;
+    }
+
+    .status-verified {
+      background: rgba(34,197,94,0.18);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: #d8ffe4;
+    }
+
+    .status-rejected {
+      background: rgba(217,4,41,0.18);
+      border: 1px solid rgba(217,4,41,0.3);
+      color: #ffdada;
+    }
+
+    .notice-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .notice-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .notice-card h4 {
+      margin-bottom: 8px;
+    }
+
+    .notice-card p {
+      color: var(--soft);
+      line-height: 1.6;
+    }
+
+    .helper-text {
+      color: var(--soft);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    .result-box {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      line-height: 1.6;
+      color: var(--soft);
+      white-space: pre-wrap;
+    }
+
+    .mobile-top {
+      display: none;
+      padding: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-top button {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--white);
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    @media (max-width: 1100px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .filters,
+      .form-grid,
+      .button-row,
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-top {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 61px;
+        width: 280px;
+        height: calc(100vh - 61px);
+        transform: translateX(-100%);
+        transition: 0.3s ease;
+        z-index: 20;
+      }
+
+      .main {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar .title h1 {
+        font-size: 1.6rem;
+      }
+
+      .section {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .stat-card {
+        border-radius: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <div class="mobile-top">
+    <button id="menuToggle">☰ Open Admin Menu</button>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <h2>Admin Panel</h2>
+        <p>Taekwondo Player Management and Poomsae Referee Administration</p>
+      </div>
+
+      <div class="nav">
+        <button class="nav-btn active" data-section="dashboardSection">📊 Dashboard</button>
+        <button class="nav-btn" data-section="playerSection">🥋 Player Data</button>
+        <button class="nav-btn" data-section="refereeSection">🏅 Referee IDs</button>
+        <button class="nav-btn" data-section="coachSection">📋 Coach Applications</button>
+        <button class="nav-btn" data-section="noticeSection">📢 Publish Notice</button>
+        <button class="nav-btn" onclick="goLogin()">↩ Back to Login</button>
+        <button class="nav-btn" data-section="tournamentSection">🏆 Tournament Management</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="title">
+          <h1>Admin Dashboard</h1>
+          <p>Manage players, coaches, clubs, referees, notices, and registration review from one central panel.</p>
+        </div>
+        <div class="admin-badge">Logged in as Admin</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3 id="totalPlayers">16</h3>
+          <p>Total Registered Players</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalCoaches">5</h3>
+          <p>Total Registered Coaches</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="totalClubs">4</h3>
+          <p>Total Registered Clubs</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="pendingApplications">3</h3>
+          <p>Pending Coach Applications</p>
+        </div>
+      </div>
+
+      <section class="section active" id="dashboardSection">
+        <h2>Overview</h2>
+        <p class="section-desc">
+          This admin page is structured for future backend connection. All functions are placed in a way that can later be linked with PHP, MySQL, and Laragon.
+        </p>
+
+        <div class="card-grid">
+          <div class="mini-card">
+            <h3>Coach Management</h3>
+            <p>Review coach applications, verify or reject with remarks, and maintain application flow.</p>
+            <button class="btn btn-primary" onclick="openSection('coachSection')">Open Coach Applications</button>
+          </div>
+
+          <div class="mini-card">
+            <h3>Player Data Ranking</h3>
+            <p>Filter players by Olympic weight category and age category, then rank them by gold medals from the last 90 days.</p>
+            <button class="btn btn-primary" onclick="openSection('playerSection')">Open Player Data</button>
+          </div>
+
+          <div class="mini-card">
+            <h3>Referee ID Generation</h3>
+            <p>Create referee IDs one by one or generate many at once using OCR-style bulk text input.</p>
+            <button class="btn btn-primary" onclick="openSection('refereeSection')">Open Referee IDs</button>
+          </div>
+
+          <div class="mini-card">
+            <h3>Publish Notices</h3>
+            <p>Send a published notice to all users through the notice management section.</p>
+            <button class="btn btn-primary" onclick="openSection('noticeSection')">Open Publish Notice</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="playerSection">
+        <h2>Player Data and Ranking</h2>
+        <p class="section-desc">
+          Select Olympic weight category and age category. Ranking is shown according to highest gold medals achieved from the last 90 days.
+        </p>
+
+        <div class="filters">
+          <div class="form-group">
+            <label for="weightCategory">Olympic Weight Category</label>
+            <select id="weightCategory">
+              <option value="">Select Olympic Weight Category</option>
+              <option value="Male -58kg">Male -58kg</option>
+              <option value="Male -68kg">Male -68kg</option>
+              <option value="Male -80kg">Male -80kg</option>
+              <option value="Male +80kg">Male +80kg</option>
+              <option value="Female -49kg">Female -49kg</option>
+              <option value="Female -57kg">Female -57kg</option>
+              <option value="Female -67kg">Female -67kg</option>
+              <option value="Female +67kg">Female +67kg</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ageCategory">Age Category</label>
+            <select id="ageCategory">
+              <option value="">Select Age Category</option>
+              <option value="Children">Children: Ages 6 to 11</option>
+              <option value="Cadets">Cadets: Ages 12 to 14</option>
+              <option value="Juniors">Juniors: Ages 15 to 17</option>
+              <option value="Adults">Adults: Ages 18 and above</option>
+              <option value="Veterans">Veterans: Over 30 or 35</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" onclick="filterPlayers()">Show Ranked Players</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player Name</th>
+                <th>Weight Category</th>
+                <th>Age Category</th>
+                <th>Club</th>
+                <th>Gold Medals (Last 90 Days)</th>
+              </tr>
+            </thead>
+            <tbody id="playerTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="refereeSection">
+        <h2>Create Referee IDs</h2>
+        <p class="section-desc">
+          Create referee IDs one by one or in bulk. Default password for every created referee is <strong>Referee@123</strong>.
+        </p>
+
+        <div class="card-grid">
+          <div class="mini-card">
+            <h3>Create One by One</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="refFirstName">First Name</label>
+                <input type="text" id="refFirstName" placeholder="Enter first name">
+              </div>
+              <div class="form-group">
+                <label for="refLastName">Last Name</label>
+                <input type="text" id="refLastName" placeholder="Enter last name">
+              </div>
+              <div class="form-group">
+                <label for="refId">Referee ID</label>
+                <input type="text" id="refId" placeholder="Enter referee ID">
+              </div>
+              <div class="form-group">
+                <label for="refLevel">Referee Level</label>
+                <select id="refLevel">
+                  <option value="">Select referee level</option>
+                  <option value="District">District</option>
+                  <option value="Provincial">Provincial</option>
+                  <option value="National">National</option>
+                  <option value="International">International</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label for="refEmail">Email Address</label>
+                <input type="email" id="refEmail" placeholder="Enter email address">
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn btn-primary" onclick="createSingleReferee()">Create Referee ID</button>
+            </div>
+            <div class="result-box" id="singleRefereeResult">No referee created yet.</div>
+          </div>
+
+          <div class="mini-card">
+            <h3>Bulk Create from OCR Text</h3>
+            <p>
+              Paste OCR text in this format for each referee:
+              <br>1st row: First Name
+              <br>2nd row: Last Name
+              <br>3rd row: Referee ID
+              <br>4th row: Referee Level
+              <br>5th row: Email Address
+            </p>
+
+            <div class="form-group">
+              <label for="bulkRefereeInput">OCR Text</label>
+              <textarea id="bulkRefereeInput" placeholder="Example:
+
+Ram
+Sharma
+REF001
+National
+ram@example.com
+
+Sita
+Karki
+REF002
+District
+sita@example.com"></textarea>
+            </div>
+
+            <div class="button-row">
+              <button class="btn btn-primary" onclick="createBulkReferees()">Create Bulk Referee IDs</button>
+            </div>
+            <div class="result-box" id="bulkRefereeResult">No bulk creation done yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="coachSection">
+        <h2>Coach Applications</h2>
+        <p class="section-desc">
+          Admin can review coach registration applications, verify or reject them, and add remarks for each decision.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Coach Name</th>
+                <th>Institution Type</th>
+                <th>Club / School</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="coachApplicationTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="noticeSection">
+        <h2>Publish Notice to All</h2>
+        <p class="section-desc">
+          Publish notices that will later be visible to all users after backend connection.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group full">
+            <label for="noticeTitle">Notice Title</label>
+            <input type="text" id="noticeTitle" placeholder="Enter notice title">
+          </div>
+
+          <div class="form-group full">
+            <label for="noticeMessage">Notice Message</label>
+            <textarea id="noticeMessage" placeholder="Write notice message here"></textarea>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button class="btn btn-primary" onclick="publishNotice()">Publish Notice</button>
+        </div>
+
+        <div class="notice-list" id="noticeList"></div>
+      </section>
+      <section class="section" id="tournamentSection">
+  <h2>Tournament Management</h2>
+  <p class="section-desc">
+    Manage tournament host applications, verify applicants, assign referees to arenas,
+    and create tiesheets for Kyorugi and Poomsae.
+  </p>
+
+  <!-- Tournament Host Applications -->
+  <div class="mini-card" style="margin-bottom: 18px;">
+    <h3 style="margin-bottom:10px;">Tournament Host Applications</h3>
+    <p class="section-desc">
+      Review coach or club applications to host a tournament. Admin can verify or reject with remarks.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tournament Name</th>
+            <th>Host Club / School</th>
+            <th>Host Coach</th>
+            <th>No. of Arenas</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tournamentHostTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Approved Tournament Handling -->
+  <div class="mini-card" style="margin-bottom: 18px;">
+    <h3 style="margin-bottom:10px;">Approved Tournament Applicant Verification</h3>
+    <p class="section-desc">
+      For approved tournaments, admin can verify and register applicants according to weight and age category.
+    </p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="approvedTournamentSelect">Select Approved Tournament</label>
+        <select id="approvedTournamentSelect" onchange="renderTournamentApplicants()">
+          <option value="">Select Tournament</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Player Name</th>
+            <th>Event Type</th>
+            <th>Weight Category</th>
+            <th>Age Category</th>
+            <th>Club</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tournamentApplicantTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Referee Assignment -->
+  <div class="mini-card" style="margin-bottom: 18px;">
+    <h3 style="margin-bottom:10px;">Assign Referees to Arenas</h3>
+    <p class="section-desc">
+      Select a tournament and assign referees. The system randomly places 8 referees per arena.
+      Arenas are named Arena A, Arena B, Arena C, and so on.
+    </p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="refTournamentSelect">Select Tournament</label>
+        <select id="refTournamentSelect"></select>
+      </div>
+
+      <div class="form-group">
+        <label for="refereePoolSelect">Choose Referees</label>
+        <select id="refereePoolSelect" multiple style="min-height:180px;"></select>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="btn btn-primary" onclick="assignRefereesToArena()">Assign Referees Randomly</button>
+    </div>
+
+    <div class="result-box" id="arenaAssignmentResult">No referee assignment created yet.</div>
+  </div>
+
+  <!-- Tiesheet Creation -->
+  <div class="mini-card">
+    <h3 style="margin-bottom:10px;">Tiesheet Creation</h3>
+    <p class="section-desc">
+      Create grouped tiesheets for Kyorugi and Poomsae events.
+    </p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="tiesheetTournamentSelect">Select Tournament</label>
+        <select id="tiesheetTournamentSelect"></select>
+      </div>
+
+      <div class="form-group">
+        <label for="tiesheetEventType">Select Event Type</label>
+        <select id="tiesheetEventType">
+          <option value="">Select Event Type</option>
+          <option value="Kyorugi">Kyorugi</option>
+          <option value="Poomsae Individual">Poomsae Individual</option>
+          <option value="Poomsae Pair">Poomsae Pair</option>
+          <option value="Poomsae Group">Poomsae Group</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="btn btn-primary" onclick="createTiesheet()">Create Tiesheet</button>
+    </div>
+
+    <div class="result-box" id="tiesheetResult">No tiesheet generated yet.</div>
+  </div>
+</section>
+    </main>
+  </div>
+
+  <script>
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const sections = document.querySelectorAll(".section");
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menuToggle");
+    const tournamentHostApplications = [
+  {
+    id: 1,
+    tournamentName: "Kathmandu Open Championship",
+    host: "Tiger Dojang",
+    coach: "Ram Bahadur",
+    arenas: 2,
+    status: "Pending",
+    remarks: ""
+  },
+  {
+    id: 2,
+    tournamentName: "National Poomsae Cup",
+    host: "Everest TKD Club",
+    coach: "Sita Karki",
+    arenas: 3,
+    status: "Pending",
+    remarks: ""
+  }
+];
+
+const referees = [
+  { name: "Referee 1", id: "REF001", level: "National", email: "ref1@mail.com" },
+  { name: "Referee 2", id: "REF002", level: "National", email: "ref2@mail.com" },
+  { name: "Referee 3", id: "REF003", level: "District", email: "ref3@mail.com" },
+  { name: "Referee 4", id: "REF004", level: "Provincial", email: "ref4@mail.com" },
+  { name: "Referee 5", id: "REF005", level: "National", email: "ref5@mail.com" },
+  { name: "Referee 6", id: "REF006", level: "International", email: "ref6@mail.com" },
+  { name: "Referee 7", id: "REF007", level: "District", email: "ref7@mail.com" },
+  { name: "Referee 8", id: "REF008", level: "Provincial", email: "ref8@mail.com" },
+  { name: "Referee 9", id: "REF009", level: "National", email: "ref9@mail.com" },
+  { name: "Referee 10", id: "REF010", level: "National", email: "ref10@mail.com" },
+  { name: "Referee 11", id: "REF011", level: "District", email: "ref11@mail.com" },
+  { name: "Referee 12", id: "REF012", level: "International", email: "ref12@mail.com" },
+  { name: "Referee 13", id: "REF013", level: "Provincial", email: "ref13@mail.com" },
+  { name: "Referee 14", id: "REF014", level: "National", email: "ref14@mail.com" },
+  { name: "Referee 15", id: "REF015", level: "District", email: "ref15@mail.com" },
+  { name: "Referee 16", id: "REF016", level: "International", email: "ref16@mail.com" }
+];
+
+const tournamentApplicants = {
+  "Kathmandu Open Championship": [
+    { id: 1, name: "Aarav Shrestha", eventType: "Kyorugi", weight: "Male -58kg", age: "Juniors", club: "Tiger Dojang", status: "Pending", remarks: "" },
+    { id: 2, name: "Sujal Karki", eventType: "Kyorugi", weight: "Male -58kg", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
+    { id: 3, name: "Anish Rai", eventType: "Kyorugi", weight: "Male -68kg", age: "Adults", club: "Dragon Taekwondo", status: "Pending", remarks: "" },
+    { id: 4, name: "Sanjana Gurung", eventType: "Poomsae Individual", weight: "-", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
+    { id: 5, name: "Riya Tamang / Kripa Shah", eventType: "Poomsae Pair", weight: "-", age: "Adults", club: "Kathmandu Warriors", status: "Pending", remarks: "" },
+    { id: 6, name: "Young Tigers Team A", eventType: "Poomsae Group", weight: "-", age: "Cadets", club: "Young Tigers", status: "Pending", remarks: "" }
+  ],
+  "National Poomsae Cup": [
+    { id: 7, name: "Nima Sherpa", eventType: "Poomsae Individual", weight: "-", age: "Veterans", club: "Mountain Poomsae", status: "Pending", remarks: "" },
+    { id: 8, name: "Pair Everest A", eventType: "Poomsae Pair", weight: "-", age: "Juniors", club: "Everest TKD Club", status: "Pending", remarks: "" },
+    { id: 9, name: "Group Tiger Elite", eventType: "Poomsae Group", weight: "-", age: "Adults", club: "Tiger Dojang", status: "Pending", remarks: "" }
+  ]
+};
+
+function renderTournamentHostApplications() {
+  const tbody = document.getElementById("tournamentHostTable");
+
+  tbody.innerHTML = tournamentHostApplications.map(app => `
+    <tr>
+      <td>${app.tournamentName}</td>
+      <td>${app.host}</td>
+      <td>${app.coach}</td>
+      <td>${app.arenas}</td>
+      <td>
+        <span class="status-chip ${
+          app.status === "Pending" ? "status-pending" :
+          app.status === "Verified" ? "status-verified" : "status-rejected"
+        }">${app.status}</span>
+      </td>
+      <td>
+        <textarea id="tournament-remark-${app.id}" placeholder="Write remarks">${app.remarks}</textarea>
+      </td>
+      <td>
+        <div style="display:grid; gap:10px;">
+          <button class="btn btn-success" onclick="verifyTournament(${app.id})">Verify</button>
+          <button class="btn btn-danger" onclick="rejectTournament(${app.id})">Reject</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+
+  renderApprovedTournamentOptions();
+}
+
+function verifyTournament(id) {
+  const app = tournamentHostApplications.find(item => item.id === id);
+  if (!app) return;
+
+  const remark = document.getElementById(`tournament-remark-${id}`).value.trim();
+  app.status = "Verified";
+  app.remarks = remark || "Tournament host application verified by admin.";
+
+  renderTournamentHostApplications();
+}
+
+function rejectTournament(id) {
+  const app = tournamentHostApplications.find(item => item.id === id);
+  if (!app) return;
+
+  const remark = document.getElementById(`tournament-remark-${id}`).value.trim();
+  app.status = "Rejected";
+  app.remarks = remark || "Tournament host application rejected by admin.";
+
+  renderTournamentHostApplications();
+}
+
+function renderApprovedTournamentOptions() {
+  const approved = tournamentHostApplications.filter(item => item.status === "Verified");
+
+  const approvedSelect = document.getElementById("approvedTournamentSelect");
+  const refereeSelect = document.getElementById("refTournamentSelect");
+  const tiesheetSelect = document.getElementById("tiesheetTournamentSelect");
+
+  const options = ['<option value="">Select Tournament</option>']
+    .concat(approved.map(item => `<option value="${item.tournamentName}">${item.tournamentName}</option>`))
+    .join("");
+
+  approvedSelect.innerHTML = options;
+  refereeSelect.innerHTML = options;
+  tiesheetSelect.innerHTML = options;
+}
+
+function renderTournamentApplicants() {
+  const selectedTournament = document.getElementById("approvedTournamentSelect").value;
+  const tbody = document.getElementById("tournamentApplicantTable");
+
+  if (!selectedTournament || !tournamentApplicants[selectedTournament]) {
+    tbody.innerHTML = `<tr><td colspan="8">No tournament selected.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = tournamentApplicants[selectedTournament].map(app => `
+    <tr>
+      <td>${app.name}</td>
+      <td>${app.eventType}</td>
+      <td>${app.weight}</td>
+      <td>${app.age}</td>
+      <td>${app.club}</td>
+      <td>
+        <span class="status-chip ${
+          app.status === "Pending" ? "status-pending" :
+          app.status === "Verified" ? "status-verified" : "status-rejected"
+        }">${app.status}</span>
+      </td>
+      <td>
+        <textarea id="applicant-remark-${selectedTournament}-${app.id}" placeholder="Write remarks">${app.remarks}</textarea>
+      </td>
+      <td>
+        <div style="display:grid; gap:10px;">
+          <button class="btn btn-success" onclick="verifyApplicant('${selectedTournament}', ${app.id})">Verify</button>
+          <button class="btn btn-danger" onclick="rejectApplicant('${selectedTournament}', ${app.id})">Reject</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function verifyApplicant(tournamentName, applicantId) {
+  const app = tournamentApplicants[tournamentName].find(item => item.id === applicantId);
+  if (!app) return;
+
+  const remark = document.getElementById(`applicant-remark-${tournamentName}-${applicantId}`).value.trim();
+  app.status = "Verified";
+  app.remarks = remark || "Applicant verified by admin.";
+
+  renderTournamentApplicants();
+}
+
+function rejectApplicant(tournamentName, applicantId) {
+  const app = tournamentApplicants[tournamentName].find(item => item.id === applicantId);
+  if (!app) return;
+
+  const remark = document.getElementById(`applicant-remark-${tournamentName}-${applicantId}`).value.trim();
+  app.status = "Rejected";
+  app.remarks = remark || "Applicant rejected by admin.";
+
+  renderTournamentApplicants();
+}
+
+function renderRefereePool() {
+  const select = document.getElementById("refereePoolSelect");
+
+  select.innerHTML = referees.map(ref => `
+    <option value="${ref.id}">
+      ${ref.name} - ${ref.id} - ${ref.level}
+    </option>
+  `).join("");
+}
+
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function assignRefereesToArena() {
+  const tournamentName = document.getElementById("refTournamentSelect").value;
+  const selectedIds = Array.from(document.getElementById("refereePoolSelect").selectedOptions).map(opt => opt.value);
+  const result = document.getElementById("arenaAssignmentResult");
+
+  if (!tournamentName) {
+    result.textContent = "Please select a verified tournament first.";
+    return;
+  }
+
+  const tournament = tournamentHostApplications.find(item => item.tournamentName === tournamentName);
+  if (!tournament) {
+    result.textContent = "Tournament not found.";
+    return;
+  }
+
+  const requiredReferees = tournament.arenas * 8;
+
+  if (selectedIds.length < requiredReferees) {
+    result.textContent = `Not enough referees selected. ${tournament.arenas} arenas need ${requiredReferees} referees in total.`;
+    return;
+  }
+
+  const selectedRefs = referees.filter(ref => selectedIds.includes(ref.id));
+  const shuffledRefs = shuffleArray(selectedRefs);
+
+  let output = `Tournament: ${tournamentName}\nArenas: ${tournament.arenas}\n\n`;
+
+  for (let i = 0; i < tournament.arenas; i++) {
+    const arenaName = `Arena ${String.fromCharCode(65 + i)}`;
+    const arenaRefs = shuffledRefs.slice(i * 8, (i + 1) * 8);
+
+    output += `${arenaName}\n`;
+    arenaRefs.forEach((ref, index) => {
+      output += `${index + 1}. ${ref.name} | ${ref.id} | ${ref.level}\n`;
+    });
+    output += `\n`;
+  }
+
+  result.textContent = output;
+}
+
+function createTiesheet() {
+  const tournamentName = document.getElementById("tiesheetTournamentSelect").value;
+  const eventType = document.getElementById("tiesheetEventType").value;
+  const result = document.getElementById("tiesheetResult");
+
+  if (!tournamentName || !eventType) {
+    result.textContent = "Please select both tournament and event type.";
+    return;
+  }
+
+  const applicants = (tournamentApplicants[tournamentName] || []).filter(
+    item => item.status === "Verified" && item.eventType === eventType
+  );
+
+  if (applicants.length === 0) {
+    result.textContent = "No verified applicants found for the selected event type.";
+    return;
+  }
+
+  let output = `Tiesheet for ${tournamentName}\nEvent: ${eventType}\n\n`;
+
+  if (eventType === "Kyorugi") {
+    const grouped = {};
+    applicants.forEach(player => {
+      const key = `${player.age} | ${player.weight}`;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(player);
+    });
+
+    Object.keys(grouped).forEach((groupName, groupIndex) => {
+      output += `Group ${groupIndex + 1}: ${groupName}\n`;
+      grouped[groupName].forEach((player, i) => {
+        output += `${i + 1}. ${player.name} - ${player.club}\n`;
+      });
+      output += `\n`;
+    });
+  }
+
+  if (eventType === "Poomsae Individual") {
+    const grouped = {};
+    applicants.forEach(player => {
+      const key = player.age;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(player);
+    });
+
+    Object.keys(grouped).forEach((pool, poolIndex) => {
+      output += `Pool ${poolIndex + 1}: ${pool}\n`;
+      grouped[pool].forEach((player, i) => {
+        output += `${i + 1}. ${player.name} - ${player.club}\n`;
+      });
+      output += `\n`;
+    });
+  }
+
+  if (eventType === "Poomsae Pair") {
+    const grouped = {};
+    applicants.forEach(pair => {
+      const key = pair.age;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(pair);
+    });
+
+    Object.keys(grouped).forEach((pool, poolIndex) => {
+      output += `Pair Pool ${poolIndex + 1}: ${pool}\n`;
+      grouped[pool].forEach((pair, i) => {
+        output += `${i + 1}. ${pair.name} - ${pair.club}\n`;
+      });
+      output += `\n`;
+    });
+  }
+
+  if (eventType === "Poomsae Group") {
+    const grouped = {};
+    applicants.forEach(group => {
+      const key = group.age;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(group);
+    });
+
+    Object.keys(grouped).forEach((pool, poolIndex) => {
+      output += `Group Pool ${poolIndex + 1}: ${pool}\n`;
+      grouped[pool].forEach((group, i) => {
+        output += `${i + 1}. ${group.name} - ${group.club}\n`;
+      });
+      output += `\n`;
+    });
+  }
+
+  result.textContent = output;
+}
+
+    const playerData = [
+      { name: "Aarav Shrestha", weight: "Male -58kg", age: "Juniors", club: "Tiger Dojang", gold: 4 },
+      { name: "Sujal Karki", weight: "Male -58kg", age: "Juniors", club: "Everest TKD Club", gold: 2 },
+      { name: "Anish Rai", weight: "Male -68kg", age: "Adults", club: "Dragon Taekwondo", gold: 5 },
+      { name: "Rabin Thapa", weight: "Male -80kg", age: "Adults", club: "Tiger Dojang", gold: 3 },
+      { name: "Pratiksha Lama", weight: "Female -49kg", age: "Cadets", club: "Himalayan Club", gold: 1 },
+      { name: "Sanjana Gurung", weight: "Female -57kg", age: "Juniors", club: "Everest TKD Club", gold: 6 },
+      { name: "Riya Tamang", weight: "Female -67kg", age: "Adults", club: "Kathmandu Warriors", gold: 2 },
+      { name: "Nima Sherpa", weight: "Female +67kg", age: "Veterans", club: "Mountain Poomsae", gold: 4 },
+      { name: "Kabir Bhandari", weight: "Male +80kg", age: "Veterans", club: "Dragon Taekwondo", gold: 1 },
+      { name: "Suman Basnet", weight: "Male -68kg", age: "Adults", club: "Kathmandu Warriors", gold: 4 },
+      { name: "Aahana Poudel", weight: "Female -49kg", age: "Children", club: "Young Tigers", gold: 3 },
+      { name: "Kripa Shah", weight: "Female -57kg", age: "Cadets", club: "Young Tigers", gold: 2 }
+    ];
+
+    const coachApplications = [
+      { id: 1, name: "Ram Bahadur", type: "Club", institution: "Tiger Dojang", email: "ram@demo.com", status: "Pending", remarks: "" },
+      { id: 2, name: "Sita Karki", type: "School", institution: "Sunrise School", email: "sita@demo.com", status: "Pending", remarks: "" },
+      { id: 3, name: "Hari Gautam", type: "Club", institution: "Everest TKD Club", email: "hari@demo.com", status: "Pending", remarks: "" }
+    ];
+
+    const notices = [];
+
+    function goLogin() {
+      window.location.href = "login.html";
+    }
+
+    function openSection(sectionId) {
+      sections.forEach(section => section.classList.remove("active"));
+      document.getElementById(sectionId).classList.add("active");
+
+      navButtons.forEach(btn => btn.classList.remove("active"));
+      const activeBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
+      if (activeBtn) activeBtn.classList.add("active");
+
+      if (window.innerWidth <= 900) {
+        sidebar.classList.remove("open");
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener("click", function () {
+        const sectionId = this.getAttribute("data-section");
+        if (sectionId) openSection(sectionId);
+      });
+    });
+
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+
+    function renderInitialPlayers() {
+      const tbody = document.getElementById("playerTableBody");
+      const sorted = [...playerData].sort((a, b) => b.gold - a.gold);
+
+      tbody.innerHTML = sorted.map((player, index) => `
+        <tr>
+          <td><span class="rank-badge">#${index + 1}</span></td>
+          <td>${player.name}</td>
+          <td>${player.weight}</td>
+          <td>${player.age}</td>
+          <td>${player.club}</td>
+          <td>${player.gold}</td>
+        </tr>
+      `).join("");
+    }
+
+    function filterPlayers() {
+      const weightCategory = document.getElementById("weightCategory").value;
+      const ageCategory = document.getElementById("ageCategory").value;
+      const tbody = document.getElementById("playerTableBody");
+
+      let filtered = [...playerData];
+
+      if (weightCategory) {
+        filtered = filtered.filter(player => player.weight === weightCategory);
+      }
+
+      if (ageCategory) {
+        filtered = filtered.filter(player => player.age === ageCategory);
+      }
+
+      filtered.sort((a, b) => b.gold - a.gold);
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6">No player found for selected Olympic weight category and age category.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((player, index) => `
+        <tr>
+          <td><span class="rank-badge">#${index + 1}</span></td>
+          <td>${player.name}</td>
+          <td>${player.weight}</td>
+          <td>${player.age}</td>
+          <td>${player.club}</td>
+          <td>${player.gold}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderCoachApplications() {
+      const tbody = document.getElementById("coachApplicationTable");
+
+      tbody.innerHTML = coachApplications.map(app => `
+        <tr>
+          <td>${app.name}</td>
+          <td>${app.type}</td>
+          <td>${app.institution}</td>
+          <td>${app.email}</td>
+          <td>
+            <span class="status-chip ${
+              app.status === "Pending" ? "status-pending" :
+              app.status === "Verified" ? "status-verified" : "status-rejected"
+            }">${app.status}</span>
+          </td>
+          <td>
+            <textarea id="remark-${app.id}" placeholder="Write remarks">${app.remarks}</textarea>
+          </td>
+          <td>
+            <div style="display:grid; gap:10px;">
+              <button class="btn btn-success" onclick="verifyCoach(${app.id})">Verify</button>
+              <button class="btn btn-danger" onclick="rejectCoach(${app.id})">Reject</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+
+      updateCounts();
+    }
+
+    function verifyCoach(id) {
+      const app = coachApplications.find(item => item.id === id);
+      if (!app) return;
+      const remarkValue = document.getElementById(`remark-${id}`).value.trim();
+      app.status = "Verified";
+      app.remarks = remarkValue || "Application verified by admin.";
+      renderCoachApplications();
+    }
+
+    function rejectCoach(id) {
+      const app = coachApplications.find(item => item.id === id);
+      if (!app) return;
+      const remarkValue = document.getElementById(`remark-${id}`).value.trim();
+      app.status = "Rejected";
+      app.remarks = remarkValue || "Application rejected by admin.";
+      renderCoachApplications();
+    }
+
+    function updateCounts() {
+      document.getElementById("totalPlayers").textContent = playerData.length;
+      document.getElementById("totalCoaches").textContent = 5;
+      document.getElementById("totalClubs").textContent = 4;
+      document.getElementById("pendingApplications").textContent =
+        coachApplications.filter(app => app.status === "Pending").length;
+    }
+
+    function createSingleReferee() {
+      const firstName = document.getElementById("refFirstName").value.trim();
+      const lastName = document.getElementById("refLastName").value.trim();
+      const refereeId = document.getElementById("refId").value.trim();
+      const refereeLevel = document.getElementById("refLevel").value;
+      const email = document.getElementById("refEmail").value.trim();
+      const result = document.getElementById("singleRefereeResult");
+
+      if (!firstName || !lastName || !refereeId || !refereeLevel || !email) {
+        result.textContent = "Please fill all referee fields before creating the ID.";
+        return;
+      }
+
+      result.textContent =
+        `Referee ID created successfully
+
+First Name: ${firstName}
+Last Name: ${lastName}
+Referee ID: ${refereeId}
+Referee Level: ${refereeLevel}
+Email: ${email}
+Default Password: Referee@123`;
+
+      document.getElementById("refFirstName").value = "";
+      document.getElementById("refLastName").value = "";
+      document.getElementById("refId").value = "";
+      document.getElementById("refLevel").value = "";
+      document.getElementById("refEmail").value = "";
+    }
+
+    function createBulkReferees() {
+      const input = document.getElementById("bulkRefereeInput").value.trim();
+      const result = document.getElementById("bulkRefereeResult");
+
+      if (!input) {
+        result.textContent = "Please paste OCR text first.";
+        return;
+      }
+
+      const lines = input.split("\n").map(line => line.trim()).filter(line => line !== "");
+      if (lines.length < 5) {
+        result.textContent = "Invalid OCR text. Each referee needs 5 rows.";
+        return;
+      }
+
+      const groups = [];
+      for (let i = 0; i < lines.length; i += 5) {
+        const block = lines.slice(i, i + 5);
+        if (block.length === 5) {
+          groups.push({
+            firstName: block[0],
+            lastName: block[1],
+            refereeId: block[2],
+            refereeLevel: block[3],
+            email: block[4]
+          });
+        }
+      }
+
+      if (groups.length === 0) {
+        result.textContent = "No valid referee block found.";
+        return;
+      }
+
+      let output = `Bulk referee IDs created successfully\nDefault Password for all: Referee@123\n\n`;
+      groups.forEach((ref, index) => {
+        output += `${index + 1}. ${ref.firstName} ${ref.lastName} | ${ref.refereeId} | ${ref.refereeLevel} | ${ref.email}\n`;
+      });
+
+      result.textContent = output;
+    }
+
+    function publishNotice() {
+      const title = document.getElementById("noticeTitle").value.trim();
+      const message = document.getElementById("noticeMessage").value.trim();
+      const noticeList = document.getElementById("noticeList");
+
+      if (!title || !message) {
+        alert("Please enter notice title and message.");
+        return;
+      }
+
+      const notice = {
+        title,
+        message,
+        date: new Date().toLocaleString()
+      };
+
+      notices.unshift(notice);
+
+      noticeList.innerHTML = notices.map(item => `
+        <div class="notice-card">
+          <h4>${item.title}</h4>
+          <p>${item.message}</p>
+          <p style="margin-top:10px; font-size:0.88rem;">Published: ${item.date}</p>
+        </div>
+      `).join("");
+
+      document.getElementById("noticeTitle").value = "";
+      document.getElementById("noticeMessage").value = "";
+    }
+
+renderInitialPlayers();
+renderCoachApplications();
+updateCounts();
+renderTournamentHostApplications();
+renderRefereePool();
+renderApprovedTournamentOptions();
+  </script>
+</body>
+</html>

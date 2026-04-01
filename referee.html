@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Referee Dashboard</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg:#050505;
+      --panel:rgba(255,255,255,0.06);
+      --panel2:rgba(255,255,255,0.08);
+      --border:rgba(255,255,255,0.12);
+      --white:#ffffff;
+      --soft:#cfcfcf;
+      --red:#d90429;
+      --blue:#1565ff;
+      --green:#22c55e;
+      --yellow:#f59e0b;
+      --shadow:0 18px 45px rgba(0,0,0,0.35);
+    }
+
+    body{
+      min-height:100vh;
+      background:linear-gradient(135deg,#020202,#09111f,#170407);
+      color:var(--white);
+      overflow-x:hidden;
+    }
+
+    .orb{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(25px);
+      opacity:.2;
+      z-index:0;
+      pointer-events:none;
+      animation:float 11s ease-in-out infinite;
+    }
+
+    .orb1{width:260px;height:260px;background:var(--red);top:5%;left:5%;}
+    .orb2{width:320px;height:320px;background:var(--blue);bottom:5%;right:5%;animation-delay:2s;}
+
+    @keyframes float{
+      0%,100%{transform:translateY(0) translateX(0);}
+      50%{transform:translateY(-18px) translateX(12px);}
+    }
+
+    .app{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:280px 1fr;
+      min-height:100vh;
+    }
+
+    .sidebar{
+      background:rgba(0,0,0,0.45);
+      border-right:1px solid var(--border);
+      padding:22px 16px;
+      backdrop-filter:blur(10px);
+      position:sticky;
+      top:0;
+      height:100vh;
+    }
+
+    .brand{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .brand h2{
+      margin-bottom:8px;
+      font-size:1.25rem;
+    }
+
+    .brand p{
+      color:var(--soft);
+      line-height:1.5;
+      font-size:.92rem;
+    }
+
+    .nav{
+      display:grid;
+      gap:10px;
+    }
+
+    .nav button, .nav a{
+      text-decoration:none;
+      display:block;
+      width:100%;
+      text-align:left;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--white);
+      font-weight:bold;
+      cursor:pointer;
+      transition:.25s ease;
+    }
+
+    .nav button:hover, .nav a:hover, .nav button.active{
+      background:linear-gradient(135deg,rgba(217,4,41,.15),rgba(21,101,255,.15));
+      transform:translateX(3px);
+    }
+
+    .main{
+      padding:22px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+
+    .topbar h1{
+      font-size:2rem;
+      margin-bottom:8px;
+    }
+
+    .topbar p{
+      color:var(--soft);
+      line-height:1.6;
+    }
+
+    .badge{
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:linear-gradient(to right,rgba(217,4,41,.16),rgba(21,101,255,.16));
+      font-weight:bold;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .card h3{
+      font-size:1rem;
+      margin-bottom:8px;
+    }
+
+    .big{
+      font-size:2rem;
+      font-weight:bold;
+      margin-bottom:6px;
+      line-height:1.15;
+    }
+
+    .soft{
+      color:var(--soft);
+      line-height:1.5;
+    }
+
+    .section{
+      display:none;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:20px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .section.active{
+      display:block;
+    }
+
+    .section h2{
+      margin-bottom:8px;
+      font-size:1.45rem;
+    }
+
+    .section-desc{
+      color:var(--soft);
+      line-height:1.6;
+      margin-bottom:18px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1.05fr 1.35fr;
+      gap:20px;
+    }
+
+    .form-group{
+      display:grid;
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    label{
+      font-weight:bold;
+      font-size:.95rem;
+    }
+
+    input, select, textarea{
+      width:100%;
+      min-height:48px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--white);
+      outline:none;
+      font-size:.95rem;
+    }
+
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(21,101,255,.16);
+    }
+
+    .btn-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin-top:8px;
+    }
+
+    .btn{
+      min-height:48px;
+      padding:12px 14px;
+      border:none;
+      border-radius:14px;
+      color:var(--white);
+      font-weight:bold;
+      cursor:pointer;
+      transition:.25s ease;
+    }
+
+    .btn:hover{transform:translateY(-2px);}
+    .btn-primary{background:linear-gradient(to right,var(--red),var(--blue));}
+    .btn-secondary{background:rgba(255,255,255,.07);border:1px solid var(--border);}
+    .btn-danger{background:rgba(217,4,41,.18);border:1px solid rgba(217,4,41,.3);}
+    .btn-warning{background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.3);}
+    .btn-success{background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.3);}
+
+    .schedule-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .schedule-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .schedule-card h4{
+      margin-bottom:6px;
+    }
+
+    .schedule-card p{
+      color:var(--soft);
+      line-height:1.5;
+      font-size:.92rem;
+    }
+
+    .mini-chip{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(21,101,255,.16);
+      border:1px solid rgba(21,101,255,.3);
+      font-size:.82rem;
+      font-weight:bold;
+      margin-top:8px;
+    }
+
+    .score-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:20px;
+      margin-top:18px;
+    }
+
+    .score-card{
+      background:linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      box-shadow:0 12px 30px rgba(0,0,0,.2);
+    }
+
+    .score-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .score-head h3{
+      margin-bottom:4px;
+    }
+
+    .score-head p{
+      color:var(--soft);
+      font-size:.9rem;
+      line-height:1.4;
+    }
+
+    .score-badge{
+      min-width:78px;
+      text-align:center;
+      padding:12px 14px;
+      border-radius:14px;
+      font-size:1.4rem;
+      font-weight:bold;
+      background:linear-gradient(135deg, rgba(217,4,41,.18), rgba(21,101,255,.18));
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    .progress-wrap{
+      margin-bottom:14px;
+    }
+
+    .progress-bar{
+      width:100%;
+      height:16px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .progress-fill{
+      height:100%;
+      width:100%;
+      border-radius:999px;
+      background:linear-gradient(to right, var(--red), var(--blue));
+      transition:width .25s ease;
+    }
+
+    .accuracy-fill{
+      background:linear-gradient(to right, #1565ff, #4cc9f0);
+    }
+
+    .deduction-info{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+      color:var(--soft);
+      font-size:.92rem;
+    }
+
+    .improved-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-top:16px;
+    }
+
+    .score-btn{
+      min-height:92px;
+      border:none;
+      border-radius:18px;
+      cursor:pointer;
+      color:var(--white);
+      font-weight:bold;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:16px 14px;
+      transition:.25s ease;
+      box-shadow:0 10px 24px rgba(0,0,0,.2);
+    }
+
+    .score-btn:hover{
+      transform:translateY(-2px) scale(1.01);
+    }
+
+    .score-btn:active{
+      transform:scale(.98);
+    }
+
+    .score-btn-label{
+      font-size:1.05rem;
+      font-weight:700;
+      letter-spacing:.3px;
+    }
+
+    .score-btn-value{
+      font-size:1.2rem;
+      font-weight:800;
+    }
+
+    .score-btn-minor{
+      background:linear-gradient(135deg, rgba(245,158,11,.28), rgba(245,158,11,.16));
+      border:1px solid rgba(245,158,11,.38);
+    }
+
+    .score-btn-major{
+      background:linear-gradient(135deg, rgba(217,4,41,.28), rgba(217,4,41,.16));
+      border:1px solid rgba(217,4,41,.38);
+    }
+
+    .total-score-panel{
+      margin-top:18px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:linear-gradient(135deg, rgba(217,4,41,.12), rgba(21,101,255,.12));
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .total-score-panel h3{
+      margin-bottom:4px;
+    }
+
+    .total-score-panel p{
+      color:var(--soft);
+    }
+
+    .total-score-value{
+      font-size:2.5rem;
+      font-weight:bold;
+      line-height:1;
+      background:linear-gradient(to right, #ffffff, #cfd8ff);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .final-box{
+      margin-top:16px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      color:var(--soft);
+      line-height:1.7;
+      white-space:pre-wrap;
+    }
+
+    .line-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin-top:16px;
+    }
+
+    .line-card canvas{
+      width:100%;
+      height:260px;
+      display:block;
+      background:rgba(255,255,255,.03);
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .right-panel{
+      margin-top:20px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,0.35);
+      padding:18px;
+      border-radius:24px;
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow);
+    }
+
+    .external-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .switch{
+      position:relative;
+      display:inline-block;
+      width:58px;
+      height:30px;
+    }
+
+    .switch input{display:none;}
+
+    .slider{
+      position:absolute;
+      inset:0;
+      background:#444;
+      border-radius:999px;
+      cursor:pointer;
+      transition:.25s ease;
+    }
+
+    .slider:before{
+      content:"";
+      position:absolute;
+      width:24px;
+      height:24px;
+      left:3px;
+      top:3px;
+      background:white;
+      border-radius:50%;
+      transition:.25s ease;
+    }
+
+    input:checked + .slider{
+      background:linear-gradient(to right,var(--red),var(--blue));
+    }
+
+    input:checked + .slider:before{
+      transform:translateX(28px);
+    }
+
+    .external-screen{
+      min-height:420px;
+      border-radius:22px;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(circle at center, rgba(21,101,255,.12), transparent 35%),
+        linear-gradient(145deg, rgba(0,0,0,.75), rgba(255,255,255,.03));
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+
+    .taekwondo-idle{
+      width:100%;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:24px;
+    }
+
+    .tkd-stage{
+      position:relative;
+      width:100%;
+      max-width:320px;
+      height:280px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+
+    .light{
+      position:absolute;
+      top:10px;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      filter:blur(28px);
+      opacity:.22;
+    }
+
+    .light-left{
+      left:15px;
+      background:var(--red);
+    }
+
+    .light-right{
+      right:15px;
+      background:var(--blue);
+    }
+
+    .fighter{
+      position:relative;
+      width:120px;
+      height:220px;
+      animation:fighterMove 2.2s ease-in-out infinite;
+    }
+
+    .fighter-head{
+      position:absolute;
+      top:10px;
+      left:46px;
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      background:#f4f4f4;
+      box-shadow:0 0 18px rgba(255,255,255,.15);
+    }
+
+    .fighter-body{
+      position:absolute;
+      top:40px;
+      left:50px;
+      width:20px;
+      height:70px;
+      border-radius:12px;
+      background:linear-gradient(to bottom, #ffffff, #d9d9d9);
+    }
+
+    .fighter-arm,
+    .fighter-leg{
+      position:absolute;
+      transform-origin:top center;
+      border-radius:10px;
+      background:linear-gradient(to bottom, #e8e8e8, #bfbfbf);
+    }
+
+    .arm-left{
+      top:48px;
+      left:30px;
+      width:14px;
+      height:58px;
+      transform:rotate(35deg);
+      animation:armLeftMove 2.2s ease-in-out infinite;
+    }
+
+    .arm-right{
+      top:48px;
+      left:76px;
+      width:14px;
+      height:64px;
+      transform:rotate(-55deg);
+      animation:armRightMove 2.2s ease-in-out infinite;
+    }
+
+    .leg-left{
+      top:104px;
+      left:48px;
+      width:16px;
+      height:78px;
+      transform:rotate(8deg);
+    }
+
+    .leg-right{
+      top:98px;
+      left:70px;
+      width:16px;
+      height:95px;
+      transform:rotate(-20deg);
+      animation:kickMove 2.2s ease-in-out infinite;
+    }
+
+    .kick-trail{
+      position:absolute;
+      top:108px;
+      left:82px;
+      width:80px;
+      height:14px;
+      border-radius:999px;
+      background:linear-gradient(to right, rgba(21,101,255,.75), rgba(217,4,41,0));
+      filter:blur(2px);
+      opacity:0;
+      animation:kickTrail 2.2s ease-in-out infinite;
+    }
+
+    .floor-line{
+      position:absolute;
+      bottom:18px;
+      width:85%;
+      height:4px;
+      border-radius:999px;
+      background:linear-gradient(to right, rgba(217,4,41,.5), rgba(21,101,255,.5));
+      box-shadow:0 0 20px rgba(255,255,255,.08);
+    }
+
+    .idle-caption{
+      text-align:center;
+    }
+
+    .idle-title{
+      font-size:1.4rem;
+      font-weight:bold;
+      letter-spacing:1px;
+      margin-bottom:8px;
+    }
+
+    .idle-subtitle{
+      color:var(--soft);
+      line-height:1.6;
+      max-width:300px;
+    }
+
+    @keyframes fighterMove{
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(-8px);}
+    }
+
+    @keyframes armLeftMove{
+      0%,100%{transform:rotate(35deg);}
+      50%{transform:rotate(5deg);}
+    }
+
+    @keyframes armRightMove{
+      0%,100%{transform:rotate(-55deg);}
+      50%{transform:rotate(-15deg);}
+    }
+
+    @keyframes kickMove{
+      0%,100%{transform:rotate(-20deg);}
+      35%{transform:rotate(-20deg);}
+      50%{transform:rotate(-88deg);}
+      65%{transform:rotate(-20deg);}
+    }
+
+    @keyframes kickTrail{
+      0%,100%{opacity:0; transform:translateX(0) scaleX(.5);}
+      45%{opacity:0;}
+      50%{opacity:1; transform:translateX(8px) scaleX(1);}
+      65%{opacity:0;}
+    }
+
+    .external-active h2{
+      font-size:2rem;
+      margin-bottom:14px;
+    }
+
+    .external-active .score-display{
+      font-size:4rem;
+      font-weight:bold;
+      margin-top:16px;
+      background:linear-gradient(to right,var(--red),var(--blue));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .countdown-box{
+      margin-top:16px;
+      padding:14px;
+      border-radius:16px;
+      background:rgba(245,158,11,.12);
+      border:1px solid rgba(245,158,11,.22);
+    }
+
+    .countdown-box strong{
+      display:block;
+      font-size:1.2rem;
+      margin-bottom:6px;
+    }
+
+    .rule-links{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .rule-links a{
+      text-decoration:none;
+      color:var(--white);
+      background:linear-gradient(135deg, rgba(217,4,41,.12), rgba(21,101,255,.12));
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px 16px;
+      font-weight:bold;
+      transition:.25s ease;
+    }
+
+    .rule-links a:hover{
+      transform:translateX(4px);
+    }
+
+    .helper{
+      color:var(--soft);
+      font-size:.9rem;
+      line-height:1.5;
+      margin-top:8px;
+    }
+
+    .mobile-menu{
+      display:none;
+      position:sticky;
+      top:0;
+      z-index:10;
+      padding:12px;
+      background:rgba(0,0,0,.6);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(8px);
+    }
+
+    .mobile-menu button{
+      width:100%;
+      min-height:46px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:rgba(255,255,255,.06);
+      color:var(--white);
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    @media (max-width:1280px){
+      .app{
+        grid-template-columns:250px 1fr;
+      }
+      .stats{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+      }
+    }
+
+    @media (max-width:1000px){
+      .stats{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .grid-2, .score-grid, .btn-row{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:900px){
+      .app{
+        grid-template-columns:1fr;
+      }
+      .mobile-menu{
+        display:block;
+      }
+      .sidebar{
+        position:fixed;
+        top:61px;
+        left:0;
+        width:280px;
+        transform:translateX(-100%);
+        transition:.3s ease;
+        z-index:20;
+      }
+      .sidebar.open{
+        transform:translateX(0);
+      }
+      .main{
+        padding:16px;
+      }
+    }
+
+    @media (max-width:700px){
+      .improved-actions{
+        grid-template-columns:1fr;
+        gap:12px;
+      }
+
+      .score-btn{
+        min-height:78px;
+        border-radius:16px;
+      }
+
+      .score-btn-label{
+        font-size:.96rem;
+      }
+
+      .score-btn-value{
+        font-size:1.05rem;
+      }
+    }
+
+    @media (max-width:640px){
+      .stats{
+        grid-template-columns:1fr;
+      }
+      .topbar h1{
+        font-size:1.6rem;
+      }
+      .section, .card{
+        border-radius:18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="mobile-menu">
+    <button id="menuToggle">☰ Open Referee Menu</button>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <h2>Referee Panel</h2>
+        <p>Hi Ref, let’s give the best judgement in a real modern way.</p>
+      </div>
+
+      <div class="nav">
+        <button class="nav-btn active" data-section="overviewSection">📊 Overview</button>
+        <button class="nav-btn" data-section="scheduleSection">📅 Schedule</button>
+        <button class="nav-btn" data-section="gameSection">🎯 Live Judging</button>
+        <button class="nav-btn" data-section="instructionSection">📘 Instructions & Rules</button>
+        <a href="login.html">↩ Back to Login</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Hi Ref, Let’s Give the Best Judgement</h1>
+          <p>Monitor rank, points, schedules, performance history, and live judging from one dashboard.</p>
+        </div>
+        <div class="badge" id="refNameBadge">Referee: Ram Sharma</div>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <h3>Promotion Status</h3>
+          <div class="big" id="promotionTarget">Next: District</div>
+          <div class="soft" id="promotionProgress">Complete more matches to unlock the next rank.</div>
+        </div>
+
+        <div class="card">
+          <h3>Referee Rank</h3>
+          <div class="big" id="refRank">Fresher Referee</div>
+          <div class="soft" id="rankGuideText">Rank is based on total games experience.</div>
+        </div>
+
+        <div class="card">
+          <h3>Referee Points</h3>
+          <div class="big" id="refPoints">1840</div>
+          <div class="soft">Performance and participation points.</div>
+        </div>
+
+        <div class="card">
+          <h3>Games Judged</h3>
+          <div class="big" id="gamesCount">42</div>
+          <div class="soft">Total matches completed by this referee.</div>
+        </div>
+
+        <div class="card">
+          <h3>Refresher Countdown</h3>
+          <div class="big" id="countdownDays">365</div>
+          <div class="soft" id="countdownStatus">Days remaining before refresher course is required.</div>
+        </div>
+      </div>
+
+      <section class="section active" id="overviewSection">
+        <h2>Referee Overview</h2>
+        <p class="section-desc">Track judging activity and see complete game history in a line graph.</p>
+
+        <div class="line-card">
+          <h3 style="margin-bottom:12px;">Games Completed Trend</h3>
+          <canvas id="gamesChart" width="900" height="260"></canvas>
+          <div class="helper">Graph shows judged games over time for this referee.</div>
+        </div>
+
+        <div class="countdown-box">
+          <strong id="refresherText">365 days left for refresher course</strong>
+          <span class="soft">When the countdown reaches 0, the dashboard will notify that refresher course is required.</span>
+        </div>
+      </section>
+
+      <section class="section" id="scheduleSection">
+        <h2>Schedule</h2>
+        <p class="section-desc">
+          Approved schedules from admin will appear here. Select the assigned game and enter live judging.
+        </p>
+        <div class="schedule-list" id="scheduleList"></div>
+      </section>
+
+      <section class="section" id="gameSection">
+        <h2>Live Judging</h2>
+        <p class="section-desc">
+          Select a scheduled game, choose player from tiesheet, use deductions for Presentation and Accuracy, then submit final result.
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="form-group">
+              <label for="scheduledGameSelect">Scheduled Game</label>
+              <select id="scheduledGameSelect"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="playerSelect">Tiesheet / Player</label>
+              <select id="playerSelect"></select>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="loadSelectedPlayer()">Load Player</button>
+              <button class="btn btn-secondary" onclick="resetScoring()">Reset Score</button>
+              <button class="btn btn-success" onclick="submitFinalResult()">Final Result</button>
+            </div>
+
+            <div class="final-box" id="currentPlayerBox">No player selected yet.</div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-bottom:10px;">Scoring System</h3>
+            <p class="soft">Presentation starts from 6.0 and Accuracy starts from 4.0. Deduct using Minor and Major buttons.</p>
+
+            <div class="score-grid">
+              <div class="score-card">
+                <div class="score-head">
+                  <div>
+                    <h3>Presentation</h3>
+                    <p>Maximum 6.0 points</p>
+                  </div>
+                  <div class="score-badge" id="presentationScore">6.0</div>
+                </div>
+
+                <div class="progress-wrap">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="presentationBar"></div>
+                  </div>
+                </div>
+
+                <div class="deduction-info">
+                  <span>Minor deductions: <strong id="presentationMinorCount">0</strong></span>
+                  <span>Major deductions: <strong id="presentationMajorCount">0</strong></span>
+                </div>
+
+                <div class="improved-actions">
+                  <button class="score-btn score-btn-minor" onclick="deductPresentation('minor')">
+                    <span class="score-btn-label">Minor</span>
+                    <span class="score-btn-value">-0.1</span>
+                  </button>
+                  <button class="score-btn score-btn-major" onclick="deductPresentation('major')">
+                    <span class="score-btn-label">Major</span>
+                    <span class="score-btn-value">-0.3</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="score-card">
+                <div class="score-head">
+                  <div>
+                    <h3>Accuracy</h3>
+                    <p>Maximum 4.0 points</p>
+                  </div>
+                  <div class="score-badge" id="accuracyScore">4.0</div>
+                </div>
+
+                <div class="progress-wrap">
+                  <div class="progress-bar">
+                    <div class="progress-fill accuracy-fill" id="accuracyBar"></div>
+                  </div>
+                </div>
+
+                <div class="deduction-info">
+                  <span>Minor deductions: <strong id="accuracyMinorCount">0</strong></span>
+                  <span>Major deductions: <strong id="accuracyMajorCount">0</strong></span>
+                </div>
+
+                <div class="improved-actions">
+                  <button class="score-btn score-btn-minor" onclick="deductAccuracy('minor')">
+                    <span class="score-btn-label">Minor</span>
+                    <span class="score-btn-value">-0.1</span>
+                  </button>
+                  <button class="score-btn score-btn-major" onclick="deductAccuracy('major')">
+                    <span class="score-btn-label">Major</span>
+                    <span class="score-btn-value">-0.3</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="total-score-panel">
+              <div>
+                <h3>Total Score</h3>
+                <p>Presentation + Accuracy</p>
+              </div>
+              <div class="total-score-value" id="totalScoreValue">10.0</div>
+            </div>
+
+            <div class="final-box" id="finalResultBox">No final result submitted yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="instructionSection">
+        <h2>Instructions, Rules, and Updates</h2>
+        <p class="section-desc">
+          Explore official rules and official education/update pages from World Taekwondo and Kukkiwon/WTA.
+        </p>
+
+        <div class="rule-links">
+          <a href="https://www.worldtaekwondo.org/rules-wt/rules.html" target="_blank" rel="noopener noreferrer">
+            Open Official World Taekwondo Rules
+          </a>
+          <a href="https://wta.kukkiwon.or.kr/en/laboratoryIntroduce/list?lang=en&menuid=104&topMenuid=103" target="_blank" rel="noopener noreferrer">
+            Open Kukkiwon World Taekwondo Academy
+          </a>
+          <a href="https://wta.kukkiwon.or.kr/en/trainingProcess/list" target="_blank" rel="noopener noreferrer">
+            Open Kukkiwon Training & Education Pages
+          </a>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h3 style="margin-bottom:10px;">Referee Instructions</h3>
+          <p class="soft">
+            Before entering a match, confirm your arena, schedule, and player. While judging, use deductions carefully and submit final result only after checking both Presentation and Accuracy.
+          </p>
+        </div>
+      </section>
+
+      <aside class="right-panel">
+        <div class="external-header">
+          <div>
+            <h3 style="margin-bottom:6px;">External Screen</h3>
+            <p class="soft">Switch display on or off for audience/player screen.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="externalToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="external-screen" id="externalScreen">
+          <div class="taekwondo-idle" id="idleScreen">
+            <div class="tkd-stage">
+              <div class="light light-left"></div>
+              <div class="light light-right"></div>
+
+              <div class="fighter">
+                <div class="fighter-head"></div>
+                <div class="fighter-body"></div>
+                <div class="fighter-arm arm-left"></div>
+                <div class="fighter-arm arm-right"></div>
+                <div class="fighter-leg leg-left"></div>
+                <div class="fighter-leg leg-right"></div>
+                <div class="kick-trail"></div>
+              </div>
+
+              <div class="floor-line"></div>
+            </div>
+
+            <div class="idle-caption">
+              <div class="idle-title">READY FOR PERFORMANCE</div>
+              <div class="idle-subtitle">External display will show athlete name and final score when activated</div>
+            </div>
+          </div>
+
+          <div class="external-active" id="activeScreen" style="display:none;">
+            <h2 id="externalPlayerName">Player Name</h2>
+            <p class="soft">Current performer on screen</p>
+            <div class="score-display" id="externalScore">10.0</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const refereeProfile = {
+      name: "Ram Sharma",
+      points: 1840,
+      gamesCount: 42,
+      countdown: 365,
+      history: [2, 4, 3, 5, 6, 4, 7, 5, 6, 8, 7, 9],
+      schedule: [
+        {
+          id: 1,
+          title: "Poomsae Individual - Juniors",
+          date: "2026-04-05",
+          time: "10:00 AM",
+          arena: "Arena A",
+          tiesheet: ["Aarav Shrestha", "Sujal Karki", "Sanjana Gurung"]
+        },
+        {
+          id: 2,
+          title: "Poomsae Pair - Adults",
+          date: "2026-04-05",
+          time: "1:00 PM",
+          arena: "Arena B",
+          tiesheet: ["Riya & Kripa", "Pair Everest A", "Pair Tiger A"]
+        },
+        {
+          id: 3,
+          title: "Poomsae Group - Cadets",
+          date: "2026-04-06",
+          time: "11:00 AM",
+          arena: "Arena C",
+          tiesheet: ["Young Tigers Team A", "Dragon Group A", "Everest Group B"]
+        }
+      ]
+    };
+
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const sections = document.querySelectorAll(".section");
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menuToggle");
+
+    const refNameBadge = document.getElementById("refNameBadge");
+    const refRank = document.getElementById("refRank");
+    const refPoints = document.getElementById("refPoints");
+    const gamesCount = document.getElementById("gamesCount");
+    const countdownDays = document.getElementById("countdownDays");
+    const countdownStatus = document.getElementById("countdownStatus");
+    const refresherText = document.getElementById("refresherText");
+
+    const scheduleList = document.getElementById("scheduleList");
+    const scheduledGameSelect = document.getElementById("scheduledGameSelect");
+    const playerSelect = document.getElementById("playerSelect");
+    const currentPlayerBox = document.getElementById("currentPlayerBox");
+    const finalResultBox = document.getElementById("finalResultBox");
+
+    const externalToggle = document.getElementById("externalToggle");
+    const externalPlayerName = document.getElementById("externalPlayerName");
+    const externalScore = document.getElementById("externalScore");
+    const idleScreen = document.getElementById("idleScreen");
+    const activeScreen = document.getElementById("activeScreen");
+
+    let presentation = 6.0;
+    let accuracy = 4.0;
+    let presentationMinor = 0;
+    let presentationMajor = 0;
+    let accuracyMinor = 0;
+    let accuracyMajor = 0;
+    let selectedPlayer = "";
+    let currentGameId = null;
+
+    function openSection(sectionId){
+      sections.forEach(section => section.classList.remove("active"));
+      document.getElementById(sectionId).classList.add("active");
+
+      navButtons.forEach(btn => btn.classList.remove("active"));
+      const activeBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
+      if(activeBtn) activeBtn.classList.add("active");
+
+      if(window.innerWidth <= 900){
+        sidebar.classList.remove("open");
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener("click", function(){
+        const sectionId = this.getAttribute("data-section");
+        if(sectionId) openSection(sectionId);
+      });
+    });
+
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+
+    function getRefereeRank(totalGames) {
+      if (totalGames >= 60) {
+        return "National Referee — Eligible for International Referee Course";
+      } else if (totalGames >= 35) {
+        return "National Referee";
+      } else if (totalGames >= 25) {
+        return "Provincial Referee";
+      } else if (totalGames >= 15) {
+        return "District Referee";
+      } else {
+        return "Fresher Referee";
+      }
+    }
+
+    function updateRankMessage(totalGames) {
+      const rankGuideText = document.getElementById("rankGuideText");
+      if (!rankGuideText) return;
+
+      if (totalGames >= 60) {
+        rankGuideText.textContent = "This referee is eligible for the International Referee Course.";
+      } else if (totalGames >= 35) {
+        rankGuideText.textContent = "National referee level achieved.";
+      } else if (totalGames >= 25) {
+        rankGuideText.textContent = "Provincial referee level achieved.";
+      } else if (totalGames >= 15) {
+        rankGuideText.textContent = "District referee level achieved.";
+      } else {
+        rankGuideText.textContent = (15 - totalGames) + " more games needed to reach District Referee.";
+      }
+    }
+
+    function updatePromotionStatus(totalGames) {
+      const promotionTarget = document.getElementById("promotionTarget");
+      const promotionProgress = document.getElementById("promotionProgress");
+
+      if (!promotionTarget || !promotionProgress) return;
+
+      if (totalGames >= 60) {
+        promotionTarget.textContent = "International Course Eligible";
+        promotionProgress.textContent = "You have completed 60+ games. Eligible for International Referee Course.";
+      } else if (totalGames >= 35) {
+        promotionTarget.textContent = "Next: IR Referee Course";
+        promotionProgress.textContent = (60 - totalGames) + " more games needed to qualify for International Referee Course.";
+      } else if (totalGames >= 25) {
+        promotionTarget.textContent = "Next: National";
+        promotionProgress.textContent = (35 - totalGames) + " more games needed to become National Referee.";
+      } else if (totalGames >= 15) {
+        promotionTarget.textContent = "Next: Provincial";
+        promotionProgress.textContent = (25 - totalGames) + " more games needed to become Provincial Referee.";
+      } else {
+        promotionTarget.textContent = "Next: District";
+        promotionProgress.textContent = (15 - totalGames) + " more games needed to become District Referee.";
+      }
+    }
+
+    function loadProfile() {
+      const totalGames = Number(refereeProfile.gamesCount);
+
+      refNameBadge.textContent = "Referee: " + refereeProfile.name;
+      refRank.textContent = getRefereeRank(totalGames);
+      refPoints.textContent = refereeProfile.points;
+      gamesCount.textContent = totalGames;
+      countdownDays.textContent = refereeProfile.countdown;
+
+      if (refereeProfile.countdown <= 0) {
+        countdownStatus.textContent = "Refresher course required now.";
+        refresherText.textContent = "Refresher course required now";
+      } else {
+        countdownStatus.textContent = "Days remaining before refresher course is required.";
+        refresherText.textContent = refereeProfile.countdown + " days left for refresher course";
+      }
+
+      updateRankMessage(totalGames);
+      updatePromotionStatus(totalGames);
+    }
+
+    function updateScoreUI(){
+      document.getElementById("presentationScore").textContent = presentation.toFixed(1);
+      document.getElementById("accuracyScore").textContent = accuracy.toFixed(1);
+
+      document.getElementById("presentationMinorCount").textContent = presentationMinor;
+      document.getElementById("presentationMajorCount").textContent = presentationMajor;
+      document.getElementById("accuracyMinorCount").textContent = accuracyMinor;
+      document.getElementById("accuracyMajorCount").textContent = accuracyMajor;
+
+      document.getElementById("presentationBar").style.width = ((presentation / 6) * 100) + "%";
+      document.getElementById("accuracyBar").style.width = ((accuracy / 4) * 100) + "%";
+      document.getElementById("totalScoreValue").textContent = (presentation + accuracy).toFixed(1);
+    }
+
+    function drawGraph(){
+      const canvas = document.getElementById("gamesChart");
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+      const data = refereeProfile.history;
+      const padding = 40;
+      const maxVal = Math.max(...data, 10);
+
+      ctx.clearRect(0,0,w,h);
+
+      ctx.strokeStyle = "rgba(255,255,255,0.15)";
+      ctx.lineWidth = 1;
+
+      for(let i=0; i<5; i++){
+        const y = padding + ((h - padding * 2) / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(w - padding, y);
+        ctx.stroke();
+      }
+
+      for(let i=0; i<data.length; i++){
+        const x = padding + ((w - padding * 2) / (data.length - 1)) * i;
+        ctx.fillStyle = "rgba(255,255,255,0.7)";
+        ctx.font = "12px Arial";
+        ctx.fillText("M" + (i + 1), x - 10, h - 12);
+      }
+
+      ctx.beginPath();
+      data.forEach((value, index) => {
+        const x = padding + ((w - padding * 2) / (data.length - 1)) * index;
+        const y = h - padding - ((h - padding * 2) * value / maxVal);
+        if(index === 0){
+          ctx.moveTo(x, y);
+        }else{
+          ctx.lineTo(x, y);
+        }
+      });
+
+      const grad = ctx.createLinearGradient(0,0,w,0);
+      grad.addColorStop(0, "#d90429");
+      grad.addColorStop(1, "#1565ff");
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      data.forEach((value, index) => {
+        const x = padding + ((w - padding * 2) / (data.length - 1)) * index;
+        const y = h - padding - ((h - padding * 2) * value / maxVal);
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+      });
+    }
+
+    function renderSchedule(){
+      scheduleList.innerHTML = refereeProfile.schedule.map(item => `
+        <div class="schedule-card">
+          <div>
+            <h4>${item.title}</h4>
+            <p>Date: ${item.date} | Time: ${item.time}</p>
+            <span class="mini-chip">${item.arena}</span>
+          </div>
+          <div>
+            <button class="btn btn-primary" onclick="enterGame(${item.id})">Enter Game</button>
+          </div>
+        </div>
+      `).join("");
+
+      scheduledGameSelect.innerHTML = `<option value="">Select Scheduled Game</option>` +
+        refereeProfile.schedule.map(item => `
+          <option value="${item.id}">${item.title} - ${item.arena} - ${item.date}</option>
+        `).join("");
+    }
+
+    function enterGame(gameId){
+      currentGameId = gameId;
+      scheduledGameSelect.value = String(gameId);
+      populatePlayersByGame(gameId);
+      openSection("gameSection");
+    }
+
+    function populatePlayersByGame(gameId){
+      const game = refereeProfile.schedule.find(item => item.id === Number(gameId));
+      if(!game){
+        playerSelect.innerHTML = `<option value="">Select Player</option>`;
+        return;
+      }
+
+      playerSelect.innerHTML = `<option value="">Select Player</option>` +
+        game.tiesheet.map(name => `<option value="${name}">${name}</option>`).join("");
+    }
+
+    scheduledGameSelect.addEventListener("change", function(){
+      const gameId = this.value;
+      currentGameId = gameId ? Number(gameId) : null;
+      populatePlayersByGame(gameId);
+    });
+
+    function loadSelectedPlayer(){
+      selectedPlayer = playerSelect.value;
+      if(!selectedPlayer){
+        currentPlayerBox.textContent = "Please select a player from the tiesheet.";
+        return;
+      }
+
+      currentPlayerBox.textContent =
+        `Current Player: ${selectedPlayer}
+Presentation: ${presentation.toFixed(1)}
+Accuracy: ${accuracy.toFixed(1)}
+Total: ${(presentation + accuracy).toFixed(1)}`;
+
+      updateExternalDisplay();
+    }
+
+    function deductPresentation(type){
+      if(type === "minor"){
+        presentation = Math.max(0, presentation - 0.1);
+        presentationMinor++;
+      }
+      if(type === "major"){
+        presentation = Math.max(0, presentation - 0.3);
+        presentationMajor++;
+      }
+      updateScoreUI();
+      refreshCurrentPlayerPreview();
+    }
+
+    function deductAccuracy(type){
+      if(type === "minor"){
+        accuracy = Math.max(0, accuracy - 0.1);
+        accuracyMinor++;
+      }
+      if(type === "major"){
+        accuracy = Math.max(0, accuracy - 0.3);
+        accuracyMajor++;
+      }
+      updateScoreUI();
+      refreshCurrentPlayerPreview();
+    }
+
+    function refreshCurrentPlayerPreview(){
+      if(!selectedPlayer) return;
+      currentPlayerBox.textContent =
+        `Current Player: ${selectedPlayer}
+Presentation: ${presentation.toFixed(1)}
+Accuracy: ${accuracy.toFixed(1)}
+Total: ${(presentation + accuracy).toFixed(1)}`;
+      updateExternalDisplay();
+    }
+
+    function resetScoring(){
+      presentation = 6.0;
+      accuracy = 4.0;
+      presentationMinor = 0;
+      presentationMajor = 0;
+      accuracyMinor = 0;
+      accuracyMajor = 0;
+      selectedPlayer = "";
+      updateScoreUI();
+      currentPlayerBox.textContent = "No player selected yet.";
+      finalResultBox.textContent = "No final result submitted yet.";
+      updateExternalDisplay();
+    }
+
+    function submitFinalResult(){
+      if(!selectedPlayer){
+        finalResultBox.textContent = "Please load a player before submitting final result.";
+        return;
+      }
+
+      const total = (presentation + accuracy).toFixed(1);
+      finalResultBox.textContent =
+        `Final Result Submitted
+
+Player: ${selectedPlayer}
+Presentation: ${presentation.toFixed(1)}   | Minor: ${presentationMinor} | Major: ${presentationMajor}
+Accuracy: ${accuracy.toFixed(1)}   | Minor: ${accuracyMinor} | Major: ${accuracyMajor}
+Final Score: ${total} / 10`;
+
+      updateExternalDisplay(true);
+    }
+
+    function updateExternalDisplay(showSubmittedScore = false){
+      const isOn = externalToggle.checked;
+
+      if(!isOn){
+        idleScreen.style.display = "flex";
+        activeScreen.style.display = "none";
+        return;
+      }
+
+      if(!selectedPlayer){
+        idleScreen.style.display = "flex";
+        activeScreen.style.display = "none";
+        return;
+      }
+
+      idleScreen.style.display = "none";
+      activeScreen.style.display = "block";
+      externalPlayerName.textContent = selectedPlayer;
+      externalScore.textContent = (presentation + accuracy).toFixed(1);
+    }
+
+    externalToggle.addEventListener("change", function(){
+      updateExternalDisplay();
+    });
+
+    loadProfile();
+    renderSchedule();
+    drawGraph();
+    updateExternalDisplay();
+    updateScoreUI();
+  </script>
+</body>
+</html>

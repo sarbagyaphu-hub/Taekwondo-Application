@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coach Dashboard</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg:#050505;
+      --panel:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+      --white:#fff;
+      --soft:#cfcfcf;
+      --red:#d90429;
+      --blue:#1565ff;
+      --green:#22c55e;
+      --yellow:#f59e0b;
+      --shadow:0 18px 45px rgba(0,0,0,0.35);
+    }
+
+    body{
+      min-height:100vh;
+      background:linear-gradient(135deg,#020202,#09111f,#170407);
+      color:var(--white);
+      overflow-x:hidden;
+    }
+
+    .orb{
+      position:fixed;
+      border-radius:50%;
+      filter:blur(24px);
+      opacity:.2;
+      z-index:0;
+      pointer-events:none;
+      animation:float 10s ease-in-out infinite;
+    }
+    .orb1{width:260px;height:260px;background:var(--red);top:5%;left:4%;}
+    .orb2{width:300px;height:300px;background:var(--blue);bottom:5%;right:4%;animation-delay:2s;}
+
+    @keyframes float{
+      0%,100%{transform:translateY(0) translateX(0);}
+      50%{transform:translateY(-16px) translateX(10px);}
+    }
+
+    .mobile-menu{
+      display:none;
+      position:sticky;
+      top:0;
+      z-index:10;
+      padding:12px;
+      background:rgba(0,0,0,.6);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--border);
+    }
+
+    .mobile-menu button{
+      width:100%;
+      min-height:46px;
+      border:none;
+      border-radius:12px;
+      background:rgba(255,255,255,.08);
+      color:var(--white);
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .app{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:280px 1fr;
+      min-height:100vh;
+    }
+
+    .sidebar{
+      background:rgba(0,0,0,.45);
+      border-right:1px solid var(--border);
+      padding:22px 16px;
+      backdrop-filter:blur(10px);
+      position:sticky;
+      top:0;
+      height:100vh;
+    }
+
+    .brand{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .brand h2{
+      margin-bottom:8px;
+      font-size:1.25rem;
+    }
+
+    .brand p{
+      color:var(--soft);
+      line-height:1.5;
+      font-size:.92rem;
+    }
+
+    .nav{
+      display:grid;
+      gap:10px;
+    }
+
+    .nav button, .nav a{
+      width:100%;
+      text-align:left;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--white);
+      text-decoration:none;
+      font-weight:bold;
+      cursor:pointer;
+      transition:.25s ease;
+    }
+
+    .nav button:hover, .nav button.active, .nav a:hover{
+      background:linear-gradient(135deg,rgba(217,4,41,.15),rgba(21,101,255,.15));
+      transform:translateX(3px);
+    }
+
+    .main{
+      padding:22px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      margin-bottom:20px;
+    }
+
+    .topbar h1{
+      font-size:2rem;
+      margin-bottom:8px;
+    }
+
+    .topbar p{
+      color:var(--soft);
+      line-height:1.6;
+    }
+
+    .badge{
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:linear-gradient(to right,rgba(217,4,41,.16),rgba(21,101,255,.16));
+      font-weight:bold;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .card, .section{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+    }
+
+    .card{
+      padding:18px;
+    }
+
+    .card h3{
+      margin-bottom:8px;
+      font-size:1rem;
+    }
+
+    .big{
+      font-size:2rem;
+      font-weight:bold;
+      margin-bottom:6px;
+      line-height:1.1;
+    }
+
+    .soft{
+      color:var(--soft);
+      line-height:1.5;
+    }
+
+    .section{
+      display:none;
+      padding:20px;
+      margin-bottom:18px;
+    }
+
+    .section.active{
+      display:block;
+    }
+
+    .section h2{
+      margin-bottom:8px;
+      font-size:1.45rem;
+    }
+
+    .section-desc{
+      color:var(--soft);
+      line-height:1.6;
+      margin-bottom:18px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .form-group{
+      display:grid;
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .full{
+      grid-column:1 / -1;
+    }
+
+    label{
+      font-weight:bold;
+      font-size:.95rem;
+    }
+
+    input, select, textarea{
+      width:100%;
+      min-height:48px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--white);
+      outline:none;
+      font-size:.95rem;
+    }
+
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(21,101,255,.16);
+    }
+
+    .btn-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin-top:8px;
+    }
+
+    .btn{
+      min-height:48px;
+      border:none;
+      border-radius:14px;
+      color:var(--white);
+      font-weight:bold;
+      cursor:pointer;
+      padding:12px 14px;
+      transition:.25s ease;
+    }
+
+    .btn:hover{transform:translateY(-2px);}
+    .btn-primary{background:linear-gradient(to right,var(--red),var(--blue));}
+    .btn-secondary{background:rgba(255,255,255,.08);border:1px solid var(--border);}
+    .btn-danger{background:rgba(217,4,41,.18);border:1px solid rgba(217,4,41,.3);}
+    .btn-success{background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.3);}
+    .btn-warning{background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.3);}
+
+    .table-wrap{
+      overflow-x:auto;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+
+    th, td{
+      padding:14px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      text-align:left;
+      vertical-align:top;
+    }
+
+    th{
+      background:rgba(255,255,255,.06);
+      font-size:.95rem;
+    }
+
+    td{
+      font-size:.93rem;
+      line-height:1.5;
+    }
+
+    .chip{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.82rem;
+      font-weight:bold;
+      background:rgba(21,101,255,.16);
+      border:1px solid rgba(21,101,255,.28);
+    }
+
+    .notice-list{
+      display:grid;
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .notice-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .notice-card h4{
+      margin-bottom:8px;
+    }
+
+    .notice-card p{
+      color:var(--soft);
+      line-height:1.6;
+    }
+
+    .result-box{
+      margin-top:16px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--soft);
+      line-height:1.6;
+      white-space:pre-wrap;
+    }
+
+    .player-card-wrap{
+      display:grid;
+      grid-template-columns:1fr 360px;
+      gap:18px;
+      align-items:start;
+    }
+
+    .athlete-card{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.18);
+      background:
+        radial-gradient(circle at top right, rgba(21,101,255,.22), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(217,4,41,.22), transparent 30%),
+        linear-gradient(145deg,#0b0f18,#101827,#0d0d0d);
+      box-shadow:0 18px 45px rgba(0,0,0,.35);
+      padding:22px;
+      min-height:240px;
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+      align-items:flex-start;
+    }
+
+    .card-title{
+      font-size:1.2rem;
+      font-weight:bold;
+      letter-spacing:.5px;
+    }
+
+    .card-sub{
+      color:var(--soft);
+      font-size:.9rem;
+      margin-top:4px;
+    }
+
+    .flag-chip{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      font-size:.85rem;
+      font-weight:bold;
+    }
+
+    .card-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .card-info{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:12px;
+    }
+
+    .card-info span{
+      display:block;
+      font-size:.8rem;
+      color:var(--soft);
+      margin-bottom:6px;
+    }
+
+    .card-info strong{
+      font-size:.95rem;
+      line-height:1.4;
+    }
+
+    .glow-line{
+      width:100%;
+      height:4px;
+      border-radius:999px;
+      background:linear-gradient(to right,var(--red),#ffffff,var(--blue));
+      margin:18px 0;
+    }
+
+    .link-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .link-grid a{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:50px;
+      text-decoration:none;
+      color:var(--white);
+      font-weight:bold;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:linear-gradient(135deg, rgba(217,4,41,.12), rgba(21,101,255,.12));
+      transition:.25s ease;
+    }
+
+    .link-grid a:hover{
+      transform:translateY(-2px);
+    }
+
+    @media (max-width:1200px){
+      .stats{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .player-card-wrap{grid-template-columns:1fr;}
+    }
+
+    @media (max-width:1000px){
+      .form-grid, .btn-row, .link-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:900px){
+      .app{grid-template-columns:1fr;}
+      .mobile-menu{display:block;}
+      .sidebar{
+        position:fixed;
+        top:61px;
+        left:0;
+        width:280px;
+        transform:translateX(-100%);
+        transition:.3s ease;
+        z-index:20;
+      }
+      .sidebar.open{transform:translateX(0);}
+      .main{padding:16px;}
+    }
+
+    @media (max-width:640px){
+      .stats{grid-template-columns:1fr;}
+      .form-grid{grid-template-columns:1fr;}
+      .topbar h1{font-size:1.6rem;}
+      .section, .card, .athlete-card{border-radius:18px;}
+      .card-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="mobile-menu">
+    <button id="menuToggle">☰ Open Coach Menu</button>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <h2>Coach Panel</h2>
+        <p>Hi Coach, manage players, grading, tournaments, and athlete records in one professional dashboard.</p>
+      </div>
+
+      <div class="nav">
+        <button class="nav-btn active" data-section="overviewSection">📊 Overview</button>
+        <button class="nav-btn" data-section="playerSection">🥋 Player Accounts</button>
+        <button class="nav-btn" data-section="gradingSection">📘 Grading</button>
+        <button class="nav-btn" data-section="tournamentSection">🏆 Host Tournament</button>
+        <button class="nav-btn" data-section="playerCardSection">🪪 Player Card</button>
+        <button class="nav-btn" data-section="noticeSection">📢 Notices</button>
+        <button class="nav-btn" data-section="coachNoticeSection">📣 Player Notices</button>
+        <button class="nav-btn" data-section="linksSection">🔗 Coach Links</button>
+        <a href="login.html">↩ Back to Login</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Hi Coach</h1>
+          <p>Create player accounts, manage grading, host tournaments, and monitor athlete development from one dashboard.</p>
+        </div>
+        <div class="badge">Coach: Tiger Dojang</div>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <h3>Total Registered Players</h3>
+          <div class="big" id="statPlayers">0</div>
+          <div class="soft">Players currently under this coach.</div>
+        </div>
+        <div class="card">
+          <h3>Color Belts</h3>
+          <div class="big" id="statColorBelts">0</div>
+          <div class="soft">Players below half black.</div>
+        </div>
+        <div class="card">
+          <h3>Black / Half Black+</h3>
+          <div class="big" id="statBlackBelts">0</div>
+          <div class="soft">Players at half black, black, poom, or dan.</div>
+        </div>
+        <div class="card">
+          <h3>Poom / Dan Holders</h3>
+          <div class="big" id="statDanHolders">0</div>
+          <div class="soft">Under 18 = Poom, 18+ = Dan.</div>
+        </div>
+      </div>
+
+      <section class="section active" id="overviewSection">
+        <h2>Coach Overview</h2>
+        <p class="section-desc">
+          This page is designed so later backend can connect player records, grading, tournament hosting, notifications, and admin alerts without redesign.
+        </p>
+
+        <div class="notice-list">
+          <div class="notice-card">
+            <h4>Coach Flow Ready</h4>
+            <p>Create players, update belts, grade athletes, host tournaments, transfer players, delete or ban with reasons, print player cards, and publish notices to players.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="playerSection">
+        <h2>Create and Manage Player Accounts</h2>
+        <p class="section-desc">
+          Create player accounts with required details. Each created player automatically gets a player ID.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="playerName">Full Name</label>
+            <input type="text" id="playerName" placeholder="Enter full name">
+          </div>
+
+          <div class="form-group">
+            <label for="playerDob">Date of Birth</label>
+            <input type="date" id="playerDob">
+          </div>
+
+          <div class="form-group">
+            <label for="playerAge">Age</label>
+            <input type="number" id="playerAge" placeholder="Enter age">
+          </div>
+
+          <div class="form-group">
+            <label for="playerWeight">Weight (kg)</label>
+            <input type="number" id="playerWeight" placeholder="Enter weight">
+          </div>
+
+          <div class="form-group">
+            <label for="playerBelt">Belt Rank</label>
+            <select id="playerBelt">
+              <option value="">Select belt rank</option>
+              <option>White</option>
+              <option>Yellow</option>
+              <option>Half Green</option>
+              <option>Green</option>
+              <option>Half Blue</option>
+              <option>Blue</option>
+              <option>Half Red</option>
+              <option>Red</option>
+              <option>Half Black</option>
+              <option>Black</option>
+              <option>1 Poom</option>
+              <option>2 Poom</option>
+              <option>3 Poom</option>
+              <option>1 Dan</option>
+              <option>2 Dan</option>
+              <option>3 Dan</option>
+              <option>4 Dan</option>
+              <option>5 Dan</option>
+              <option>6 Dan</option>
+              <option>7 Dan</option>
+              <option>8 Dan</option>
+              <option>9 Dan</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="playerCountry">Country</label>
+            <input type="text" id="playerCountry" placeholder="Enter country name">
+          </div>
+
+          <div class="form-group full">
+            <label for="clubAddress">Club Address</label>
+            <input type="text" id="clubAddress" placeholder="Enter club address">
+          </div>
+
+          <div class="form-group">
+            <label for="contactNumber">Contact Number</label>
+            <input type="text" id="contactNumber" placeholder="Enter contact number">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="createPlayer()">Create Player Account</button>
+          <button class="btn btn-secondary" onclick="resetPlayerForm()">Reset Form</button>
+        </div>
+
+        <div class="result-box" id="playerCreateResult">No player created yet.</div>
+
+        <div style="margin-top:20px;" class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Player ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Weight</th>
+                <th>Belt Rank</th>
+                <th>Country</th>
+                <th>Transfer</th>
+                <th>Delete</th>
+                <th>Ban</th>
+              </tr>
+            </thead>
+            <tbody id="playerTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="gradingSection">
+        <h2>Grading and Results</h2>
+        <p class="section-desc">
+          Grade players and generate results in one click. The result is also sent to that player’s notification system.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="gradingPlayer">Select Player</label>
+            <select id="gradingPlayer"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="gradingType">Grading Type</label>
+            <select id="gradingType" onchange="toggleGradingFields()">
+              <option value="color">Color Belt / Up to Red</option>
+              <option value="black">Half Black and Above</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="basicMarks">Basic</label>
+            <input type="number" id="basicMarks" placeholder="Marks">
+          </div>
+
+          <div class="form-group">
+            <label for="kickingMarks">Kicking</label>
+            <input type="number" id="kickingMarks" placeholder="Marks">
+          </div>
+
+          <div class="form-group color-only">
+            <label for="poomsaeMarks">Poomsae</label>
+            <input type="number" id="poomsaeMarks" placeholder="Marks">
+          </div>
+
+          <div class="form-group color-only">
+            <label for="breakingMarks">Special Kick / Breaking</label>
+            <input type="number" id="breakingMarks" placeholder="Marks">
+          </div>
+
+          <div class="form-group color-only">
+            <label for="sparringMarks">Sparring</label>
+            <input type="number" id="sparringMarks" placeholder="Marks">
+          </div>
+
+          <div class="form-group black-only" style="display:none;">
+            <label for="selfDefenceMarks">Self Defence / One Step Sparring</label>
+            <input type="number" id="selfDefenceMarks" placeholder="Marks">
+          </div>
+
+          <div class="form-group black-only" style="display:none;">
+            <label for="blackBreakingMarks">Breaking</label>
+            <input type="number" id="blackBreakingMarks" placeholder="Marks">
+          </div>
+
+          <div class="form-group black-only" style="display:none;">
+            <label for="flyingKickMarks">Flying Kick</label>
+            <input type="number" id="flyingKickMarks" placeholder="Marks">
+          </div>
+
+          <div class="form-group black-only" style="display:none;">
+            <label for="punchMarks">Punch</label>
+            <input type="number" id="punchMarks" placeholder="Marks">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateGradingResult()">Generate Grading Result</button>
+          <button class="btn btn-secondary" onclick="resetGrading()">Reset Grading</button>
+        </div>
+
+        <div class="result-box" id="gradingResultBox">No grading result generated yet.</div>
+      </section>
+
+      <section class="section" id="tournamentSection">
+        <h2>Host Tournament Application</h2>
+        <p class="section-desc">
+          Submit a tournament hosting application for admin verification.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="tournamentName">Tournament Name</label>
+            <input type="text" id="tournamentName" placeholder="Enter tournament name">
+          </div>
+
+          <div class="form-group">
+            <label for="tournamentArena">Number of Arenas</label>
+            <input type="number" id="tournamentArena" placeholder="Enter number of arenas">
+          </div>
+
+          <div class="form-group">
+            <label for="tournamentEvent">Event Type</label>
+            <select id="tournamentEvent" onchange="toggleTournamentFees()">
+              <option value="">Select event</option>
+              <option value="Poomsae">Poomsae</option>
+              <option value="Kyorugi">Kyorugi</option>
+              <option value="Both">Both Poomsae and Kyorugi</option>
+            </select>
+          </div>
+
+          <div class="form-group fee-single">
+            <label for="singleFee">Entry Fee</label>
+            <input type="number" id="singleFee" placeholder="Enter entry fee">
+          </div>
+
+          <div class="form-group fee-both" style="display:none;">
+            <label for="poomsaeFee">Poomsae Fee</label>
+            <input type="number" id="poomsaeFee" placeholder="Enter poomsae fee">
+          </div>
+
+          <div class="form-group fee-both" style="display:none;">
+            <label for="kyorugiFee">Kyorugi Fee</label>
+            <input type="number" id="kyorugiFee" placeholder="Enter kyorugi fee">
+          </div>
+
+          <div class="form-group fee-both" style="display:none;">
+            <label for="bothDiscountFee">Combined Discount Fee</label>
+            <input type="number" id="bothDiscountFee" placeholder="Enter combined discounted fee">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="submitTournamentApplication()">Submit Tournament Application</button>
+        </div>
+
+        <div class="result-box" id="tournamentResultBox">No tournament application submitted yet.</div>
+      </section>
+
+      <section class="section" id="playerCardSection">
+        <h2>International Style Player Card</h2>
+        <p class="section-desc">
+          Select a player, preview the card, and print if needed.
+        </p>
+
+        <div class="player-card-wrap">
+          <div class="card">
+            <div class="form-group">
+              <label for="cardPlayerSelect">Select Player</label>
+              <select id="cardPlayerSelect" onchange="renderPlayerCard()"></select>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="renderPlayerCard()">Generate Card</button>
+              <button class="btn btn-secondary" onclick="window.print()">Print Card</button>
+            </div>
+
+            <div class="result-box" id="cardResultBox">No player card generated yet.</div>
+          </div>
+
+          <div class="athlete-card" id="athleteCard">
+            <div class="card-top">
+              <div>
+                <div class="card-title">INTERNATIONAL ATHLETE CARD</div>
+                <div class="card-sub">Taekwondo Player Identity</div>
+              </div>
+              <div class="flag-chip" id="cardCountry">Country</div>
+            </div>
+
+            <div class="glow-line"></div>
+
+            <div class="card-grid">
+              <div class="card-info">
+                <span>Full Name</span>
+                <strong id="cardName">Player Name</strong>
+              </div>
+              <div class="card-info">
+                <span>Date of Birth</span>
+                <strong id="cardDob">DOB</strong>
+              </div>
+              <div class="card-info">
+                <span>Club Name</span>
+                <strong id="cardClubName">Tiger Dojang</strong>
+              </div>
+              <div class="card-info">
+                <span>Club Address</span>
+                <strong id="cardClubAddress">Club Address</strong>
+              </div>
+              <div class="card-info">
+                <span>Contact Number</span>
+                <strong id="cardContact">Contact</strong>
+              </div>
+              <div class="card-info">
+                <span>Player ID</span>
+                <strong id="cardPlayerId">PID0001</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="noticeSection">
+        <h2>Notices and Hosted Tournament Explore</h2>
+        <p class="section-desc">
+          Explore admin notices and tournament hosting related notifications.
+        </p>
+
+        <div class="notice-list" id="noticeList"></div>
+      </section>
+
+      <section class="section" id="coachNoticeSection">
+        <h2>Publish Notice to Players</h2>
+        <p class="section-desc">
+          Publish notices directly to your players. You can send to all players or to one selected player.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="noticeTargetPlayer">Send Notice To</label>
+            <select id="noticeTargetPlayer">
+              <option value="all">All Players</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label for="coachNoticeTitle">Notice Title</label>
+            <input type="text" id="coachNoticeTitle" placeholder="Enter notice title">
+          </div>
+
+          <div class="form-group full">
+            <label for="coachNoticeMessage">Notice Message</label>
+            <textarea id="coachNoticeMessage" placeholder="Write notice for players"></textarea>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="publishCoachNotice()">Publish Notice</button>
+          <button class="btn btn-secondary" onclick="resetCoachNoticeForm()">Reset</button>
+        </div>
+
+        <div class="result-box" id="coachNoticeResult">No player notice published yet.</div>
+
+        <div class="notice-list" id="coachNoticeList" style="margin-top:18px;"></div>
+      </section>
+
+      <section class="section" id="linksSection">
+        <h2>Coach Tricks and Official Links</h2>
+        <p class="section-desc">
+          Explore official and useful coach-related information links.
+        </p>
+
+        <div class="link-grid">
+          <a href="https://www.worldtaekwondo.org/" target="_blank" rel="noopener noreferrer">WT Info</a>
+          <a href="https://www.tkdcon.net/" target="_blank" rel="noopener noreferrer">TCON</a>
+          <a href="https://kms.kukkiwon.or.kr/" target="_blank" rel="noopener noreferrer">KMS</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const beltOrder = [
+      "White","Yellow","Half Green","Green","Half Blue","Blue","Half Red","Red","Half Black","Black"
+    ];
+
+    const coachProfile = {
+      clubName: "Tiger Dojang",
+      clubAddress: "Kathmandu, Nepal",
+      contact: "+977-9800000000"
+    };
+
+    const notices = [
+      {
+        title: "Admin Notice",
+        message: "National Poomsae Open applications are now open for registered clubs."
+      },
+      {
+        title: "Tournament Hosting Alert",
+        message: "Clubs can now submit tournament hosting applications from the coach dashboard."
+      }
+    ];
+
+    const coachPublishedNotices = [];
+
+    const players = [
+      {
+        id: "PID0001",
+        name: "Aarav Shrestha",
+        dob: "2010-03-15",
+        age: 15,
+        weight: 48,
+        belt: "Blue",
+        country: "Nepal",
+        clubAddress: "Kathmandu, Nepal",
+        contact: "+977-9800000000",
+        notifications: []
+      },
+      {
+        id: "PID0002",
+        name: "Sanjana Gurung",
+        dob: "2006-08-10",
+        age: 19,
+        weight: 54,
+        belt: "1 Dan",
+        country: "Nepal",
+        clubAddress: "Kathmandu, Nepal",
+        contact: "+977-9800000001",
+        notifications: []
+      }
+    ];
+
+    const adminAlerts = [];
+
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const sections = document.querySelectorAll(".section");
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menuToggle");
+
+    function openSection(sectionId){
+      sections.forEach(section => section.classList.remove("active"));
+      document.getElementById(sectionId).classList.add("active");
+
+      navButtons.forEach(btn => btn.classList.remove("active"));
+      const activeBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
+      if(activeBtn) activeBtn.classList.add("active");
+
+      if(window.innerWidth <= 900){
+        sidebar.classList.remove("open");
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener("click", function(){
+        const sectionId = this.getAttribute("data-section");
+        if(sectionId) openSection(sectionId);
+      });
+    });
+
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+
+    function getNextPlayerId(){
+      const next = players.length + 1;
+      return "PID" + String(next).padStart(4, "0");
+    }
+
+    function isColorBelt(belt){
+      return beltOrder.includes(belt) && belt !== "Half Black" && belt !== "Black";
+    }
+
+    function isBlackOrAbove(belt){
+      return belt === "Half Black" || belt === "Black" || belt.includes("Poom") || belt.includes("Dan");
+    }
+
+    function isDanHolder(belt){
+      return belt.includes("Poom") || belt.includes("Dan");
+    }
+
+    function updateStats(){
+      document.getElementById("statPlayers").textContent = players.length;
+      document.getElementById("statColorBelts").textContent = players.filter(p => isColorBelt(p.belt)).length;
+      document.getElementById("statBlackBelts").textContent = players.filter(p => isBlackOrAbove(p.belt)).length;
+      document.getElementById("statDanHolders").textContent = players.filter(p => isDanHolder(p.belt)).length;
+    }
+
+    function getBeltOptions(selected){
+      const list = [
+        "White","Yellow","Half Green","Green","Half Blue","Blue","Half Red","Red","Half Black","Black",
+        "1 Poom","2 Poom","3 Poom","1 Dan","2 Dan","3 Dan","4 Dan","5 Dan","6 Dan","7 Dan","8 Dan","9 Dan"
+      ];
+      return list.map(item => `<option ${item === selected ? "selected" : ""}>${item}</option>`).join("");
+    }
+
+    function renderPlayers(){
+      const tbody = document.getElementById("playerTableBody");
+      tbody.innerHTML = players.map((p, index) => `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.name}</td>
+          <td>${p.age}</td>
+          <td>${p.weight} kg</td>
+          <td>
+            <select onchange="updatePlayerBelt(${index}, this.value)">
+              ${getBeltOptions(p.belt)}
+            </select>
+          </td>
+          <td>${p.country}</td>
+          <td>
+            <button class="btn btn-secondary" onclick="transferPlayer(${index})">Transfer</button>
+          </td>
+          <td>
+            <button class="btn btn-danger" onclick="deletePlayer(${index})">Delete</button>
+          </td>
+          <td>
+            <button class="btn btn-warning" onclick="banPlayer(${index})">Ban</button>
+          </td>
+        </tr>
+      `).join("");
+
+      const gradingSelect = document.getElementById("gradingPlayer");
+      const cardSelect = document.getElementById("cardPlayerSelect");
+      const noticeTargetPlayer = document.getElementById("noticeTargetPlayer");
+
+      const options = `<option value="">Select Player</option>` + players.map((p, i) => `
+        <option value="${i}">${p.name} - ${p.id}</option>
+      `).join("");
+
+      gradingSelect.innerHTML = options;
+      cardSelect.innerHTML = options;
+
+      if (noticeTargetPlayer) {
+        noticeTargetPlayer.innerHTML =
+          `<option value="all">All Players</option>` +
+          players.map((p, i) => `<option value="${i}">${p.name} - ${p.id}</option>`).join("");
+      }
+
+      updateStats();
+    }
+
+    function createPlayer(){
+      const name = document.getElementById("playerName").value.trim();
+      const dob = document.getElementById("playerDob").value;
+      const age = Number(document.getElementById("playerAge").value);
+      const weight = Number(document.getElementById("playerWeight").value);
+      const belt = document.getElementById("playerBelt").value;
+      const country = document.getElementById("playerCountry").value.trim();
+      const clubAddress = document.getElementById("clubAddress").value.trim();
+      const contact = document.getElementById("contactNumber").value.trim();
+      const result = document.getElementById("playerCreateResult");
+
+      if(!name || !dob || !age || !weight || !belt || !country || !clubAddress || !contact){
+        result.textContent = "Please fill all required player fields.";
+        return;
+      }
+
+      const id = getNextPlayerId();
+
+      players.push({
+        id,
+        name,
+        dob,
+        age,
+        weight,
+        belt,
+        country,
+        clubAddress,
+        contact,
+        notifications: [`Player account created with ID ${id}`]
+      });
+
+      result.textContent =
+        `Player account created successfully
+
+Player ID: ${id}
+Name: ${name}
+Weight: ${weight} kg
+Age: ${age}
+Belt: ${belt}`;
+
+      resetPlayerForm();
+      renderPlayers();
+      renderPlayerCard();
+      renderCoachNotices();
+    }
+
+    function resetPlayerForm(){
+      document.getElementById("playerName").value = "";
+      document.getElementById("playerDob").value = "";
+      document.getElementById("playerAge").value = "";
+      document.getElementById("playerWeight").value = "";
+      document.getElementById("playerBelt").value = "";
+      document.getElementById("playerCountry").value = "";
+      document.getElementById("clubAddress").value = "";
+      document.getElementById("contactNumber").value = "";
+    }
+
+    function updatePlayerBelt(index, newBelt){
+      players[index].belt = newBelt;
+      updateStats();
+    }
+
+    function getNextColorPromotion(currentBelt, doublePromotion=false){
+      const idx = beltOrder.indexOf(currentBelt);
+      if(idx === -1) return currentBelt;
+      const nextIndex = Math.min(idx + (doublePromotion ? 2 : 1), beltOrder.length - 1);
+      return beltOrder[nextIndex];
+    }
+
+    function toggleGradingFields(){
+      const type = document.getElementById("gradingType").value;
+      document.querySelectorAll(".color-only").forEach(el => {
+        el.style.display = type === "color" ? "grid" : "none";
+      });
+      document.querySelectorAll(".black-only").forEach(el => {
+        el.style.display = type === "black" ? "grid" : "none";
+      });
+    }
+
+    function generateGradingResult(){
+      const playerIndex = document.getElementById("gradingPlayer").value;
+      const gradingType = document.getElementById("gradingType").value;
+      const box = document.getElementById("gradingResultBox");
+
+      if(playerIndex === ""){
+        box.textContent = "Please select a player for grading.";
+        return;
+      }
+
+      const player = players[playerIndex];
+
+      let total = 0;
+      let pass = false;
+      let remark = "";
+      let newRank = player.belt;
+
+      if(gradingType === "color"){
+        const basic = Number(document.getElementById("basicMarks").value || 0);
+        const kicking = Number(document.getElementById("kickingMarks").value || 0);
+        const poomsae = Number(document.getElementById("poomsaeMarks").value || 0);
+        const breaking = Number(document.getElementById("breakingMarks").value || 0);
+        const sparring = Number(document.getElementById("sparringMarks").value || 0);
+
+        total = basic + kicking + poomsae + breaking + sparring;
+
+        if(basic > 25 || kicking > 25 || poomsae > 30 || breaking > 10 || sparring > 10){
+          box.textContent = "Color belt grading marks exceed allowed category limits.";
+          return;
+        }
+
+        pass = total >= 50;
+
+        if(pass){
+          if(total > 80){
+            newRank = getNextColorPromotion(player.belt, true);
+            remark = "Passed with double belt promotion.";
+          }else{
+            newRank = getNextColorPromotion(player.belt, false);
+            remark = "Passed with normal belt promotion.";
+          }
+          player.belt = newRank;
+        }else{
+          remark = "Failed grading.";
+        }
+      } else {
+        const basic = Number(document.getElementById("basicMarks").value || 0);
+        const kicking = Number(document.getElementById("kickingMarks").value || 0);
+        const poomsae = Number(document.getElementById("poomsaeMarks").value || 0);
+        const selfDefence = Number(document.getElementById("selfDefenceMarks").value || 0);
+        const breaking = Number(document.getElementById("blackBreakingMarks").value || 0);
+        const flyingKick = Number(document.getElementById("flyingKickMarks").value || 0);
+        const punch = Number(document.getElementById("punchMarks").value || 0);
+
+        total = basic + kicking + poomsae + selfDefence + breaking + flyingKick + punch;
+
+        const eachLimitOk = [basic,kicking,poomsae,selfDefence,breaking,flyingKick,punch].every(m => m <= 100);
+        if(!eachLimitOk){
+          box.textContent = "Half black and above grading fields cannot exceed 100 each.";
+          return;
+        }
+
+        pass = total >= 350;
+
+        if(pass){
+          remark = "Passed advanced grading.";
+          if(player.age < 18){
+            if(player.belt === "Half Black") newRank = "Black";
+            else if(player.belt === "Black") newRank = "1 Poom";
+            else if(player.belt.includes("Poom")){
+              const current = Number(player.belt.split(" ")[0]);
+              if(current < 3) newRank = (current + 1) + " Poom";
+            }
+          } else {
+            if(player.belt === "Half Black") newRank = "Black";
+            else if(player.belt === "Black") newRank = "1 Dan";
+            else if(player.belt.includes("Dan")){
+              const current = Number(player.belt.split(" ")[0]);
+              if(current < 9) newRank = (current + 1) + " Dan";
+            }
+          }
+          player.belt = newRank;
+        } else {
+          remark = "Failed advanced grading.";
+        }
+      }
+
+      player.notifications.push(`Grading Result: Total ${total}. ${remark} New Rank: ${player.belt}`);
+
+      box.textContent =
+        `Grading Result Generated
+
+Player: ${player.name}
+Total Marks: ${total}
+Result: ${pass ? "PASS" : "FAIL"}
+Remark: ${remark}
+Updated Rank: ${player.belt}
+
+Notification sent to player's system.`;
+
+      renderPlayers();
+      renderPlayerCard();
+      updateStats();
+    }
+
+    function resetGrading(){
+      ["basicMarks","kickingMarks","poomsaeMarks","breakingMarks","sparringMarks","selfDefenceMarks","blackBreakingMarks","flyingKickMarks","punchMarks"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = "";
+      });
+      document.getElementById("gradingResultBox").textContent = "No grading result generated yet.";
+    }
+
+    function submitTournamentApplication(){
+      const name = document.getElementById("tournamentName").value.trim();
+      const arenas = Number(document.getElementById("tournamentArena").value);
+      const eventType = document.getElementById("tournamentEvent").value;
+      const singleFee = Number(document.getElementById("singleFee").value || 0);
+      const poomsaeFee = Number(document.getElementById("poomsaeFee").value || 0);
+      const kyorugiFee = Number(document.getElementById("kyorugiFee").value || 0);
+      const bothFee = Number(document.getElementById("bothDiscountFee").value || 0);
+      const box = document.getElementById("tournamentResultBox");
+
+      if(!name || !arenas || !eventType){
+        box.textContent = "Please fill all required tournament fields.";
+        return;
+      }
+
+      if(eventType === "Both"){
+        if(!poomsaeFee || !kyorugiFee || !bothFee){
+          box.textContent = "Please enter poomsae, kyorugi, and combined discount fee.";
+          return;
+        }
+        if(bothFee >= (poomsaeFee + kyorugiFee)){
+          box.textContent = "Combined discount fee must be less than total of poomsae fee and kyorugi fee.";
+          return;
+        }
+      } else {
+        if(!singleFee){
+          box.textContent = "Please enter entry fee.";
+          return;
+        }
+      }
+
+      box.textContent =
+        `Tournament application submitted
+
+Tournament: ${name}
+Arenas: ${arenas}
+Event Type: ${eventType}
+
+Application sent to admin for verification.`;
+    }
+
+    function toggleTournamentFees(){
+      const type = document.getElementById("tournamentEvent").value;
+      document.querySelectorAll(".fee-single").forEach(el => {
+        el.style.display = type === "Both" ? "none" : "grid";
+      });
+      document.querySelectorAll(".fee-both").forEach(el => {
+        el.style.display = type === "Both" ? "grid" : "none";
+      });
+    }
+
+    function transferPlayer(index){
+      const reason = prompt("Enter transfer reason:");
+      if(!reason) return;
+      alert(`Transfer request sent for ${players[index].name}\nReason: ${reason}`);
+    }
+
+    function deletePlayer(index){
+      const reason = prompt("Delete player reason is mandatory. Enter reason:");
+      if(!reason) return;
+
+      adminAlerts.push(`DELETE ALERT: ${players[index].name} requested for deletion. Reason: ${reason}`);
+      alert(`Delete request sent to admin for ${players[index].name}\nReason: ${reason}`);
+    }
+
+    function banPlayer(index){
+      const reason = prompt("Ban player reason is mandatory. Enter reason:");
+      if(!reason) return;
+
+      adminAlerts.push(`BAN ALERT: ${players[index].name} requested for ban. Reason: ${reason}`);
+      alert(`Ban request sent to admin for ${players[index].name}\nReason: ${reason}`);
+    }
+
+    function renderPlayerCard(){
+      const index = document.getElementById("cardPlayerSelect").value;
+      const result = document.getElementById("cardResultBox");
+
+      if(index === ""){
+        result.textContent = "No player card generated yet.";
+        return;
+      }
+
+      const p = players[index];
+      document.getElementById("cardCountry").textContent = p.country;
+      document.getElementById("cardName").textContent = p.name;
+      document.getElementById("cardDob").textContent = p.dob;
+      document.getElementById("cardClubName").textContent = coachProfile.clubName;
+      document.getElementById("cardClubAddress").textContent = p.clubAddress;
+      document.getElementById("cardContact").textContent = p.contact;
+      document.getElementById("cardPlayerId").textContent = p.id;
+
+      result.textContent =
+        `Player card generated
+
+Name: ${p.name}
+Player ID: ${p.id}
+Country: ${p.country}`;
+    }
+
+    function renderNotices(){
+      const list = document.getElementById("noticeList");
+      list.innerHTML = notices.map(item => `
+        <div class="notice-card">
+          <h4>${item.title}</h4>
+          <p>${item.message}</p>
+        </div>
+      `).join("");
+    }
+
+    function publishCoachNotice(){
+      const target = document.getElementById("noticeTargetPlayer").value;
+      const title = document.getElementById("coachNoticeTitle").value.trim();
+      const message = document.getElementById("coachNoticeMessage").value.trim();
+      const result = document.getElementById("coachNoticeResult");
+
+      if(!title || !message){
+        result.textContent = "Please enter notice title and message.";
+        return;
+      }
+
+      const notice = {
+        title,
+        message,
+        target: target === "all" ? "All Players" : players[target]?.name || "Unknown Player",
+        date: new Date().toLocaleString()
+      };
+
+      coachPublishedNotices.unshift(notice);
+
+      if(target === "all"){
+        players.forEach(player => {
+          player.notifications.push(`Coach Notice: ${title} - ${message}`);
+        });
+      } else {
+        players[target].notifications.push(`Coach Notice: ${title} - ${message}`);
+      }
+
+      result.textContent =
+        `Notice published successfully
+
+Target: ${notice.target}
+Title: ${title}`;
+
+      renderCoachNotices();
+      resetCoachNoticeForm(false);
+    }
+
+    function renderCoachNotices(){
+      const list = document.getElementById("coachNoticeList");
+      if(!list) return;
+
+      if(coachPublishedNotices.length === 0){
+        list.innerHTML = `
+          <div class="notice-card">
+            <h4>No coach notices yet</h4>
+            <p>No notice has been published to players yet.</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = coachPublishedNotices.map(item => `
+        <div class="notice-card">
+          <h4>${item.title}</h4>
+          <p>${item.message}</p>
+          <p style="margin-top:10px;">
+            <strong>Target:</strong> ${item.target}<br>
+            <strong>Published:</strong> ${item.date}
+          </p>
+        </div>
+      `).join("");
+    }
+
+    function resetCoachNoticeForm(clearResult = true){
+      document.getElementById("coachNoticeTitle").value = "";
+      document.getElementById("coachNoticeMessage").value = "";
+      document.getElementById("noticeTargetPlayer").value = "all";
+
+      if(clearResult){
+        document.getElementById("coachNoticeResult").textContent = "No player notice published yet.";
+      }
+    }
+
+    renderPlayers();
+    updateStats();
+    toggleGradingFields();
+    toggleTournamentFees();
+    renderNotices();
+    renderCoachNotices();
+  </script>
+</body>
+</html>

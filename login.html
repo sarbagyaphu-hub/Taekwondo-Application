@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taekwondo Management System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --black: #050505;
+      --dark: #101010;
+      --white: #ffffff;
+      --red: #d90429;
+      --blue: #1565ff;
+      --soft-white: #d9d9d9;
+      --glass: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.12);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      --success: #22c55e;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #020202, #0b1020, #180307);
+      color: var(--white);
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .bg-animation {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(20px);
+      opacity: 0.35;
+      animation: floatOrb 12s infinite ease-in-out;
+    }
+
+    .orb1 {
+      width: 280px;
+      height: 280px;
+      background: var(--red);
+      top: 8%;
+      left: 6%;
+    }
+
+    .orb2 {
+      width: 320px;
+      height: 320px;
+      background: var(--blue);
+      bottom: 8%;
+      right: 6%;
+      animation-delay: 2s;
+    }
+
+    .orb3 {
+      width: 220px;
+      height: 220px;
+      background: #ffffff;
+      top: 55%;
+      left: 40%;
+      opacity: 0.12;
+      animation-delay: 4s;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% {
+        transform: translateY(0px) translateX(0px) scale(1);
+      }
+      25% {
+        transform: translateY(-20px) translateX(15px) scale(1.05);
+      }
+      50% {
+        transform: translateY(25px) translateX(-10px) scale(0.95);
+      }
+      75% {
+        transform: translateY(-10px) translateX(-20px) scale(1.02);
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Splash */
+    .splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #000000, #091120, #190507);
+      animation: splashFadeOut 1s ease forwards;
+      animation-delay: 2.8s;
+    }
+
+    .splash-content {
+      text-align: center;
+      padding: 30px 20px;
+      animation: splashZoom 1.2s ease;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .splash-content h1 {
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      line-height: 1.25;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(255,255,255,0.12);
+    }
+
+    .splash-content .red {
+      color: var(--red);
+    }
+
+    .splash-content .blue {
+      color: var(--blue);
+    }
+
+    .splash-bar {
+      width: min(220px, 60%);
+      height: 5px;
+      margin: 18px auto 0;
+      border-radius: 50px;
+      background: linear-gradient(to right, var(--red), #ffffff, var(--blue));
+      animation: barPulse 1.6s infinite;
+    }
+
+    @keyframes splashZoom {
+      from {
+        opacity: 0;
+        transform: scale(0.82);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes splashFadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+    }
+
+    @keyframes barPulse {
+      0%, 100% {
+        transform: scaleX(0.75);
+      }
+      50% {
+        transform: scaleX(1.05);
+      }
+    }
+
+    /* Main */
+    .main-screen {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .main-wrapper {
+      width: 100%;
+      max-width: 1240px;
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-panel {
+      padding: 38px;
+    }
+
+    .system-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--soft-white);
+      font-size: 0.86rem;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.04);
+      line-height: 1.4;
+    }
+
+    .left-panel h2 {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .left-panel h2 .red {
+      color: var(--red);
+    }
+
+    .left-panel h2 .blue {
+      color: var(--blue);
+    }
+
+    .left-panel p {
+      color: var(--soft-white);
+      line-height: 1.7;
+      margin-bottom: 28px;
+      max-width: 90%;
+      font-size: 1rem;
+    }
+
+    .feature-strip {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .feature-chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      color: var(--soft-white);
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .role-card {
+      border-radius: 22px;
+      padding: 24px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: 0.35s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .role-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(217,4,41,0.10), rgba(21,101,255,0.10));
+      opacity: 0;
+      transition: 0.35s ease;
+    }
+
+    .role-card:hover::before,
+    .role-card.active::before {
+      opacity: 1;
+    }
+
+    .role-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .role-card.active {
+      border-color: rgba(21,101,255,0.55);
+      box-shadow: 0 0 0 2px rgba(217,4,41,0.15);
+    }
+
+    .role-card > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .role-icon {
+      font-size: 2.6rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .role-title {
+      font-size: 1.08rem;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .role-subtitle {
+      color: var(--soft-white);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    .right-panel {
+      padding: 36px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-top h3 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      margin-bottom: 8px;
+    }
+
+    .login-top p {
+      color: var(--soft-white);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .selected-role {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .selected-role-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .selected-role-text h4 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+
+    .selected-role-text span {
+      color: var(--soft-white);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px 15px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--white);
+      outline: none;
+      font-size: 0.96rem;
+      transition: 0.3s ease;
+      min-height: 48px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(21,101,255,0.15);
+    }
+
+    .form-group input::placeholder {
+      color: #a6a6a6;
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 52px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: var(--soft-white);
+      cursor: pointer;
+      font-size: 1.1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-size: 0.96rem;
+      min-height: 50px;
+    }
+
+    .btn-primary {
+      flex: 1 1 180px;
+      background: linear-gradient(to right, var(--red), var(--blue));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      opacity: 0.96;
+    }
+
+    .btn-secondary {
+      flex: 1 1 140px;
+      background: rgba(255,255,255,0.05);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.09);
+    }
+
+    .login-note {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(21,101,255,0.10);
+      border: 1px solid rgba(21,101,255,0.18);
+      color: #d9e7ff;
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    /* Dashboard */
+    .dashboard-screen {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .dashboard-card {
+      width: 100%;
+      max-width: 1150px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: 34px;
+    }
+
+    .dash-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+
+    .dash-title h1 {
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      margin-bottom: 8px;
+    }
+
+    .dash-title p {
+      color: var(--soft-white);
+      line-height: 1.6;
+    }
+
+    .dash-role-badge {
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: linear-gradient(to right, rgba(217,4,41,0.20), rgba(21,101,255,0.20));
+      border: 1px solid rgba(255,255,255,0.12);
+      font-weight: bold;
+      text-align: center;
+      width: fit-content;
+      max-width: 100%;
+      word-break: break-word;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .stat-box {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      min-width: 0;
+    }
+
+    .stat-box h3 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+
+    .stat-box p {
+      color: var(--soft-white);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .dashboard-panels {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+    }
+
+    .dash-panel {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      min-width: 0;
+    }
+
+    .dash-panel h3 {
+      margin-bottom: 14px;
+      font-size: 1.2rem;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .activity-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      flex-wrap: wrap;
+    }
+
+    .activity-item strong {
+      display: block;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .activity-item span {
+      color: var(--soft-white);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      display: block;
+    }
+
+    .status {
+      color: var(--success);
+      font-weight: bold;
+      white-space: nowrap;
+      align-self: center;
+    }
+
+    .quick-links {
+      display: grid;
+      gap: 12px;
+    }
+
+    .quick-link {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(217,4,41,0.10), rgba(21,101,255,0.10));
+      border: 1px solid rgba(255,255,255,0.08);
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      transition: 0.3s ease;
+      line-height: 1.4;
+    }
+
+    .quick-link:hover {
+      transform: translateX(4px);
+    }
+
+    .logout-row {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 2000;
+      overflow-y: auto;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 560px;
+      background: linear-gradient(145deg, #0d0d0d, #121827);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      animation: modalIn 0.25s ease;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .modal-top h3 {
+      font-size: 1.5rem;
+      line-height: 1.3;
+    }
+
+    .close-modal {
+      border: none;
+      background: transparent;
+      color: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+    }
+
+    .modal p {
+      color: var(--soft-white);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .success-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(34,197,94,0.10);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: #c8ffd9;
+      font-size: 0.92rem;
+      display: none;
+      line-height: 1.5;
+    }
+
+    /* Large tablets */
+    @media (max-width: 1100px) {
+      .main-wrapper,
+      .dashboard-panels {
+        grid-template-columns: 1fr;
+      }
+
+      .left-panel p {
+        max-width: 100%;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* Tablets */
+    @media (max-width: 768px) {
+      .main-screen,
+      .dashboard-screen {
+        padding: 18px;
+      }
+
+      .left-panel,
+      .right-panel,
+      .dashboard-card,
+      .modal {
+        padding: 22px 18px;
+      }
+
+      .role-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        flex: 1 1 auto;
+      }
+
+      .dashboard-panels {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Phones */
+    @media (max-width: 540px) {
+      .main-screen,
+      .dashboard-screen {
+        padding: 14px;
+      }
+
+      .left-panel,
+      .right-panel,
+      .dashboard-card,
+      .modal {
+        padding: 18px 14px;
+        border-radius: 20px;
+      }
+
+      .system-badge {
+        font-size: 0.78rem;
+      }
+
+      .left-panel p,
+      .login-top p,
+      .dash-title p,
+      .modal p {
+        font-size: 0.94rem;
+      }
+
+      .role-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .role-card {
+        min-height: 150px;
+      }
+
+      .selected-role {
+        align-items: flex-start;
+      }
+
+      .dash-top {
+        align-items: flex-start;
+      }
+
+      .logout-row {
+        justify-content: stretch;
+      }
+
+      .logout-row .btn {
+        width: 100%;
+        max-width: none !important;
+      }
+
+      .activity-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .status {
+        white-space: normal;
+      }
+
+      .splash-content h1 {
+        letter-spacing: 1px;
+      }
+    }
+
+    /* Very small phones */
+    @media (max-width: 360px) {
+      .feature-chip {
+        width: 100%;
+        text-align: center;
+      }
+
+      .role-icon {
+        font-size: 2.2rem;
+      }
+
+      .role-title {
+        font-size: 1rem;
+      }
+
+      .role-subtitle {
+        font-size: 0.85rem;
+      }
+
+      .form-group input,
+      .btn {
+        font-size: 0.92rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-content">
+      <h1>
+        Welcome to <span class="red">modern era</span><br>
+        of <span class="blue">taekwondo</span>
+      </h1>
+      <div class="splash-bar"></div>
+    </div>
+  </div>
+
+  <section class="main-screen" id="mainScreen">
+    <div class="main-wrapper">
+      <div class="panel left-panel">
+        <div class="system-badge">Taekwondo Player Management + Poomsae Referee Application</div>
+
+        <h2>
+          Powering the <span class="red">next generation</span> of
+          <span class="blue">taekwondo management</span>
+        </h2>
+
+        <p>
+          Manage players, coaches, referees, and administration in one modern system.
+          Select your role to enter the secure portal.
+        </p>
+
+        <div class="feature-strip">
+          <div class="feature-chip">Player Records</div>
+          <div class="feature-chip">Coach Registration</div>
+          <div class="feature-chip">Referee Tools</div>
+          <div class="feature-chip">Admin Control</div>
+        </div>
+
+        <div class="role-grid">
+          <div class="role-card active" data-role="Admin" data-icon="🛡️">
+            <span class="role-icon">🛡️</span>
+            <div class="role-title">Admin</div>
+            <div class="role-subtitle">System access, approvals, and management</div>
+          </div>
+
+          <div class="role-card" data-role="Player" data-icon="🥋">
+            <span class="role-icon">🥋</span>
+            <div class="role-title">Player</div>
+            <div class="role-subtitle">Athlete profile, records, and progress</div>
+          </div>
+
+          <div class="role-card" data-role="Coach" data-icon="📋">
+            <span class="role-icon">📋</span>
+            <div class="role-title">Coach</div>
+            <div class="role-subtitle">Training, player supervision, and registration</div>
+          </div>
+
+          <div class="role-card" data-role="Referee" data-icon="🏅">
+            <span class="role-icon">🏅</span>
+            <div class="role-title">Referee</div>
+            <div class="role-subtitle">Poomsae judging and scoring access</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel right-panel">
+        <div class="login-top">
+          <h3 id="loginTitle">Admin Login</h3>
+          <p id="loginDesc">Enter your credentials to access the secure management dashboard.</p>
+        </div>
+
+        <div class="selected-role">
+          <div class="selected-role-icon" id="selectedRoleIcon">🛡️</div>
+          <div class="selected-role-text">
+            <h4 id="selectedRoleLabel">Selected Role: Admin</h4>
+            <span id="selectedRoleHint">Authorized system control panel</span>
+          </div>
+        </div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail">Email Address</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <div class="password-wrap">
+              <input type="password" id="loginPassword" placeholder="Enter your password" required>
+              <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="button" class="btn btn-secondary hidden" id="registerOpenBtn">Register</button>
+          </div>
+        </form>
+
+        <div class="login-note">
+          Only <strong>Coach</strong> can create a new account. Select the coach role to open the registration form.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-screen" id="dashboardScreen">
+    <div class="dashboard-card">
+      <div class="dash-top">
+        <div class="dash-title">
+          <h1>Taekwondo Dashboard</h1>
+          <p id="dashboardWelcomeText">Welcome to the management system dashboard.</p>
+        </div>
+        <div class="dash-role-badge" id="dashboardRoleBadge">Logged in as Admin</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <h3>128</h3>
+          <p>Total Players</p>
+        </div>
+        <div class="stat-box">
+          <h3>18</h3>
+          <p>Registered Coaches</p>
+        </div>
+        <div class="stat-box">
+          <h3>24</h3>
+          <p>Active Referees</p>
+        </div>
+        <div class="stat-box">
+          <h3>9</h3>
+          <p>Upcoming Poomsae Events</p>
+        </div>
+      </div>
+
+      <div class="dashboard-panels">
+        <div class="dash-panel">
+          <h3>Recent Activity</h3>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div>
+                <strong>Player profile updated</strong>
+                <span>Last athlete performance record was updated successfully.</span>
+              </div>
+              <div class="status">Done</div>
+            </div>
+
+            <div class="activity-item">
+              <div>
+                <strong>Referee panel accessed</strong>
+                <span>Poomsae scoring tools are ready for current session.</span>
+              </div>
+              <div class="status">Ready</div>
+            </div>
+
+            <div class="activity-item">
+              <div>
+                <strong>Coach registration reviewed</strong>
+                <span>New coach registration submitted and waiting for approval.</span>
+              </div>
+              <div class="status">Open</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-panel">
+          <h3>Quick Access</h3>
+          <div class="quick-links">
+            <a href="#" class="quick-link">Player Management</a>
+            <a href="#" class="quick-link">Coach Panel</a>
+            <a href="#" class="quick-link">Referee Tools</a>
+            <a href="#" class="quick-link">Competition Records</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="logout-row">
+        <button class="btn btn-primary" id="logoutBtn" style="max-width: 180px;">Logout</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal">
+      <div class="modal-top">
+        <h3>Coach Registration</h3>
+        <button class="close-modal" id="closeModalBtn">&times;</button>
+      </div>
+
+      <p>
+        Create a coach account by entering the required details below. This registration form is only available for coach users.
+      </p>
+
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="coachName">Full Name</label>
+          <input type="text" id="coachName" placeholder="Enter full name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="coachEmail">Email Address</label>
+          <input type="email" id="coachEmail" placeholder="Enter email address" required>
+        </div>
+
+        <div class="form-group">
+          <label for="coachPhone">Phone Number</label>
+          <input type="text" id="coachPhone" placeholder="Enter phone number" required>
+        </div>
+
+        <div class="form-group">
+          <label for="coachClub">Club / Dojang</label>
+          <input type="text" id="coachClub" placeholder="Enter club or dojang name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="coachPassword">Create Password</label>
+          <div class="password-wrap">
+            <input type="password" id="coachPassword" placeholder="Create password" required>
+            <button type="button" class="toggle-password" id="toggleRegisterPassword">👁️</button>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">Create Account</button>
+          <button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancel</button>
+        </div>
+
+        <div class="success-box" id="registerSuccess">
+          Coach account created successfully. You can now log in using the registered email and password.
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const roleCards = document.querySelectorAll(".role-card");
+    const loginTitle = document.getElementById("loginTitle");
+    const loginDesc = document.getElementById("loginDesc");
+    const selectedRoleIcon = document.getElementById("selectedRoleIcon");
+    const selectedRoleLabel = document.getElementById("selectedRoleLabel");
+    const selectedRoleHint = document.getElementById("selectedRoleHint");
+    const registerOpenBtn = document.getElementById("registerOpenBtn");
+    const loginForm = document.getElementById("loginForm");
+    const loginPassword = document.getElementById("loginPassword");
+    const togglePassword = document.getElementById("togglePassword");
+    const mainScreen = document.getElementById("mainScreen");
+    const dashboardScreen = document.getElementById("dashboardScreen");
+    const dashboardRoleBadge = document.getElementById("dashboardRoleBadge");
+    const dashboardWelcomeText = document.getElementById("dashboardWelcomeText");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const registerModal = document.getElementById("registerModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const registerForm = document.getElementById("registerForm");
+    const registerSuccess = document.getElementById("registerSuccess");
+    const coachPassword = document.getElementById("coachPassword");
+    const toggleRegisterPassword = document.getElementById("toggleRegisterPassword");
+
+    let currentRole = "Admin";
+
+    const roleData = {
+      Admin: {
+        icon: "🛡️",
+        desc: "Enter your credentials to access the secure management dashboard.",
+        hint: "Authorized system control panel"
+      },
+      Player: {
+        icon: "🥋",
+        desc: "Access your athlete profile, taekwondo records, and performance information.",
+        hint: "Athlete account access"
+      },
+      Coach: {
+        icon: "📋",
+        desc: "Manage players, training records, and register as a coach through the secure portal.",
+        hint: "Coach account access"
+      },
+      Referee: {
+        icon: "🏅",
+        desc: "Access poomsae referee tools, judging support, and scoring panel.",
+        hint: "Referee control access"
+      }
+    };
+
+    roleCards.forEach(card => {
+      card.addEventListener("click", () => {
+        roleCards.forEach(item => item.classList.remove("active"));
+        card.classList.add("active");
+
+        currentRole = card.dataset.role;
+
+        loginTitle.textContent = currentRole + " Login";
+        loginDesc.textContent = roleData[currentRole].desc;
+        selectedRoleIcon.textContent = roleData[currentRole].icon;
+        selectedRoleLabel.textContent = "Selected Role: " + currentRole;
+        selectedRoleHint.textContent = roleData[currentRole].hint;
+
+        if (currentRole === "Coach") {
+          registerOpenBtn.classList.remove("hidden");
+        } else {
+          registerOpenBtn.classList.add("hidden");
+        }
+      });
+    });
+
+    togglePassword.addEventListener("click", () => {
+      if (loginPassword.type === "password") {
+        loginPassword.type = "text";
+        togglePassword.textContent = "🙈";
+      } else {
+        loginPassword.type = "password";
+        togglePassword.textContent = "👁️";
+      }
+    });
+
+    toggleRegisterPassword.addEventListener("click", () => {
+      if (coachPassword.type === "password") {
+        coachPassword.type = "text";
+        toggleRegisterPassword.textContent = "🙈";
+      } else {
+        coachPassword.type = "password";
+        toggleRegisterPassword.textContent = "👁️";
+      }
+    });
+
+    registerOpenBtn.addEventListener("click", () => {
+  if (currentRole === "Coach") {
+    window.location.href = "register.html";
+  }
+});
+
+    function closeModal() {
+      registerModal.style.display = "none";
+      registerForm.reset();
+      registerSuccess.style.display = "none";
+      coachPassword.type = "password";
+      toggleRegisterPassword.textContent = "👁️";
+      document.body.style.overflow = "auto";
+    }
+
+    closeModalBtn.addEventListener("click", closeModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+
+    registerModal.addEventListener("click", (e) => {
+      if (e.target === registerModal) {
+        closeModal();
+      }
+    });
+
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const coachName = document.getElementById("coachName").value.trim();
+      const coachEmail = document.getElementById("coachEmail").value.trim();
+      const coachPhone = document.getElementById("coachPhone").value.trim();
+      const coachClub = document.getElementById("coachClub").value.trim();
+      const coachPass = document.getElementById("coachPassword").value.trim();
+
+      if (!coachName || !coachEmail || !coachPhone || !coachClub || !coachPass) {
+        alert("Please fill in all registration fields.");
+        return;
+      }
+
+      registerSuccess.style.display = "block";
+    });
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const loginEmail = document.getElementById("loginEmail").value.trim();
+      const loginPass = document.getElementById("loginPassword").value.trim();
+
+      if (!loginEmail || !loginPass) {
+        alert("Please enter your email and password.");
+        return;
+      }
+
+      mainScreen.style.display = "none";
+      dashboardScreen.style.display = "flex";
+      dashboardRoleBadge.textContent = "Logged in as " + currentRole;
+      dashboardWelcomeText.textContent =
+        "Welcome, " + currentRole + ". You have successfully entered the Taekwondo Player Management and Poomsae Referee dashboard.";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      dashboardScreen.style.display = "none";
+      mainScreen.style.display = "flex";
+      loginForm.reset();
+      loginPassword.type = "password";
+      togglePassword.textContent = "👁️";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && registerModal.style.display === "flex") {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
