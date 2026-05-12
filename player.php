@@ -94,16 +94,16 @@ function columnExists(PDO $pdo, string $table, string $column): bool {
 
 function beltColor(string $belt): array {
     $map = [
-        'White' => ['#ffffff', '#111111', 'White Belt'],
-        'Yellow' => ['#facc15', '#111111', 'Yellow Belt'],
+        'White'      => ['#ffffff', '#111111', 'White Belt'],
+        'Yellow'     => ['#facc15', '#111111', 'Yellow Belt'],
         'Half Green' => ['linear-gradient(90deg,#facc15 50%, #16a34a 50%)', '#ffffff', 'Half Green Belt'],
-        'Green' => ['#16a34a', '#ffffff', 'Green Belt'],
-        'Half Blue' => ['linear-gradient(90deg,#16a34a 50%, #2563eb 50%)', '#ffffff', 'Half Blue Belt'],
-        'Blue' => ['#2563eb', '#ffffff', 'Blue Belt'],
-        'Half Red' => ['linear-gradient(90deg,#2563eb 50%, #dc2626 50%)', '#ffffff', 'Half Red Belt'],
-        'Red' => ['#dc2626', '#ffffff', 'Red Belt'],
+        'Green'      => ['#16a34a', '#ffffff', 'Green Belt'],
+        'Half Blue'  => ['linear-gradient(90deg,#16a34a 50%, #2563eb 50%)', '#ffffff', 'Half Blue Belt'],
+        'Blue'       => ['#2563eb', '#ffffff', 'Blue Belt'],
+        'Half Red'   => ['linear-gradient(90deg,#2563eb 50%, #dc2626 50%)', '#ffffff', 'Half Red Belt'],
+        'Red'        => ['#dc2626', '#ffffff', 'Red Belt'],
         'Half Black' => ['linear-gradient(90deg,#dc2626 50%, #111111 50%)', '#ffffff', 'Half Black Belt'],
-        'Black' => ['#111111', '#e7c35a', 'Black Belt'],
+        'Black'      => ['#111111', '#e7c35a', 'Black Belt'],
     ];
 
     if (str_starts_with($belt, 'Dan') || str_starts_with($belt, 'Poom')) {
@@ -113,61 +113,196 @@ function beltColor(string $belt): array {
     return $map[$belt] ?? ['#333333', '#ffffff', $belt];
 }
 
-function beltGuidance(string $belt): array {
+function poomsaeGuide(string $belt): array {
     $guides = [
         'White' => [
-            'poomsae' => 'Basic stances, walking stance, front stance, ready position, simple movement drilling.',
-            'maki' => 'Low block, middle block basic line practice.'
+            'poomsae_en' => 'Taegeuk 1 Jang',
+            'poomsae_kr' => '태극 1장',
+            'blocks' => [
+                ['Low Block', 'Arae Makgi', '아래막기'],
+                ['Middle Block', 'Momtong Makgi', '몸통막기'],
+            ],
+            'summary' => 'Basic stances, front stance, ready posture, line movement, and foundation for Taegeuk 1 Jang.'
         ],
         'Yellow' => [
-            'poomsae' => 'Taegeuk 1 Jang foundation and movement control.',
-            'maki' => 'Low block, middle block, outer block basics.'
+            'poomsae_en' => 'Taegeuk 2 Jang',
+            'poomsae_kr' => '태극 2장',
+            'blocks' => [
+                ['Low Block', 'Arae Makgi', '아래막기'],
+                ['Middle Block', 'Momtong Makgi', '몸통막기'],
+                ['High Block', 'Olgul Makgi', '얼굴막기'],
+            ],
+            'summary' => 'Build rhythm, balance, and accuracy through Taegeuk 2 Jang.'
         ],
         'Half Green' => [
-            'poomsae' => 'Taegeuk 1 Jang polishing and preparation for Taegeuk 2 Jang.',
-            'maki' => 'Low block, middle block, knife-hand basics.'
+            'poomsae_en' => 'Taegeuk 2 Jang',
+            'poomsae_kr' => '태극 2장',
+            'blocks' => [
+                ['Low Block', 'Arae Makgi', '아래막기'],
+                ['High Block', 'Olgul Makgi', '얼굴막기'],
+                ['Outer Block', 'Bakkat Makgi', '바깥막기'],
+            ],
+            'summary' => 'Refine Taegeuk 2 Jang and prepare transition into stronger defensive timing.'
         ],
         'Green' => [
-            'poomsae' => 'Taegeuk 2 Jang with rhythm and balance.',
-            'maki' => 'Middle block, outer block, inner block improvement.'
+            'poomsae_en' => 'Taegeuk 3 Jang',
+            'poomsae_kr' => '태극 3장',
+            'blocks' => [
+                ['Outer Block', 'Bakkat Makgi', '바깥막기'],
+                ['Inner Block', 'An Makgi', '안막기'],
+                ['High Block', 'Olgul Makgi', '얼굴막기'],
+            ],
+            'summary' => 'Improve power control and directional confidence through Taegeuk 3 Jang.'
         ],
         'Half Blue' => [
-            'poomsae' => 'Taegeuk 2 Jang completion and transition to Taegeuk 3 Jang.',
-            'maki' => 'High block, middle block, stronger chamber work.'
+            'poomsae_en' => 'Taegeuk 3 Jang',
+            'poomsae_kr' => '태극 3장',
+            'blocks' => [
+                ['Outer Block', 'Bakkat Makgi', '바깥막기'],
+                ['Inner Block', 'An Makgi', '안막기'],
+                ['Knife-hand Block', 'Sonnal Makgi', '손날막기'],
+            ],
+            'summary' => 'Polish Taegeuk 3 Jang with stronger chambers and sharper guard timing.'
         ],
         'Blue' => [
-            'poomsae' => 'Taegeuk 3 Jang with power control and clear lines.',
-            'maki' => 'High block, outer block, inner block with proper hip use.'
+            'poomsae_en' => 'Taegeuk 4 Jang',
+            'poomsae_kr' => '태극 4장',
+            'blocks' => [
+                ['High Block', 'Olgul Makgi', '얼굴막기'],
+                ['Knife-hand Block', 'Sonnal Makgi', '손날막기'],
+                ['Outer Block', 'Bakkat Makgi', '바깥막기'],
+            ],
+            'summary' => 'Focus on line clarity, rhythm, and stronger application in Taegeuk 4 Jang.'
         ],
         'Half Red' => [
-            'poomsae' => 'Taegeuk 3 Jang and preparation for Taegeuk 4 Jang.',
-            'maki' => 'High block and advanced timing on defensive motion.'
+            'poomsae_en' => 'Taegeuk 4 Jang',
+            'poomsae_kr' => '태극 4장',
+            'blocks' => [
+                ['High Block', 'Olgul Makgi', '얼굴막기'],
+                ['Knife-hand Block', 'Sonnal Makgi', '손날막기'],
+                ['Inner Block', 'An Makgi', '안막기'],
+            ],
+            'summary' => 'Complete Taegeuk 4 Jang with cleaner transitions and advanced control.'
         ],
         'Red' => [
-            'poomsae' => 'Taegeuk 4 Jang and performance sharpness.',
-            'maki' => 'All standard blocks with accuracy and reaction drills.'
+            'poomsae_en' => 'Taegeuk 5 Jang',
+            'poomsae_kr' => '태극 5장',
+            'blocks' => [
+                ['Knife-hand Block', 'Sonnal Makgi', '손날막기'],
+                ['Outer Block', 'Bakkat Makgi', '바깥막기'],
+                ['High Block', 'Olgul Makgi', '얼굴막기'],
+            ],
+            'summary' => 'Sharpen power, timing, and performance discipline through Taegeuk 5 Jang.'
         ],
         'Half Black' => [
-            'poomsae' => 'Advanced color belt poomsae, pre-black-belt refinement.',
-            'maki' => 'Advanced block combinations and self-defence transitions.'
+            'poomsae_en' => 'Taegeuk 6 Jang',
+            'poomsae_kr' => '태극 6장',
+            'blocks' => [
+                ['Knife-hand Block', 'Sonnal Makgi', '손날막기'],
+                ['Double Knife-hand Block', 'Batangson/Sonnal Defense', '손날막기 응용'],
+                ['High Block', 'Olgul Makgi', '얼굴막기'],
+            ],
+            'summary' => 'Pre-black-belt refinement with higher precision and stronger technical control.'
         ],
         'Black' => [
-            'poomsae' => 'Koryo and higher discipline-based poomsae preparation.',
-            'maki' => 'Precision defence, timing, countering, and black belt control.'
+            'poomsae_en' => 'Koryo',
+            'poomsae_kr' => '고려',
+            'blocks' => [
+                ['Knife-hand Block', 'Sonnal Makgi', '손날막기'],
+                ['Mountain Block', 'San Makgi', '산막기'],
+                ['Palm Block', 'Batangson Makgi', '바탕손막기'],
+            ],
+            'summary' => 'Black-belt preparation emphasizes Koryo and disciplined advanced defensive technique.'
+        ],
+        'Poom 1' => [
+            'poomsae_en' => 'Koryo',
+            'poomsae_kr' => '고려',
+            'blocks' => [
+                ['Mountain Block', 'San Makgi', '산막기'],
+                ['Palm Block', 'Batangson Makgi', '바탕손막기'],
+                ['Knife-hand Block', 'Sonnal Makgi', '손날막기'],
+            ],
+            'summary' => 'Koryo-based poom focus with junior black-belt refinement.'
+        ],
+        'Poom 2' => [
+            'poomsae_en' => 'Keumgang',
+            'poomsae_kr' => '금강',
+            'blocks' => [
+                ['Diamond Block', 'Keumgang Makgi', '금강막기'],
+                ['Palm Block', 'Batangson Makgi', '바탕손막기'],
+                ['Outer Block', 'Bakkat Makgi', '바깥막기'],
+            ],
+            'summary' => 'Build stronger stance stability and technical maturity for Keumgang.'
+        ],
+        'Poom 3' => [
+            'poomsae_en' => 'Taebaek',
+            'poomsae_kr' => '태백',
+            'blocks' => [
+                ['Mountain Block', 'San Makgi', '산막기'],
+                ['Palm Block', 'Batangson Makgi', '바탕손막기'],
+                ['Knife-hand Guarding Block', 'Sonnal Kodureo Makgi', '손날거들어막기'],
+            ],
+            'summary' => 'Higher-level junior black-belt technique and Taebaek refinement.'
+        ],
+        'Dan 1' => [
+            'poomsae_en' => 'Koryo',
+            'poomsae_kr' => '고려',
+            'blocks' => [
+                ['Mountain Block', 'San Makgi', '산막기'],
+                ['Palm Block', 'Batangson Makgi', '바탕손막기'],
+                ['Knife-hand Block', 'Sonnal Makgi', '손날막기'],
+            ],
+            'summary' => 'First dan requires strong Koryo performance and black-belt defensive precision.'
+        ],
+        'Dan 2' => [
+            'poomsae_en' => 'Keumgang',
+            'poomsae_kr' => '금강',
+            'blocks' => [
+                ['Diamond Block', 'Keumgang Makgi', '금강막기'],
+                ['Palm Block', 'Batangson Makgi', '바탕손막기'],
+                ['Inner Block', 'An Makgi', '안막기'],
+            ],
+            'summary' => 'Second dan builds deeper power, stance, and Keumgang control.'
+        ],
+        'Dan 3' => [
+            'poomsae_en' => 'Taebaek',
+            'poomsae_kr' => '태백',
+            'blocks' => [
+                ['Mountain Block', 'San Makgi', '산막기'],
+                ['Knife-hand Guarding Block', 'Sonnal Kodureo Makgi', '손날거들어막기'],
+                ['Palm Block', 'Batangson Makgi', '바탕손막기'],
+            ],
+            'summary' => 'Third dan requires leadership-level Taebaek quality and technical maturity.'
         ],
     ];
 
-    if (str_starts_with($belt, 'Poom 1') || str_starts_with($belt, 'Dan 1')) {
-        return ['poomsae' => 'Koryo focus with advanced performance control.', 'maki' => 'Black belt standard defensive control and timing.'];
-    }
-    if (str_starts_with($belt, 'Poom 2') || str_starts_with($belt, 'Dan 2')) {
-        return ['poomsae' => 'Keumgang preparation and stronger stance work.', 'maki' => 'Higher-level reaction blocking and practical defence.'];
-    }
-    if (str_starts_with($belt, 'Poom 3') || str_starts_with($belt, 'Dan 3')) {
-        return ['poomsae' => 'Taebaek refinement and leadership standard technique.', 'maki' => 'Technical defensive excellence and senior-level control.'];
-    }
+    return $guides[$belt] ?? [
+        'poomsae_en' => 'Continue Current Poomsae',
+        'poomsae_kr' => '현재 품새 지속',
+        'blocks' => [
+            ['Low Block', 'Arae Makgi', '아래막기'],
+            ['Middle Block', 'Momtong Makgi', '몸통막기'],
+        ],
+        'summary' => 'Continue current poomsae and blocking drills according to your rank.'
+    ];
+}
 
-    return $guides[$belt] ?? ['poomsae' => 'Continue poomsae practice according to current rank.', 'maki' => 'Continue blocking drills according to current rank.'];
+function tournamentFeeLabel(array $tournament, string $eventType): string {
+    if ($eventType === 'Kyorugi') {
+        return isset($tournament['entry_fee_kyorugi']) && $tournament['entry_fee_kyorugi'] !== null
+            ? (string)$tournament['entry_fee_kyorugi']
+            : 'N/A';
+    }
+    if (in_array($eventType, ['Poomsae Individual','Poomsae Pair','Poomsae Group'], true)) {
+        return isset($tournament['entry_fee_poomsae']) && $tournament['entry_fee_poomsae'] !== null
+            ? (string)$tournament['entry_fee_poomsae']
+            : 'N/A';
+    }
+    return 'N/A';
+}
+
+function gradingCountdownDemo(): int {
+    return 100;
 }
 
 try {
@@ -225,7 +360,7 @@ $schema = [
         association_registered_number VARCHAR(120) NULL,
         email VARCHAR(190) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
-        status ENUM('Pending','Verified','Rejected') NOT NULL DEFAULT 'Verified',
+        status ENUM('Pending','Verified','Rejected') NOT NULL DEFAULT 'Pending',
         remarks TEXT NULL,
         club_address VARCHAR(255) NULL,
         contact_number VARCHAR(80) NULL,
@@ -268,7 +403,8 @@ $schema = [
         requested_club_name VARCHAR(190) NOT NULL,
         requested_club_contact VARCHAR(120) NULL,
         reason_text TEXT NOT NULL,
-        status ENUM('Pending','Reviewed') NOT NULL DEFAULT 'Pending',
+        status ENUM('Pending','Reviewed','Approved','Rejected') NOT NULL DEFAULT 'Pending',
+        admin_remarks TEXT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
 
@@ -285,10 +421,54 @@ $schema = [
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         coach_id INT UNSIGNED NULL,
         player_id INT UNSIGNED NULL,
+        transfer_request_id INT UNSIGNED NULL,
         alert_type ENUM('Delete Request','Ban Request','Transfer Request','General') NOT NULL DEFAULT 'General',
         title VARCHAR(255) NOT NULL,
         reason_text TEXT NULL,
-        status ENUM('Pending','Reviewed') NOT NULL DEFAULT 'Pending',
+        status ENUM('Pending','Approved','Rejected','Reviewed') NOT NULL DEFAULT 'Pending',
+        admin_remarks TEXT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+
+    "CREATE TABLE IF NOT EXISTS tournaments (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        coach_id INT UNSIGNED NULL,
+        tournament_name VARCHAR(255) NOT NULL,
+        host_club VARCHAR(190) NOT NULL,
+        host_coach VARCHAR(190) NOT NULL,
+        event_scope VARCHAR(120) NULL,
+        poomsae_enabled TINYINT(1) NOT NULL DEFAULT 0,
+        kyorugi_enabled TINYINT(1) NOT NULL DEFAULT 0,
+        arena_count INT NOT NULL DEFAULT 1,
+        entry_fee_poomsae DECIMAL(10,2) NULL,
+        entry_fee_kyorugi DECIMAL(10,2) NULL,
+        entry_fee_both_discount DECIMAL(10,2) NULL,
+        status ENUM('Pending','Verified','Rejected') NOT NULL DEFAULT 'Pending',
+        remarks TEXT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+
+    "CREATE TABLE IF NOT EXISTS tournament_categories (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        tournament_id INT UNSIGNED NOT NULL,
+        event_type VARCHAR(120) NOT NULL,
+        age_category VARCHAR(100) NULL,
+        weight_category VARCHAR(100) NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_tournament_categories_tournament (tournament_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+
+    "CREATE TABLE IF NOT EXISTS tournament_applicants (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        tournament_id INT UNSIGNED NOT NULL,
+        player_id INT UNSIGNED NULL,
+        applicant_name VARCHAR(255) NOT NULL,
+        event_type VARCHAR(120) NOT NULL,
+        weight_category VARCHAR(100) NULL,
+        age_category VARCHAR(100) NULL,
+        club_name VARCHAR(190) NULL,
+        status ENUM('Pending','Verified','Rejected') NOT NULL DEFAULT 'Pending',
+        remarks TEXT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
 ];
@@ -324,6 +504,33 @@ foreach ($coachMigrations as $column => $sql) {
         try { $pdo->exec($sql); } catch (Throwable $e) {}
     }
 }
+
+if (!columnExists($pdo, 'tournament_applicants', 'player_id')) {
+    try { $pdo->exec("ALTER TABLE tournament_applicants ADD COLUMN player_id INT UNSIGNED NULL AFTER tournament_id"); } catch (Throwable $e) {}
+}
+if (!columnExists($pdo, 'admin_alerts', 'transfer_request_id')) {
+    try { $pdo->exec("ALTER TABLE admin_alerts ADD COLUMN transfer_request_id INT UNSIGNED NULL AFTER player_id"); } catch (Throwable $e) {}
+}
+if (!columnExists($pdo, 'admin_alerts', 'admin_remarks')) {
+    try { $pdo->exec("ALTER TABLE admin_alerts ADD COLUMN admin_remarks TEXT NULL AFTER status"); } catch (Throwable $e) {}
+}
+if (!columnExists($pdo, 'player_transfer_requests', 'admin_remarks')) {
+    try { $pdo->exec("ALTER TABLE player_transfer_requests ADD COLUMN admin_remarks TEXT NULL AFTER status"); } catch (Throwable $e) {}
+}
+
+try {
+    $pdo->exec("
+        ALTER TABLE admin_alerts
+        MODIFY COLUMN status ENUM('Pending','Approved','Rejected','Reviewed') NOT NULL DEFAULT 'Pending'
+    ");
+} catch (Throwable $e) {}
+
+try {
+    $pdo->exec("
+        ALTER TABLE player_transfer_requests
+        MODIFY COLUMN status ENUM('Pending','Reviewed','Approved','Rejected') NOT NULL DEFAULT 'Pending'
+    ");
+} catch (Throwable $e) {}
 
 /*
 |--------------------------------------------------------------------------
@@ -433,6 +640,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new RuntimeException('Requested club name and reason are required.');
             }
 
+            $stmt = $pdo->prepare("
+                SELECT id
+                FROM player_transfer_requests
+                WHERE player_id = ? AND status = 'Pending'
+                LIMIT 1
+            ");
+            $stmt->execute([$currentPlayerId]);
+            if ($stmt->fetch()) {
+                throw new RuntimeException('A transfer request is already pending.');
+            }
+
             $pdo->beginTransaction();
 
             $stmt = $pdo->prepare("
@@ -441,13 +659,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 VALUES (?, ?, ?, ?, ?, 'Pending')
             ");
             $stmt->execute([$currentPlayerId, $playerClub, $requestedClub, $requestedClubContact, $reason]);
+            $transferRequestId = (int)$pdo->lastInsertId();
 
             $stmt = $pdo->prepare("
-                INSERT INTO admin_alerts (player_id, alert_type, title, reason_text, status)
-                VALUES (?, 'Transfer Request', ?, ?, 'Pending')
+                INSERT INTO admin_alerts (player_id, transfer_request_id, alert_type, title, reason_text, status)
+                VALUES (?, ?, 'Transfer Request', ?, ?, 'Pending')
             ");
             $stmt->execute([
                 $currentPlayerId,
+                $transferRequestId,
                 'Transfer Request - ' . (string)$currentPlayer['full_name'],
                 "Current Club: {$playerClub}\nRequested Club: {$requestedClub}\nRequested Club Contact: {$requestedClubContact}\nReason: {$reason}"
             ]);
@@ -460,15 +680,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($action === 'update_weight') {
             $weight = trim($_POST['weight_kg'] ?? '');
-            if ($weight === '') {
-                throw new RuntimeException('Weight is required.');
+
+            if ($weight === '' || !is_numeric($weight)) {
+                throw new RuntimeException('Please enter a valid weight.');
             }
 
-            $weightFloat = (float)$weight;
+            $weightFloat = round((float)$weight, 2);
+
+            if ($weightFloat <= 0) {
+                throw new RuntimeException('Weight must be greater than 0.');
+            }
+
             $month = date('F');
             $year = (int)date('Y');
-            $gender = (string)($currentPlayer['gender'] ?? '');
-            $weightCategory = deriveWeightCategory($gender, $weightFloat);
+
+            $stmt = $pdo->prepare("SELECT id, gender FROM players WHERE id = ? LIMIT 1");
+            $stmt->execute([$currentPlayerId]);
+            $latestPlayer = $stmt->fetch();
+
+            if (!$latestPlayer) {
+                throw new RuntimeException('Player account not found.');
+            }
+
+            $gender = strtolower(trim((string)($latestPlayer['gender'] ?? '')));
+            $weightCategory = null;
+
+            if ($gender === 'male') {
+                if ($weightFloat <= 58) $weightCategory = 'Male -58kg';
+                elseif ($weightFloat <= 68) $weightCategory = 'Male -68kg';
+                elseif ($weightFloat <= 80) $weightCategory = 'Male -80kg';
+                else $weightCategory = 'Male +80kg';
+            } elseif ($gender === 'female') {
+                if ($weightFloat <= 49) $weightCategory = 'Female -49kg';
+                elseif ($weightFloat <= 57) $weightCategory = 'Female -57kg';
+                elseif ($weightFloat <= 67) $weightCategory = 'Female -67kg';
+                else $weightCategory = 'Female +67kg';
+            } else {
+                $weightCategory = 'Unspecified';
+            }
 
             $pdo->beginTransaction();
 
@@ -491,6 +740,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('player.php?section=weightSection');
         }
 
+        if ($action === 'register_tournament') {
+            $tournamentId = (int)($_POST['tournament_id'] ?? 0);
+            $eventType = trim($_POST['event_type'] ?? '');
+
+            if ($tournamentId <= 0 || $eventType === '') {
+                throw new RuntimeException('Tournament and event type are required.');
+            }
+
+            if (($currentPlayer['status'] ?? '') !== 'Active') {
+                throw new RuntimeException('Only active players can register for tournaments.');
+            }
+
+            $stmt = $pdo->prepare("
+                SELECT *
+                FROM tournaments
+                WHERE id = ? AND status = 'Verified'
+                LIMIT 1
+            ");
+            $stmt->execute([$tournamentId]);
+            $tournament = $stmt->fetch();
+
+            if (!$tournament) {
+                throw new RuntimeException('Selected tournament is not available for registration.');
+            }
+
+            $allowed = false;
+            if ($eventType === 'Kyorugi' && (int)$tournament['kyorugi_enabled'] === 1) {
+                $stmt = $pdo->prepare("
+                    SELECT id
+                    FROM tournament_categories
+                    WHERE tournament_id = ?
+                      AND event_type = 'Kyorugi'
+                      AND age_category = ?
+                      AND weight_category = ?
+                    LIMIT 1
+                ");
+                $stmt->execute([$tournamentId, $currentPlayer['age_category'], $currentPlayer['weight_category']]);
+                $allowed = (bool)$stmt->fetchColumn();
+            } elseif (in_array($eventType, ['Poomsae Individual','Poomsae Pair','Poomsae Group'], true) && (int)$tournament['poomsae_enabled'] === 1) {
+                $stmt = $pdo->prepare("
+                    SELECT id
+                    FROM tournament_categories
+                    WHERE tournament_id = ?
+                      AND event_type = ?
+                      AND age_category = ?
+                    LIMIT 1
+                ");
+                $stmt->execute([$tournamentId, $eventType, $currentPlayer['age_category']]);
+                $allowed = (bool)$stmt->fetchColumn();
+            }
+
+            if (!$allowed) {
+                throw new RuntimeException('You do not match any hosted category for this tournament event.');
+            }
+
+            $stmt = $pdo->prepare("
+                SELECT id
+                FROM tournament_applicants
+                WHERE tournament_id = ? AND player_id = ? AND event_type = ?
+                LIMIT 1
+            ");
+            $stmt->execute([$tournamentId, $currentPlayerId, $eventType]);
+            if ($stmt->fetch()) {
+                throw new RuntimeException('You are already registered for this event in this tournament.');
+            }
+
+            $stmt = $pdo->prepare("
+                INSERT INTO tournament_applicants
+                (tournament_id, player_id, applicant_name, event_type, weight_category, age_category, club_name, status, remarks)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?)
+            ");
+            $stmt->execute([
+                $tournamentId,
+                $currentPlayerId,
+                (string)$currentPlayer['full_name'],
+                $eventType,
+                (string)$currentPlayer['weight_category'],
+                (string)$currentPlayer['age_category'],
+                (string)$currentPlayer['club_name'],
+                'Waiting for admin applicant approval'
+            ]);
+
+            setFlash('success', 'Tournament registration submitted successfully.');
+            redirect('player.php?section=tournamentSection');
+        }
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -566,15 +900,34 @@ if (tableExists($pdo, 'notices')) {
     $adminNotices = $stmt->fetchAll();
 }
 
+$stmt = $pdo->prepare("
+    SELECT *
+    FROM tournaments
+    WHERE status = 'Verified'
+    ORDER BY created_at DESC
+");
+$stmt->execute();
+$availableTournaments = $stmt->fetchAll();
+
+$stmt = $pdo->prepare("
+    SELECT ta.*, t.tournament_name, t.entry_fee_poomsae, t.entry_fee_kyorugi, t.entry_fee_both_discount
+    FROM tournament_applicants ta
+    INNER JOIN tournaments t ON t.id = ta.tournament_id
+    WHERE ta.player_id = ?
+    ORDER BY ta.created_at DESC
+");
+$stmt->execute([$currentPlayerId]);
+$myTournamentRegistrations = $stmt->fetchAll();
+
 $gold = (int)($currentPlayer['gold_last_90_days'] ?? 0);
 $silver = (int)($currentPlayer['silver_count'] ?? 0);
 $bronze = (int)($currentPlayer['bronze_count'] ?? 0);
 $games = (int)($currentPlayer['participated_games'] ?? 0);
 
-$gradingCountdown = 100;
+$gradingCountdown = gradingCountdownDemo();
 $belt = (string)($currentPlayer['belt_rank'] ?? 'White');
 [$beltBg, $beltTextColor, $beltLabel] = beltColor($belt);
-$guidance = beltGuidance($belt);
+$guide = poomsaeGuide($belt);
 
 $qrPayload = json_encode([
     'player_id' => (string)($currentPlayer['player_code'] ?? ''),
@@ -656,6 +1009,7 @@ foreach ($weightUpdates as $row) {
     .form-group.full{grid-column:1 / -1;}
     label{font-weight:bold;font-size:.95rem;}
     input,select,textarea{width:100%;min-height:48px;padding:13px 14px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--white);outline:none;font-size:.95rem;}
+    select option{background:#ffffff;color:#111111;}
     textarea{min-height:120px;resize:vertical;padding-top:12px;}
     .btn{min-height:48px;padding:12px 16px;border:none;border-radius:14px;cursor:pointer;font-weight:bold;transition:.25s ease;color:var(--white);}
     .btn-primary{background:linear-gradient(to right,var(--red),var(--blue));}
@@ -666,7 +1020,7 @@ foreach ($weightUpdates as $row) {
     .mini-card p{color:var(--soft);line-height:1.6;margin-bottom:12px;}
     .status-chip{display:inline-block;padding:6px 10px;border-radius:999px;font-size:.82rem;font-weight:bold;}
     .status-pending{background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.3);color:#ffe7b0;}
-    .status-approved{background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.3);color:#d8ffe4;}
+    .status-approved,.status-verified{background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.3);color:#d8ffe4;}
     .status-rejected{background:rgba(217,4,41,.18);border:1px solid rgba(217,4,41,.3);color:#ffdada;}
     .table-wrap{overflow-x:auto;border-radius:18px;border:1px solid var(--border);}
     table{width:100%;border-collapse:collapse;min-width:760px;background:rgba(255,255,255,.04);}
@@ -690,6 +1044,49 @@ foreach ($weightUpdates as $row) {
     .id-item p{font-size:.92rem;word-break:break-word;}
     #qrcode{margin-top:14px;background:#fff;padding:10px;border-radius:12px;display:inline-block;}
     .print-actions{margin-top:16px;text-align:center;}
+    .fee-box{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--border);margin-top:10px;color:var(--soft);line-height:1.7;}
+    .guide-list{display:grid;gap:12px;}
+    .guide-item{padding:14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);}
+    .guide-item strong{color:#fff;}
+    .tkd-hero{position:relative;min-height:260px;border-radius:22px;border:1px solid var(--border);background:radial-gradient(circle at 25% 20%, rgba(217,4,41,.18), transparent 26%),radial-gradient(circle at 80% 75%, rgba(21,101,255,.18), transparent 28%),linear-gradient(145deg,#0b0b0b,#111927,#0f0f0f);overflow:hidden;}
+    .tkd-stage{position:absolute;inset:0;}
+    .tkd-stage::before{content:"";position:absolute;left:0;right:0;bottom:34px;height:2px;background:rgba(255,255,255,.12);}
+    .fighter{position:absolute;left:50%;bottom:36px;width:16px;height:88px;background:linear-gradient(#fff,#e8e8e8);border-radius:10px;transform-origin:center bottom;animation:fighterMove 2.8s ease-in-out infinite;}
+    .fighter::before{content:"";position:absolute;top:-24px;left:-6px;width:28px;height:28px;border-radius:50%;background:#f2d2b6;}
+    .fighter::after{content:"";position:absolute;bottom:-2px;left:-10px;width:36px;height:8px;background:#ffffff;border-radius:20px;box-shadow:0 10px 0 0 #ffffff;}
+    .arm-left,.arm-right,.leg-left,.leg-right{position:absolute;background:#ffffff;border-radius:20px;}
+    .arm-left{width:12px;height:46px;left:-12px;top:14px;transform-origin:top right;animation:armLeft 2.8s ease-in-out infinite;}
+    .arm-right{width:12px;height:52px;right:-12px;top:8px;transform-origin:top left;animation:armRight 2.8s ease-in-out infinite;}
+    .leg-left{width:12px;height:54px;left:1px;bottom:-42px;transform-origin:top center;animation:legLeft 2.8s ease-in-out infinite;}
+    .leg-right{width:12px;height:74px;right:1px;bottom:-58px;transform-origin:top center;animation:legRight 2.8s ease-in-out infinite;}
+    .fighter-label{position:absolute;left:20px;top:20px;color:var(--soft);font-size:.95rem;line-height:1.7;max-width:280px;}
+    @keyframes fighterMove{
+      0%,100%{transform:translateX(-50%) rotate(0deg);}
+      20%{transform:translateX(-50%) rotate(-4deg);}
+      40%{transform:translateX(-48%) rotate(2deg);}
+      60%{transform:translateX(-52%) rotate(-1deg);}
+      80%{transform:translateX(-50%) rotate(5deg);}
+    }
+    @keyframes armLeft{
+      0%,100%{transform:rotate(25deg);}
+      30%{transform:rotate(-25deg);}
+      60%{transform:rotate(45deg);}
+    }
+    @keyframes armRight{
+      0%,100%{transform:rotate(-35deg);}
+      30%{transform:rotate(35deg);}
+      60%{transform:rotate(-80deg);}
+    }
+    @keyframes legLeft{
+      0%,100%{transform:rotate(8deg);}
+      40%{transform:rotate(-18deg);}
+      70%{transform:rotate(16deg);}
+    }
+    @keyframes legRight{
+      0%,100%{transform:rotate(-10deg);}
+      35%{transform:rotate(62deg);}
+      60%{transform:rotate(-36deg);}
+    }
     @media print{
       body *{visibility:hidden !important;}
       .id-card, .id-card *{visibility:visible !important;}
@@ -710,6 +1107,7 @@ foreach ($weightUpdates as $row) {
       .stats-grid{grid-template-columns:1fr;}
       .title h1{font-size:1.6rem;}
       .section{padding:16px;border-radius:18px;}
+      .fighter-label{font-size:.82rem;max-width:180px;}
     }
   </style>
 </head>
@@ -725,13 +1123,14 @@ foreach ($weightUpdates as $row) {
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-inner">
         <div class="brand">
-          <h2>Welcome Athlete,</h2>
-          <p>Track your rank, grading preparation, notices, leave requests, transfer requests, monthly weight updates, and athlete ID.</p>
+          <h2>Welcome Athlete</h2>
+          <p>Track your rank, poomsae guidance, tournament registration, leave requests, transfer requests, monthly weight, notices, and athlete ID.</p>
         </div>
 
         <div class="nav">
           <a class="<?= $activeSection === 'dashboardSection' ? 'active' : '' ?>" href="player.php?section=dashboardSection">📊 Dashboard</a>
           <a class="<?= $activeSection === 'guidanceSection' ? 'active' : '' ?>" href="player.php?section=guidanceSection">🥋 Belt Guidance</a>
+          <a class="<?= $activeSection === 'tournamentSection' ? 'active' : '' ?>" href="player.php?section=tournamentSection">🏆 Tournament Registration</a>
           <a class="<?= $activeSection === 'leaveSection' ? 'active' : '' ?>" href="player.php?section=leaveSection">📝 Leave Application</a>
           <a class="<?= $activeSection === 'transferSection' ? 'active' : '' ?>" href="player.php?section=transferSection">🔄 Transfer Request</a>
           <a class="<?= $activeSection === 'weightSection' ? 'active' : '' ?>" href="player.php?section=weightSection">⚖️ Monthly Weight</a>
@@ -768,12 +1167,12 @@ foreach ($weightUpdates as $row) {
         <div class="stat-card">
           <h3>Grading Countdown</h3>
           <div class="big"><?= e((string)$gradingCountdown) ?></div>
-          <p>Days remaining until the next grading window.</p>
+          <p>Days remaining until next grading window.</p>
         </div>
         <div class="stat-card">
           <h3>Participated Games</h3>
           <div class="big"><?= e((string)$games) ?></div>
-          <p>Total games recorded in your profile.</p>
+          <p>Total games recorded in profile.</p>
         </div>
         <div class="stat-card">
           <h3>Current Weight</h3>
@@ -789,11 +1188,30 @@ foreach ($weightUpdates as $row) {
 
       <section class="section <?= $activeSection === 'dashboardSection' ? 'active' : '' ?>">
         <h2>Player Overview</h2>
-        <p class="section-desc">Your athlete dashboard with belt, guidance, medals, and performance progress.</p>
+        <p class="section-desc">Your athlete dashboard with belt, medals, performance progress, and continuous taekwondo animation.</p>
 
         <div class="belt-bar" style="background:<?= str_contains($beltBg, 'linear-gradient') ? $beltBg : e($beltBg) ?>; color:<?= e($beltTextColor) ?>;">
           <h3><?= e($beltLabel) ?></h3>
-          <p>Your current belt rank is <?= e($belt) ?>.</p>
+          <p>Your current belt rank is <?= e($belt) ?>. Current poomsae: <strong><?= e($guide['poomsae_en']) ?></strong> / <strong><?= e($guide['poomsae_kr']) ?></strong></p>
+        </div>
+
+        <div class="mini-card">
+          <h3>Continuous Taekwondo Motion</h3>
+          <div class="tkd-hero">
+            <div class="fighter-label">
+              Modern taekwondo athlete zone<br>
+              Continuous action animation for player dashboard<br>
+              Focus: discipline, movement, control
+            </div>
+            <div class="tkd-stage">
+              <div class="fighter">
+                <div class="arm-left"></div>
+                <div class="arm-right"></div>
+                <div class="leg-left"></div>
+                <div class="leg-right"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="card-grid">
@@ -811,23 +1229,172 @@ foreach ($weightUpdates as $row) {
 
       <section class="section <?= $activeSection === 'guidanceSection' ? 'active' : '' ?>">
         <h2>Belt Guidance</h2>
-        <p class="section-desc">Practice information according to your current belt rank and preparation flow.</p>
+        <p class="section-desc">Your poomsae and block guidance in English and Korean according to current belt.</p>
 
         <div class="mini-card">
           <h3>Current Belt Preparation</h3>
           <div class="result-box">Current Belt: <?= e($belt) ?>
 
-Poomsae to Prepare:
-<?= e($guidance['poomsae']) ?>
+Poomsae (English): <?= e($guide['poomsae_en']) ?>
+Poomsae (Korean): <?= e($guide['poomsae_kr']) ?>
 
-Maki / Blocking to Prepare:
-<?= e($guidance['maki']) ?></div>
+Preparation Summary:
+<?= e($guide['summary']) ?></div>
+        </div>
+
+        <div class="mini-card">
+          <h3>Blocking Techniques</h3>
+          <div class="guide-list">
+            <?php foreach ($guide['blocks'] as $block): ?>
+              <div class="guide-item">
+                <strong><?= e($block[0]) ?></strong><br>
+                Romanized: <?= e($block[1]) ?><br>
+                Korean: <?= e($block[2]) ?>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      </section>
+
+      <section class="section <?= $activeSection === 'tournamentSection' ? 'active' : '' ?>">
+        <h2>Tournament Registration</h2>
+        <p class="section-desc">View verified tournaments, see event fees, and register yourself for matching hosted categories.</p>
+
+        <div class="mini-card">
+          <h3>Register for Tournament</h3>
+
+          <?php if (!$availableTournaments): ?>
+            <div class="result-box">No verified tournaments available right now.</div>
+          <?php else: ?>
+            <form method="post">
+              <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+              <input type="hidden" name="action" value="register_tournament">
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Select Tournament</label>
+                  <select name="tournament_id" id="tournamentSelect" required onchange="updateTournamentFees()">
+                    <option value="">Select tournament</option>
+                    <?php foreach ($availableTournaments as $t): ?>
+                      <option
+                        value="<?= (int)$t['id'] ?>"
+                        data-poomsae="<?= e((string)($t['entry_fee_poomsae'] ?? '')) ?>"
+                        data-kyorugi="<?= e((string)($t['entry_fee_kyorugi'] ?? '')) ?>"
+                        data-both="<?= e((string)($t['entry_fee_both_discount'] ?? '')) ?>"
+                        data-poomsae-enabled="<?= (int)$t['poomsae_enabled'] ?>"
+                        data-kyorugi-enabled="<?= (int)$t['kyorugi_enabled'] ?>"
+                      >
+                        <?= e((string)$t['tournament_name']) ?> - <?= e((string)$t['event_scope']) ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Select Event Type</label>
+                  <select name="event_type" id="eventTypeSelect" required onchange="updateTournamentFees()">
+                    <option value="">Select event type</option>
+                    <option value="Kyorugi">Kyorugi</option>
+                    <option value="Poomsae Individual">Poomsae Individual</option>
+                    <option value="Poomsae Pair">Poomsae Pair</option>
+                    <option value="Poomsae Group">Poomsae Group</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="fee-box" id="feeDisplay">
+                Select tournament and event type to see the fee.
+              </div>
+
+              <div class="button-row">
+                <button class="btn btn-primary" type="submit">Register Tournament</button>
+              </div>
+
+              <div class="helper">
+                Registration only works if your age category and weight category match the hosted category of the selected event.
+              </div>
+            </form>
+          <?php endif; ?>
+        </div>
+
+        <div class="mini-card">
+          <h3>Available Tournament Fee List</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tournament</th>
+                  <th>Mode</th>
+                  <th>Poomsae Fee</th>
+                  <th>Kyorugi Fee</th>
+                  <th>Both Discount Fee</th>
+                  <th>Host Club</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php if (!$availableTournaments): ?>
+                  <tr><td colspan="6">No verified tournaments available.</td></tr>
+                <?php else: ?>
+                  <?php foreach ($availableTournaments as $t): ?>
+                    <tr>
+                      <td><?= e((string)$t['tournament_name']) ?></td>
+                      <td><?= e((string)$t['event_scope']) ?></td>
+                      <td><?= e((string)($t['entry_fee_poomsae'] ?? 'N/A')) ?></td>
+                      <td><?= e((string)($t['entry_fee_kyorugi'] ?? 'N/A')) ?></td>
+                      <td><?= e((string)($t['entry_fee_both_discount'] ?? 'N/A')) ?></td>
+                      <td><?= e((string)$t['host_club']) ?></td>
+                    </tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <h3>My Tournament Registrations</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tournament</th>
+                  <th>Event Type</th>
+                  <th>Weight Category</th>
+                  <th>Age Category</th>
+                  <th>Fee</th>
+                  <th>Status</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php if (!$myTournamentRegistrations): ?>
+                  <tr><td colspan="7">You have not registered for any tournament yet.</td></tr>
+                <?php else: ?>
+                  <?php foreach ($myTournamentRegistrations as $reg): ?>
+                    <tr>
+                      <td><?= e((string)$reg['tournament_name']) ?></td>
+                      <td><?= e((string)$reg['event_type']) ?></td>
+                      <td><?= e((string)$reg['weight_category']) ?></td>
+                      <td><?= e((string)$reg['age_category']) ?></td>
+                      <td><?= e(tournamentFeeLabel($reg, (string)$reg['event_type'])) ?></td>
+                      <td>
+                        <span class="status-chip <?= $reg['status'] === 'Pending' ? 'status-pending' : ($reg['status'] === 'Verified' ? 'status-verified' : 'status-rejected') ?>">
+                          <?= e((string)$reg['status']) ?>
+                        </span>
+                      </td>
+                      <td><?= e((string)$reg['remarks']) ?></td>
+                    </tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
       <section class="section <?= $activeSection === 'leaveSection' ? 'active' : '' ?>">
         <h2>Leave Application</h2>
-        <p class="section-desc">Submit leave applications to your coach. Coach can review and grant leave later.</p>
+        <p class="section-desc">Submit leave applications to your coach. Coach can approve or reject them later.</p>
 
         <div class="mini-card">
           <h3>Submit Leave Application</h3>
@@ -895,7 +1462,7 @@ Maki / Blocking to Prepare:
 
       <section class="section <?= $activeSection === 'transferSection' ? 'active' : '' ?>">
         <h2>Transfer Request</h2>
-        <p class="section-desc">Request transfer to another club by submitting club details and reason.</p>
+        <p class="section-desc">Request transfer to another club by submitting the requested club and reason.</p>
 
         <div class="mini-card">
           <h3>Submit Transfer Request</h3>
@@ -908,12 +1475,14 @@ Maki / Blocking to Prepare:
                 <label>Requested Club Name</label>
                 <input type="text" name="requested_club_name" required>
               </div>
+
               <div class="form-group">
-                <label>Requested Club Contact Number</label>
+                <label>Requested Club Contact</label>
                 <input type="text" name="requested_club_contact">
               </div>
+
               <div class="form-group full">
-                <label>Reason to Transfer</label>
+                <label>Reason</label>
                 <textarea name="reason_text" required></textarea>
               </div>
             </div>
@@ -932,14 +1501,15 @@ Maki / Blocking to Prepare:
                 <tr>
                   <th>Current Club</th>
                   <th>Requested Club</th>
-                  <th>Requested Club Contact</th>
+                  <th>Requested Contact</th>
                   <th>Reason</th>
                   <th>Status</th>
+                  <th>Admin Remarks</th>
                 </tr>
               </thead>
               <tbody>
                 <?php if (!$transferRequests): ?>
-                  <tr><td colspan="5">No transfer request submitted yet.</td></tr>
+                  <tr><td colspan="6">No transfer requests submitted yet.</td></tr>
                 <?php else: ?>
                   <?php foreach ($transferRequests as $tr): ?>
                     <tr>
@@ -947,7 +1517,12 @@ Maki / Blocking to Prepare:
                       <td><?= e((string)$tr['requested_club_name']) ?></td>
                       <td><?= e((string)$tr['requested_club_contact']) ?></td>
                       <td><?= e((string)$tr['reason_text']) ?></td>
-                      <td><span class="status-chip status-pending"><?= e((string)$tr['status']) ?></span></td>
+                      <td>
+                        <span class="status-chip <?= $tr['status'] === 'Pending' ? 'status-pending' : ($tr['status'] === 'Approved' ? 'status-approved' : 'status-rejected') ?>">
+                          <?= e((string)$tr['status']) ?>
+                        </span>
+                      </td>
+                      <td><?= e((string)$tr['admin_remarks']) ?></td>
                     </tr>
                   <?php endforeach; ?>
                 <?php endif; ?>
@@ -959,7 +1534,7 @@ Maki / Blocking to Prepare:
 
       <section class="section <?= $activeSection === 'weightSection' ? 'active' : '' ?>">
         <h2>Monthly Weight Update</h2>
-        <p class="section-desc">Keep your weight updated regularly to stay ready for category-based competition management.</p>
+        <p class="section-desc">Update your current monthly weight. Your weight category updates automatically.</p>
 
         <div class="mini-card">
           <h3>Update Weight</h3>
@@ -972,16 +1547,21 @@ Maki / Blocking to Prepare:
                 <label>Current Weight (kg)</label>
                 <input type="number" step="0.01" name="weight_kg" value="<?= e((string)$currentPlayer['weight_kg']) ?>" required>
               </div>
+
+              <div class="form-group">
+                <label>Current Weight Category</label>
+                <input type="text" value="<?= e((string)$currentPlayer['weight_category']) ?>" readonly>
+              </div>
             </div>
 
             <div class="button-row">
-              <button class="btn btn-primary" type="submit">Save Monthly Weight</button>
+              <button class="btn btn-primary" type="submit">Update Monthly Weight</button>
             </div>
           </form>
         </div>
 
         <div class="mini-card">
-          <h3>Weight Update History</h3>
+          <h3>Weight History</h3>
           <div class="table-wrap">
             <table>
               <thead>
@@ -989,19 +1569,17 @@ Maki / Blocking to Prepare:
                   <th>Month</th>
                   <th>Year</th>
                   <th>Weight</th>
-                  <th>Recorded At</th>
                 </tr>
               </thead>
               <tbody>
                 <?php if (!$weightUpdates): ?>
-                  <tr><td colspan="4">No monthly weight updates yet.</td></tr>
+                  <tr><td colspan="3">No monthly weight updates recorded yet.</td></tr>
                 <?php else: ?>
-                  <?php foreach ($weightUpdates as $w): ?>
+                  <?php foreach ($weightUpdates as $update): ?>
                     <tr>
-                      <td><?= e((string)$w['recorded_month']) ?></td>
-                      <td><?= e((string)$w['recorded_year']) ?></td>
-                      <td><?= e((string)$w['weight_kg']) ?></td>
-                      <td><?= e((string)$w['created_at']) ?></td>
+                      <td><?= e((string)$update['recorded_month']) ?></td>
+                      <td><?= e((string)$update['recorded_year']) ?></td>
+                      <td><?= e((string)$update['weight_kg']) ?></td>
                     </tr>
                   <?php endforeach; ?>
                 <?php endif; ?>
@@ -1013,34 +1591,34 @@ Maki / Blocking to Prepare:
 
       <section class="section <?= $activeSection === 'noticesSection' ? 'active' : '' ?>">
         <h2>Notices</h2>
-        <p class="section-desc">View notices from your coach and system-wide player notices from admin.</p>
+        <p class="section-desc">View notices published by your coach and admin.</p>
 
         <div class="card-grid">
           <div class="mini-card">
             <h3>Coach Notices</h3>
             <?php if (!$coachNotices): ?>
-              <div class="notice-card"><h4>No coach notices</h4><p>No notices from your coach yet.</p></div>
+              <div class="result-box">No coach notices found.</div>
             <?php else: ?>
               <?php foreach ($coachNotices as $notice): ?>
                 <div class="notice-card">
                   <h4><?= e((string)$notice['title']) ?></h4>
                   <p><?= nl2br(e((string)$notice['message'])) ?></p>
-                  <p style="margin-top:10px;color:var(--soft);font-size:.88rem;">Published: <?= e((string)$notice['created_at']) ?></p>
+                  <div style="color:var(--soft);font-size:.85rem;"><?= e((string)$notice['created_at']) ?></div>
                 </div>
               <?php endforeach; ?>
             <?php endif; ?>
           </div>
 
           <div class="mini-card">
-            <h3>Admin / System Notices</h3>
+            <h3>Admin Notices</h3>
             <?php if (!$adminNotices): ?>
-              <div class="notice-card"><h4>No system notices</h4><p>No player notice found yet.</p></div>
+              <div class="result-box">No admin notices found.</div>
             <?php else: ?>
               <?php foreach ($adminNotices as $notice): ?>
                 <div class="notice-card">
                   <h4><?= e((string)$notice['title']) ?></h4>
                   <p><?= nl2br(e((string)$notice['message'])) ?></p>
-                  <p style="margin-top:10px;color:var(--soft);font-size:.88rem;">Published: <?= e((string)$notice['created_at']) ?></p>
+                  <div style="color:var(--soft);font-size:.85rem;"><?= e((string)$notice['created_at']) ?></div>
                 </div>
               <?php endforeach; ?>
             <?php endif; ?>
@@ -1053,21 +1631,39 @@ Maki / Blocking to Prepare:
         <p class="section-desc">Printable athlete ID card with QR code.</p>
 
         <div class="id-preview-wrap">
-          <div class="id-card" id="printCard">
+          <div class="id-card" id="athleteCard">
             <div class="id-top">
-              <div class="id-logo">International Athlete ID</div>
-              <div class="id-badge"><?= e((string)$currentPlayer['player_code']) ?></div>
+              <div class="id-logo">NEPAL TAEKWONDO</div>
+              <div class="id-badge">ATHLETE ID</div>
             </div>
 
             <div class="id-name"><?= e((string)$currentPlayer['full_name']) ?></div>
 
             <div class="id-grid">
-              <div class="id-item"><h5>Date of Birth</h5><p><?= e((string)$currentPlayer['dob']) ?></p></div>
-              <div class="id-item"><h5>Belt Rank</h5><p><?= e((string)$currentPlayer['belt_rank']) ?></p></div>
-              <div class="id-item"><h5>Club Name</h5><p><?= e((string)$currentPlayer['club_name']) ?></p></div>
-              <div class="id-item"><h5>Country</h5><p><?= e((string)$currentPlayer['country_name']) ?></p></div>
-              <div class="id-item"><h5>Contact Number</h5><p><?= e((string)$currentPlayer['contact_number']) ?></p></div>
-              <div class="id-item"><h5>Participated Games</h5><p><?= e((string)$games) ?></p></div>
+              <div class="id-item">
+                <h5>Player ID</h5>
+                <p><?= e((string)$currentPlayer['player_code']) ?></p>
+              </div>
+              <div class="id-item">
+                <h5>Date of Birth</h5>
+                <p><?= e((string)$currentPlayer['dob']) ?></p>
+              </div>
+              <div class="id-item">
+                <h5>Belt Rank</h5>
+                <p><?= e((string)$currentPlayer['belt_rank']) ?></p>
+              </div>
+              <div class="id-item">
+                <h5>Country</h5>
+                <p><?= e((string)$currentPlayer['country_name']) ?></p>
+              </div>
+              <div class="id-item">
+                <h5>Club</h5>
+                <p><?= e((string)$currentPlayer['club_name']) ?></p>
+              </div>
+              <div class="id-item">
+                <h5>Contact Number</h5>
+                <p><?= e((string)$currentPlayer['contact_number']) ?></p>
+              </div>
             </div>
 
             <div id="qrcode"></div>
@@ -1075,7 +1671,7 @@ Maki / Blocking to Prepare:
         </div>
 
         <div class="print-actions">
-          <button class="btn btn-primary" type="button" onclick="window.print()">Print Athlete ID</button>
+          <button class="btn btn-primary" onclick="window.print()">Print Athlete ID</button>
         </div>
       </section>
     </main>
@@ -1090,18 +1686,10 @@ Maki / Blocking to Prepare:
       });
     }
 
-    const qrText = <?= json_encode($qrPayload, JSON_UNESCAPED_UNICODE) ?>;
-    const qrEl = document.getElementById("qrcode");
-    if (qrEl && typeof QRCode !== "undefined") {
-      new QRCode(qrEl, {
-        text: qrText,
-        width: 100,
-        height: 100
-      });
-    }
+    const medalCanvas = document.getElementById("medalChart");
+    const weightCanvas = document.getElementById("weightChart");
 
-    function drawBarChart(canvasId, labels, values) {
-      const canvas = document.getElementById(canvasId);
+    function drawBarChart(canvas, labels, values, title) {
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
       const w = canvas.width;
@@ -1109,40 +1697,9 @@ Maki / Blocking to Prepare:
       const padding = 50;
 
       ctx.clearRect(0, 0, w, h);
-
-      const maxVal = Math.max(...values, 1);
-      const barWidth = 90;
-      const gap = 60;
-
-      labels.forEach((label, i) => {
-        const x = padding + i * (barWidth + gap);
-        const barHeight = ((h - padding * 2) * values[i]) / maxVal;
-        const y = h - padding - barHeight;
-
-        ctx.fillStyle = "rgba(255,255,255,0.8)";
-        ctx.fillRect(x, y, barWidth, barHeight);
-
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "14px Arial";
-        ctx.fillText(String(values[i]), x + 25, y - 8);
-
-        ctx.fillStyle = "#cfcfcf";
-        ctx.fillText(label, x + 5, h - 20);
-      });
-    }
-
-    function drawLineChart(canvasId, labels, values) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width;
-      const h = canvas.height;
-      const padding = 50;
-
-      ctx.clearRect(0, 0, w, h);
-
       ctx.strokeStyle = "rgba(255,255,255,0.14)";
       ctx.lineWidth = 1;
+
       for (let i = 0; i <= 5; i++) {
         const y = padding + ((h - padding * 2) / 5) * i;
         ctx.beginPath();
@@ -1154,7 +1711,58 @@ Maki / Blocking to Prepare:
       if (!values.length) {
         ctx.fillStyle = "#cfcfcf";
         ctx.font = "18px Arial";
-        ctx.fillText("No weight updates yet.", padding, h / 2);
+        ctx.fillText("No data available.", padding, h / 2);
+        return;
+      }
+
+      const maxVal = Math.max(...values, 1);
+      const barWidth = (w - padding * 2) / values.length * 0.6;
+      const gap = (w - padding * 2) / values.length * 0.4;
+
+      values.forEach((val, idx) => {
+        const x = padding + idx * (barWidth + gap) + gap / 2;
+        const barHeight = ((h - padding * 2) * val) / maxVal;
+        const y = h - padding - barHeight;
+
+        ctx.fillStyle = "rgba(231,195,90,0.92)";
+        ctx.fillRect(x, y, barWidth, barHeight);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "12px Arial";
+        ctx.fillText(String(val), x + 6, y - 8);
+
+        ctx.fillStyle = "#cfcfcf";
+        ctx.fillText(labels[idx], x, h - 20);
+      });
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 16px Arial";
+      ctx.fillText(title, padding, 26);
+    }
+
+    function drawLineChart(canvas, labels, values, title) {
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+      const padding = 50;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = "rgba(255,255,255,0.14)";
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i <= 5; i++) {
+        const y = padding + ((h - padding * 2) / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(w - padding, y);
+        ctx.stroke();
+      }
+
+      if (!values.length) {
+        ctx.fillStyle = "#cfcfcf";
+        ctx.font = "18px Arial";
+        ctx.fillText("No weight history yet.", padding, h / 2);
         return;
       }
 
@@ -1169,6 +1777,7 @@ Maki / Blocking to Prepare:
       values.forEach((val, idx) => {
         const x = padding + stepX * idx;
         const y = h - padding - ((val - minVal) / (maxVal - minVal)) * (h - padding * 2);
+
         if (idx === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
@@ -1185,18 +1794,71 @@ Maki / Blocking to Prepare:
 
         ctx.fillStyle = "#ffffff";
         ctx.font = "12px Arial";
-        ctx.fillText(String(val), x - 8, y - 10);
-        ctx.fillStyle = "#cfcfcf";
-        ctx.fillText(labels[idx] || "", x - 22, h - 20);
+        ctx.fillText(String(val), x - 10, y - 10);
+
+        if (labels[idx]) {
+          ctx.fillStyle = "#cfcfcf";
+          ctx.fillText(labels[idx], x - 22, h - 20);
+        }
+      });
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 16px Arial";
+      ctx.fillText(title, padding, 26);
+    }
+
+    drawBarChart(
+      medalCanvas,
+      ["Gold", "Silver", "Bronze"],
+      [<?= $gold ?>, <?= $silver ?>, <?= $bronze ?>],
+      "Medal Breakdown"
+    );
+
+    drawLineChart(
+      weightCanvas,
+      <?= json_encode($weightLabels, JSON_UNESCAPED_UNICODE) ?>,
+      <?= json_encode($weightValues, JSON_UNESCAPED_UNICODE) ?>,
+      "Weight Progress"
+    );
+
+    const qrPayload = <?= json_encode($qrPayload, JSON_UNESCAPED_UNICODE) ?>;
+    if (document.getElementById("qrcode")) {
+      new QRCode(document.getElementById("qrcode"), {
+        text: qrPayload,
+        width: 120,
+        height: 120
       });
     }
 
-    drawBarChart("medalChart", ["Gold", "Silver", "Bronze"], [<?= $gold ?>, <?= $silver ?>, <?= $bronze ?>]);
-    drawLineChart(
-      "weightChart",
-      <?= json_encode($weightLabels, JSON_UNESCAPED_UNICODE) ?>,
-      <?= json_encode($weightValues, JSON_UNESCAPED_UNICODE) ?>
-    );
+    function updateTournamentFees() {
+      const tournamentSelect = document.getElementById("tournamentSelect");
+      const eventTypeSelect = document.getElementById("eventTypeSelect");
+      const feeDisplay = document.getElementById("feeDisplay");
+
+      if (!tournamentSelect || !eventTypeSelect || !feeDisplay) return;
+
+      const selectedOption = tournamentSelect.options[tournamentSelect.selectedIndex];
+      const eventType = eventTypeSelect.value;
+
+      if (!selectedOption || !selectedOption.value || !eventType) {
+        feeDisplay.textContent = "Select tournament and event type to see the fee.";
+        return;
+      }
+
+      const poomsaeFee = selectedOption.dataset.poomsae || "N/A";
+      const kyorugiFee = selectedOption.dataset.kyorugi || "N/A";
+      const bothFee = selectedOption.dataset.both || "N/A";
+
+      let fee = "N/A";
+      if (eventType === "Kyorugi") fee = kyorugiFee;
+      if (eventType === "Poomsae Individual" || eventType === "Poomsae Pair" || eventType === "Poomsae Group") fee = poomsaeFee;
+
+      feeDisplay.innerHTML =
+        "Selected Event Fee: <strong>" + fee + "</strong><br>" +
+        "Poomsae Fee: " + poomsaeFee + "<br>" +
+        "Kyorugi Fee: " + kyorugiFee + "<br>" +
+        "Both Discount Fee: " + bothFee;
+    }
   </script>
 </body>
 </html>
